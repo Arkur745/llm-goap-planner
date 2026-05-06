@@ -45,16 +45,19 @@ public class MermaidVisualizer {
         if (tasks == null || tasks.isEmpty()) return "";
 
         StringBuilder sb = new StringBuilder("gantt\n");
-        sb.append("title Project Plan\n");
-        sb.append("dateFormat  YYYY-MM-DD\n");
-        sb.append("section Tasks\n");
+        sb.append("    title Project Plan\n");
+        sb.append("    dateFormat YYYY-MM-DD\n");
+        sb.append("    axisFormat %b %d\n");
+        sb.append("    section Tasks\n");
 
-        int day = 1;
+        int dayOffset = 0;
         for (Map<String, Object> task : tasks) {
             String id = (String) task.get("id");
             String desc = ((String) task.get("description")).replace(":", "");
-            sb.append(String.format("%s %s : %d, 1d\n", id, desc, day));
-            day++;
+            // Build a real date: 2024-01-01 + dayOffset
+            java.time.LocalDate start = java.time.LocalDate.of(2024, 1, 1).plusDays(dayOffset);
+            sb.append(String.format("    %s : %s, %s, 2d\n", desc, id, start));
+            dayOffset += 2;
         }
 
         return sb.toString();

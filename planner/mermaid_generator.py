@@ -40,21 +40,24 @@ def generate_flowchart(plan: dict) -> str:
 
 
 def generate_gantt(plan: dict) -> str:
+    from datetime import date, timedelta
+
     lines = [
         "gantt",
-        "title Project Plan",
-        "dateFormat  YYYY-MM-DD",
-        "section Tasks"
+        "    title Project Plan",
+        "    dateFormat YYYY-MM-DD",
+        "    axisFormat %b %d",
+        "    section Tasks"
     ]
 
-    start_day = 1
+    base = date(2024, 1, 1)
+    day_offset = 0
 
     for task in plan["tasks"]:
         tid = task["id"]
         desc = task["description"].replace(":", "")
-
-        # simple sequential schedule (1 day each)
-        lines.append(f"{tid} {desc} : {start_day}, 1d")
-        start_day += 1
+        start = base + timedelta(days=day_offset)
+        lines.append(f"    {desc} : {tid}, {start}, 2d")
+        day_offset += 2
 
     return "\n".join(lines)
