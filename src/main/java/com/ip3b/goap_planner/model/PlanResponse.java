@@ -11,5 +11,6 @@ public record PlanResponse(
         List<PlanAssignment> assignments,
         String mermaidDiagram,
         String ganttDiagram,
+        String source,
         Instant generatedAt) {
 }

@@ -18,18 +18,23 @@ public class MermaidPlanDiagramFactory {
     public String buildFlowchart(String goal, List<PlanStep> steps) {
         String safeGoal = escapeMermaid(goal == null || goal.isBlank() ? "Plan" : goal);
         StringBuilder builder = new StringBuilder();
-        builder.append("%%{init: {'flowchart': {'nodeSpacing': 50, 'rankSpacing': 40, 'padding': '10'}}}%%\n");
+        
         builder.append("flowchart TD\n");
-        builder.append("    G[Goal: ").append(safeGoal).append("]\n");
+        builder.append("    START((Goal: ").append(safeGoal).append("))\n");
 
-        String previousNode = "G";
-        for (PlanStep step : steps) {
+        String previousNode = "START";
+        for (int i = 0; i < steps.size(); i++) {
+            PlanStep step = steps.get(i);
             String nodeId = "S" + step.order();
-            builder.append("    ").append(nodeId).append("[Step ").append(step.order()).append(": ")
-                    .append(escapeMermaid(step.title())).append("]\n");
+            String nodeLabel = String.format("%d. %s", step.order(), escapeMermaid(step.title()));
+            
+            builder.append("    ").append(nodeId).append("[").append(nodeLabel).append("]\n");
             builder.append("    ").append(previousNode).append(" --> ").append(nodeId).append("\n");
             previousNode = nodeId;
         }
+        
+        builder.append("    END((Complete))\n");
+        builder.append("    ").append(previousNode).append(" --> END\n");
 
         return builder.toString();
     }
@@ -40,10 +45,8 @@ public class MermaidPlanDiagramFactory {
 
         StringBuilder builder = new StringBuilder();
         builder.append("gantt\n");
-        builder.append("    title ").append(safeGoal).append(" timeline\n");
-        builder.append("    dateFormat  YYYY-MM-DD\n");
-        builder.append("    axisFormat  %b %d\n");
-        builder.append("    todayMarker off\n");
+        builder.append("    title ").append(safeGoal).append(" Timeline\n");
+        builder.append("    dateFormat YYYY-MM-DD\n");
 
         String currentSection = null;
         for (MermaidGanttTask task : tasks) {
@@ -55,8 +58,7 @@ public class MermaidPlanDiagramFactory {
             String taskDate = DATE_FORMATTER.format(startDate.plusDays(task.startOffsetDays()));
             builder.append("    ")
                     .append(escapeMermaid(task.label()))
-                    .append(" : ")
-                    .append(sanitizeTaskId(task.taskId()))
+                    .append(" :s").append(sanitizeTaskId(task.taskId()))
                     .append(", ")
                     .append(taskDate)
                     .append(", ")
