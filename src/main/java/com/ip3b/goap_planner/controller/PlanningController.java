@@ -27,7 +27,12 @@ public class PlanningController {
         if (request == null || request.goal() == null || request.goal().trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Goal is required");
         }
+        var result = planService.generatePlanWithSource(request);
+        String source = result.source();
+        PlanResponse body = result.response();
 
-        return ResponseEntity.ok(planService.generatePlan(request));
+        return ResponseEntity.ok()
+                .header("X-Plan-Source", source)
+                .body(body);
     }
 }

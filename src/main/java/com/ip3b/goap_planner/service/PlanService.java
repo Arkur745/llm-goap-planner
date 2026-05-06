@@ -12,31 +12,74 @@ import com.ip3b.goap_planner.model.PlanRequest;
 import com.ip3b.goap_planner.model.PlanResponse;
 import com.ip3b.goap_planner.model.PlanStep;
 import com.ip3b.goap_planner.visualization.MermaidPlanDiagramFactory;
+import com.ip3b.goap_planner.service.LLMPlanGenerator.LLMPlanResult;
 
 @Service
 public class PlanService {
 
     private final MermaidPlanDiagramFactory diagramFactory;
+    private final LLMPlanGenerator llmPlanGenerator;
+    private final PlannerClient plannerClient;
 
-    public PlanService(MermaidPlanDiagramFactory diagramFactory) {
+    public PlanService(MermaidPlanDiagramFactory diagramFactory, LLMPlanGenerator llmPlanGenerator, PlannerClient plannerClient) {
         this.diagramFactory = diagramFactory;
+        this.llmPlanGenerator = llmPlanGenerator;
+        this.plannerClient = plannerClient;
     }
 
-    public PlanResponse generatePlan(PlanRequest request) {
-        String goal = normalizeGoal(request == null ? null : request.goal());
-        String lowerGoal = goal.toLowerCase();
+    public record PlanWithSource(String source, PlanResponse response) {}
 
+    public PlanWithSource generatePlanWithSource(PlanRequest request) {
+        String goal = normalizeGoal(request == null ? null : request.goal());
+
+        // Try Python planner API first
+        try {
+            PlanResponse plannerResp = plannerClient.generate(goal);
+            if (plannerResp != null) {
+                return new PlanWithSource("PLANNER", plannerResp);
+            }
+        } catch (Exception e) {
+            System.err.println("PlanService: planner client error: " + e.getMessage());
+        }
+
+        // Try LLM-based generation as fallback
+        LLMPlanResult llmResult = llmPlanGenerator.generatePlanWithLLM(goal);
+        if (llmResult != null) {
+                PlanResponse resp = new PlanResponse(
+                    llmResult.goal,
+                    llmResult.summary,
+                    "Ready",
+                    llmResult.steps,
+                    llmResult.assignments,
+                    llmResult.mermaidDiagram,
+                    llmResult.ganttDiagram,
+                    "LLM",
+                    Instant.now());
+
+                return new PlanWithSource("LLM", resp);
+        }
+
+        // Fall back to blueprint-based planning
+        String lowerGoal = goal.toLowerCase();
         PlanBlueprint blueprint = selectBlueprint(lowerGoal, goal);
 
-        return new PlanResponse(
-                goal,
-                blueprint.summary(),
-                "Ready",
-                blueprint.steps(),
-                blueprint.assignments(),
-                blueprint.mermaidDiagram(),
-                blueprint.ganttDiagram(),
-                Instant.now());
+        PlanResponse resp = new PlanResponse(
+            goal,
+            blueprint.summary(),
+            "Ready",
+            blueprint.steps(),
+            blueprint.assignments(),
+            blueprint.mermaidDiagram(),
+            blueprint.ganttDiagram(),
+            "BLUEPRINT",
+            Instant.now());
+
+        return new PlanWithSource("BLUEPRINT", resp);
+    }
+
+    // Backwards-compatible convenience method
+    public PlanResponse generatePlan(PlanRequest request) {
+        return generatePlanWithSource(request).response();
     }
 
     private PlanBlueprint selectBlueprint(String lowerGoal, String goal) {
