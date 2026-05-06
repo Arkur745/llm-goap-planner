@@ -25,7 +25,7 @@ if st.button("Generate Plan"):
         try:
             with st.spinner("Generating plan..."):
                 res = requests.post(
-                    "http://localhost:8000/plan",
+                    "http://localhost:9090/plan",
                     json={"goal": goal, "tools": tools}
                 )
 
@@ -59,20 +59,21 @@ if st.button("Generate Plan"):
                     st.write(f"After: {step['state_after']}")
                     st.markdown("---")
 
-                st.subheader("⚙️ Execution")
-                for step in data["execution"]:
-                    if step.get("type") == "MCP":
-                        st.write(f"**[MCP - {step.get('agent', 'Unknown')}]**")
-                        st.write(f"Task: {step.get('task', '')}")
-                        if "response" in step:
-                            st.json(step["response"])
-                        elif "error" in step:
-                            st.error(f"Error: {step['error']}")
-                    elif step.get("type") == "LLM":
-                        st.write(f"**[LLM]**")
-                        st.write(f"Task: {step.get('task', '')}")
-                        if "status" in step:
-                            st.info(f"Status: {step['status']}")
+                if "execution" in data:
+                    st.subheader("⚙️ Execution")
+                    for step in data["execution"]:
+                        if step.get("type") == "MCP":
+                            st.write(f"**[MCP - {step.get('agent', 'Unknown')}]**")
+                            st.write(f"Task: {step.get('task', '')}")
+                            if "response" in step:
+                                st.json(step["response"])
+                            elif "error" in step:
+                                st.error(f"Error: {step['error']}")
+                        elif step.get("type") == "LLM":
+                            st.write(f"**[LLM]**")
+                            st.write(f"Task: {step.get('task', '')}")
+                            if "status" in step:
+                                st.info(f"Status: {step['status']}")
 
                 st.subheader("🔄 Flowchart")
                 st.components.v1.html(f"""

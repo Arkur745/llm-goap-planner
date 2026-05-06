@@ -1,121 +1,74 @@
-# IP3.b - Dynamic GOAP Planner with Embabel & Local LLM
+# IP3.b - Dynamic GOAP Planner (Embabel Framework)
 
-> **Goal-Oriented Action Planning** (GOAP) powered by the **Embabel Java Framework**, a locally hosted **LLM (Ollama)**, and a modular **Python Orchestration layer**.
-
----
-
-## 🏛️ System Architecture
-
-This project is split into three main components to ensure modularity and high performance:
-
-1.  **The Brain (Java Backend)**: 
-    *   Located in `embabel-mcp/`.
-    *   Handles the core **GOAP logic** and **dynamic step generation**.
-    *   Communicates with **Ollama** (Llama3) to decompose natural language goals into sequential actions.
-    *   **Port**: `9090`
-
-2.  **The Orchestrator (Python API)**:
-    *   Located in the root (`api.py`).
-    *   Acts as the bridge between the Java Brain and the Frontend.
-    *   Handles **Mermaid visualization** generation (Flowcharts & Gantt charts) and **MCP agent execution**.
-    *   **Port**: `8000`
-
-3.  **The Interface (Streamlit UI)**:
-    *   Located in `planner/app.py`.
-    *   Provides a user-friendly dashboard to define goals, select tools, and visualize the generated plan.
-    *   **Port**: `8500` (default)
+> **Overview**: This project implements a Goal-Oriented Action Planning (GOAP) system that combines the creative decomposition power of a **Local LLM** with the deterministic logic of the **Embabel Java Framework**. 
 
 ---
 
-## 🚀 Getting Started
+## 🏗️ System Architecture & Workflow
 
-### 1. Prerequisites
-*   [Ollama](https://ollama.com) (run `ollama run llama3`)
-*   Java 17+ & Maven
-*   Python 3.10+
+This prototype demonstrates a complete "Sense-Plan-Act" cycle, designed to be run **100% offline**.
 
-### 2. Setup & Installation
+### 1. The Thinking Phase (Local LLM)
+When a goal is received (e.g., "Plan a startup pitch"), the system uses **Ollama (Llama3)** to:
+*   Decompose the abstract goal into 4-6 atomic sub-tasks.
+*   Dynamically assign each task to the most appropriate specialized agent (Search, Calendar, etc.).
+*   Define the world-state requirements for each step.
 
-**Clone the repository:**
-```bash
-git clone <your-repo-url>
-cd llm-goap-planner
-```
+### 2. The Logic Phase (Embabel GOAP)
+The generated tasks are handed to the **Java GOAP Engine**. Unlike standard LLM agents that can hallucinate sequences, the GOAP engine:
+*   Validates that the sequence is logically sound.
+*   Ensures that every step has its preconditions met by previous actions.
+*   Enforces tool constraints (it will only use the agents you have enabled in the frontend).
 
-**Setup Python environment:**
-```bash
-python -m venv venv
-# Windows: venv\Scripts\activate | Unix: source venv/bin/activate
-pip install -r requirements.txt
-```
+### 3. The Execution Phase (Agent Simulation)
+To satisfy the requirement of "actually doing something," the backend iterates through the final plan and uses the LLM to **simulate the output** of each agent. This provides the frontend with realistic data (dates, search results, order confirmations) without needing external API keys.
 
 ---
 
-## 🛠️ Running the System
+## 🔌 API Documentation for Frontend Integration
 
-To run the full system, you need to start **three** separate terminals:
+**Target URL**: `POST http://localhost:9090/plan`
 
-### Step 1: Start the Java Planner (The Brain)
-```bash
-cd embabel-mcp
-mvn spring-boot:run
-```
+### Request Specification
+The frontend must send a JSON object containing the user's intent and the selected toolset.
 
-### Step 2: Start the Python API (The Orchestrator)
-```bash
-# From the root directory
-uvicorn api:app --port 8001 --reload
-```
-
-### Step 3: Start the Streamlit Dashboard (The Interface)
-```bash
-cd planner
-streamlit run app.py
-```
-
----
-
-## 🔌 API Reference (Java Backend)
-
-### `POST http://localhost:9090/plan`
-
-The Java backend handles the heavy lifting. It takes a goal and returns the planned tasks with agent assignments.
-
-**Request body:**
 ```json
 {
-  "goal": "Plan a startup presentation",
+  "goal": "Build a presentation for investors",
   "tools": ["SearchAgent", "CalendarAgent", "BudgetAgent"]
 }
 ```
 
-**Key Fields in Response:**
-*   `tasks`: List of sequential tasks with descriptions and assigned agents.
-*   `trace`: Step-by-step state transition logs from the GOAP solver.
-*   `classification`: The plan type detected by the LLM.
+### Response Specification
+The API returns a rich JSON object containing everything needed for a high-end visualization.
+
+*   `tasks`: An array of objects. Use the `description` for the title and `output` for the "result" of the action.
+*   `flowchart`: A Mermaid.js string. Use this to render a **Dependency Graph** showing how tasks connect.
+*   `gantt`: A Mermaid.js string. Use this to render an **Execution Timeline**.
+*   `trace`: A log of the GOAP solver's state transitions (useful for "Debug" or "Advanced" views).
 
 ---
 
-## 🤖 Supported MCP Agents
-The system dynamically assigns tasks to these agents based on LLM reasoning:
+## 🤖 Available Agents & Tools
 
-| Agent | Responsibility |
-|---|---|
-| `SearchAgent` | Research, reasoning, and analysis |
-| `CalendarAgent` | Scheduling, timelines, and time planning |
-| `BudgetAgent` | Cost estimation and financial planning |
-| `InviteAgent` | Communication and guest coordination |
-| `FoodAgent` | Catering and resource management |
+The backend supports the following agent types. The frontend should allow users to toggle these to see how the plan changes based on available resources:
 
----
-
-## 📊 Visualizations
-The system automatically generates **Mermaid.js** code for every plan:
-*   **Flowchart**: Shows the logical dependency of tasks.
-*   **Gantt Chart**: Shows the execution timeline and resource allocation.
+*   **SearchAgent**: (Core/Foundation) Handles research and general reasoning.
+*   **CalendarAgent**: Handles scheduling, dates, and time management.
+*   **BudgetAgent**: Handles cost estimation and financial planning.
+*   **InviteAgent**: Handles communication and stakeholder coordination.
+*   **FoodAgent**: Handles catering and resource procurement.
 
 ---
 
-## 📑 Project Notes
-*   **Offline Mode**: This system is designed to run 100% offline using local LLMs.
-*   **Dynamic Planning**: Unlike static planners, this system "thinks" about the goal first, builds a set of world-state actions, and then solves the sequence using the GOAP algorithm.
+## 🚀 Execution Instructions
+
+1.  **Start LLM Server**: `ollama run llama3`
+2.  **Start Java Brain**: `cd embabel-mcp` -> `mvn spring-boot:run`
+3.  **Reference Implementation**: (Optional) To see how the data should be displayed, run: `cd planner` -> `streamlit run app.py`.
+
+---
+
+## 📑 Design Notes
+*   **Constraint Awareness**: If a specialized agent (like `FoodAgent`) is missing, the system will intelligently route those tasks to the `SearchAgent` as a fallback.
+*   **Stateless Planning**: Currently, each request is a fresh planning cycle. Future versions could support incremental state updates.

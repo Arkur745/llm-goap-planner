@@ -27,6 +27,11 @@ public class LLMClient {
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                System.err.println("Ollama Error (Status " + response.statusCode() + "): " + response.body());
+                return "basic research data";
+            }
+            
             String body = response.body();
             
             // Use Jackson for reliable parsing and unescaping
@@ -43,13 +48,22 @@ public class LLMClient {
             }
 
             if (text == null || text.isBlank()) {
+                System.err.println("No text found in Ollama response: " + body);
                 return "basic research data";
             }
             return text;
         } catch (Exception e) {
-            System.err.println("LLM Call Error: " + e.getMessage());
+            System.err.println("LLM Call Error (" + e.getClass().getSimpleName() + "): " + e.getMessage());
+            e.printStackTrace();
             return "basic research data";
         }
+    }
+
+    public static String simulateAgentExecution(String agentName, String task) {
+        String prompt = "You are a specialized AI agent named " + agentName + ". " +
+                        "Your job is to execute the following task and return a brief, realistic response (1-2 sentences) as if you just performed it.\n" +
+                        "Task: " + task;
+        return callLLM(prompt).trim();
     }
 
     private static String jsonEscape(String text) {
