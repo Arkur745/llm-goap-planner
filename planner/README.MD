@@ -1,181 +1,121 @@
-# GOAP Planner
- 
-> **Goal-Oriented Action Planning** powered by a locally hosted LLM and a modular MCP agent architecture.
- 
+# IP3.b - Dynamic GOAP Planner with Embabel & Local LLM
+
+> **Goal-Oriented Action Planning** (GOAP) powered by the **Embabel Java Framework**, a locally hosted **LLM (Ollama)**, and a modular **Python Orchestration layer**.
+
 ---
- 
-## Overview
- 
-GOAP Planner takes a high-level plaintext goal and automatically decomposes it into an executable plan. It assigns each atomic task to a specialized MCP agent, builds a dependency graph, and runs the plan — falling back to the LLM when an agent is unavailable.
- 
-```
-User Goal → LLM Planner → Task Graph (DAG) → MCP Execution Layer → JSON + Mermaid diagrams
-```
- 
-**Each plan produces:**
-- A structured task list with agent assignments and dependencies
-- Execution results per task
-- A Mermaid flowchart (task dependencies)
-- A Mermaid Gantt chart (execution timeline)
+
+## 🏛️ System Architecture
+
+This project is split into three main components to ensure modularity and high performance:
+
+1.  **The Brain (Java Backend)**: 
+    *   Located in `embabel-mcp/`.
+    *   Handles the core **GOAP logic** and **dynamic step generation**.
+    *   Communicates with **Ollama** (Llama3) to decompose natural language goals into sequential actions.
+    *   **Port**: `9090`
+
+2.  **The Orchestrator (Python API)**:
+    *   Located in the root (`api.py`).
+    *   Acts as the bridge between the Java Brain and the Frontend.
+    *   Handles **Mermaid visualization** generation (Flowcharts & Gantt charts) and **MCP agent execution**.
+    *   **Port**: `8000`
+
+3.  **The Interface (Streamlit UI)**:
+    *   Located in `planner/app.py`.
+    *   Provides a user-friendly dashboard to define goals, select tools, and visualize the generated plan.
+    *   **Port**: `8500` (default)
+
 ---
- 
-## Features
- 
-| Feature | Status |
-|---|---|
-| Local LLM planning via Ollama | ✅ |
-| GOAP-style task decomposition | ✅ |
-| Modular MCP agent architecture | ✅ |
-| Tool-constrained planning | ✅ |
-| Execution engine with LLM fallback | ✅ |
-| Mermaid visualization (Flowchart + Gantt) | ✅ |
-| FastAPI backend | ✅ |
- 
----
- 
-## Getting Started
- 
-### 1. Clone the repository
- 
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+*   [Ollama](https://ollama.com) (run `ollama run llama3`)
+*   Java 17+ & Maven
+*   Python 3.10+
+
+### 2. Setup & Installation
+
+**Clone the repository:**
 ```bash
 git clone <your-repo-url>
 cd llm-goap-planner
 ```
- 
-### 2. Create a virtual environment
- 
+
+**Setup Python environment:**
 ```bash
 python -m venv venv
-```
- 
-Activate it:
- 
-```bash
-# Windows
-venv\Scripts\activate
- 
-# macOS / Linux
-source venv/bin/activate
-```
- 
-### 3. Install dependencies
- 
-```bash
+# Windows: venv\Scripts\activate | Unix: source venv/bin/activate
 pip install -r requirements.txt
 ```
- 
-### 4. Start a local LLM with Ollama
- 
-Make sure [Ollama](https://ollama.com) is installed, then pull and run a model:
- 
-```bash
-ollama run llama3
-```
- 
-Any model supported by Ollama will work.
- 
-### 5. Start the API server
- 
-```bash
-uvicorn api:app --reload
-```
- 
-### 6. Open the interactive API docs
- 
-```
-http://127.0.0.1:8000/docs
-```
- 
+
 ---
- 
-## API Reference
- 
-### `POST /plan`
- 
+
+## 🛠️ Running the System
+
+To run the full system, you need to start **three** separate terminals:
+
+### Step 1: Start the Java Planner (The Brain)
+```bash
+cd embabel-mcp
+mvn spring-boot:run
+```
+
+### Step 2: Start the Python API (The Orchestrator)
+```bash
+# From the root directory
+uvicorn api:app --port 8001 --reload
+```
+
+### Step 3: Start the Streamlit Dashboard (The Interface)
+```bash
+cd planner
+streamlit run app.py
+```
+
+---
+
+## 🔌 API Reference (Java Backend)
+
+### `POST http://localhost:9090/plan`
+
+The Java backend handles the heavy lifting. It takes a goal and returns the planned tasks with agent assignments.
+
 **Request body:**
- 
 ```json
 {
   "goal": "Plan a startup presentation",
-  "tools": ["SearchAgent", "InviteAgent", "FoodAgent"]
+  "tools": ["SearchAgent", "CalendarAgent", "BudgetAgent"]
 }
 ```
- 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `goal` | `string` | Yes | High-level task description |
-| `tools` | `list[string]` | No | MCP agents to restrict planning to |
- 
-**Response:**
- 
-```json
-{
-  "goal": "...",
-  "tasks": [
-    {
-      "id": "T1",
-      "description": "...",
-      "agent": "...",
-      "dependencies": []
-    }
-  ],
-  "execution": [
-    {
-      "server": "...",
-      "action": "...",
-      "task": "...",
-      "status": "..."
-    }
-  ],
-  "flowchart": "graph TD ...",
-  "gantt": "gantt ..."
-}
-```
- 
+
+**Key Fields in Response:**
+*   `tasks`: List of sequential tasks with descriptions and assigned agents.
+*   `trace`: Step-by-step state transition logs from the GOAP solver.
+*   `classification`: The plan type detected by the LLM.
+
 ---
- 
-## MCP Agents
- 
+
+## 🤖 Supported MCP Agents
+The system dynamically assigns tasks to these agents based on LLM reasoning:
+
 | Agent | Responsibility |
 |---|---|
-| `SearchAgent` | Research, reasoning, and planning |
-| `CalendarAgent` | Scheduling and timelines |
-| `FoodAgent` | Materials and resource coordination |
-| `InviteAgent` | Communication and invitations |
-| `BudgetAgent` | Cost estimation |
- 
+| `SearchAgent` | Research, reasoning, and analysis |
+| `CalendarAgent` | Scheduling, timelines, and time planning |
+| `BudgetAgent` | Cost estimation and financial planning |
+| `InviteAgent` | Communication and guest coordination |
+| `FoodAgent` | Catering and resource management |
+
 ---
- 
-## Execution Logic
- 
-Tasks are dispatched using the following priority:
- 
-1. **MCP agent available** → handled by the corresponding MCP server
-2. **MCP agent unavailable** → handled by LLM fallback
-This ensures robustness even when only a subset of agents is configured.
- 
+
+## 📊 Visualizations
+The system automatically generates **Mermaid.js** code for every plan:
+*   **Flowchart**: Shows the logical dependency of tasks.
+*   **Gantt Chart**: Shows the execution timeline and resource allocation.
+
 ---
- 
-## Visualization
- 
-The `/plan` endpoint returns Mermaid diagram strings that can be rendered with:
- 
-- [Mermaid Live Editor](https://mermaid.live)
-- [Streamlit](https://streamlit.io)
-- Any web frontend with Mermaid support
----
- 
-## Notes
- 
-- LLM output is validated and corrected before execution
-- A retry mechanism improves stability on malformed responses
-- The system is designed to run fully **offline** with a local LLM
----
- 
-## Example Use Cases
- 
-- Startup planning and pitch prep
-- Event organization
-- Task automation workflows
-- AI planning demonstrations and research
----
+
+## 📑 Project Notes
+*   **Offline Mode**: This system is designed to run 100% offline using local LLMs.
+*   **Dynamic Planning**: Unlike static planners, this system "thinks" about the goal first, builds a set of world-state actions, and then solves the sequence using the GOAP algorithm.
