@@ -20,12 +20,12 @@ const ErrorTypes = {
 };
 
 const GANTT_COLORS = [
-  { bar: "#6366f1", bg: "#f5f3ff", text: "#4338ca" }, // Indigo
-  { bar: "#0ea5e9", bg: "#f0f9ff", text: "#0369a1" }, // Sky
-  { bar: "#10b981", bg: "#ecfdf5", text: "#047857" }, // Emerald
-  { bar: "#f59e0b", bg: "#fffbeb", text: "#b45309" }, // Amber
-  { bar: "#ec4899", bg: "#fdf2f8", text: "#be185d" }, // Pink
-  { bar: "#8b5cf6", bg: "#f5f3ff", text: "#6d28d9" }, // Violet
+  { bar: "#818cf8", text: "#a5b4fc" }, // Indigo-400 / 300
+  { bar: "#38bdf8", text: "#7dd3fc" }, // Sky-400 / 300
+  { bar: "#34d399", text: "#6ee7b7" }, // Emerald-400 / 300
+  { bar: "#fbbf24", text: "#fcd34d" }, // Amber-400 / 300
+  { bar: "#f472b6", text: "#f9a8d4" }, // Pink-400 / 300
+  { bar: "#a78bfa", text: "#c4b5fd" }, // Violet-400 / 300
 ];
 
 let currentZoom = 1;
@@ -80,6 +80,27 @@ document.addEventListener("DOMContentLoaded", () => {
         gantt4: "#10b981",
         gantt5: "#f59e0b",
       },
+    });
+  }
+
+  // Theme Toggle Logic
+  const themeToggle = document.getElementById("themeToggle");
+  const currentTheme = localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  
+  if (currentTheme === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+  }
+
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      const newTheme = isDark ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+      
+      // Re-render charts to pick up color changes if necessary
+      if (latestGantt) renderGantt(document.getElementById("ganttContainer"), latestGantt);
+      if (latestDiagram) renderFlowchart(document.getElementById("diagramContainer"), latestDiagram, latestAssignments);
     });
   }
 
@@ -895,7 +916,7 @@ async function renderGantt(container, diagramCode) {
       line.setAttribute("y1", HEADER_H);
       line.setAttribute("x2", x);
       line.setAttribute("y2", fullHeight - 40);
-      line.setAttribute("stroke", "#e2e8f0");
+      line.setAttribute("stroke", "var(--border)");
       gridLayer.appendChild(line);
 
       const date = new Date(baseDate);
@@ -906,7 +927,7 @@ async function renderGantt(container, diagramCode) {
       text.setAttribute("text-anchor", "middle");
       text.setAttribute("font-size", "11");
       text.setAttribute("font-weight", "700");
-      text.setAttribute("fill", "#64748b");
+      text.setAttribute("fill", "var(--text)");
       text.textContent = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
       headerLayer.appendChild(text);
     }
@@ -927,7 +948,7 @@ async function renderGantt(container, diagramCode) {
         const d = `M ${x1} ${y1} C ${x1 + cp} ${y1}, ${x2 - cp} ${y2}, ${x2} ${y2}`;
         path.setAttribute("d", d);
         path.setAttribute("fill", "none");
-        path.setAttribute("stroke", "#cbd5e1");
+        path.setAttribute("stroke", "var(--border)");
         path.setAttribute("stroke-width", "1.5");
         path.setAttribute("class", `handoff-line conn-${task.id} conn-parent-${parent.id}`);
         connectionLayer.appendChild(path);
@@ -947,7 +968,7 @@ async function renderGantt(container, diagramCode) {
     sidebar.setAttribute("y", currentY);
     sidebar.setAttribute("width", SIDEBAR_W);
     sidebar.setAttribute("height", laneH);
-    sidebar.setAttribute("fill", "#f8fafc");
+    sidebar.setAttribute("fill", "var(--bg)");
     sidebarLayer.appendChild(sidebar);
 
     const agentText = document.createElementNS(svgNS, "text");
@@ -977,7 +998,7 @@ async function renderGantt(container, diagramCode) {
       bar.setAttribute("width", barW);
       bar.setAttribute("height", BAR_H);
       bar.setAttribute("rx", "6");
-      bar.setAttribute("fill", task.status === "done" ? "#10b981" : task.status === "active" ? color.bar : "#94a3b8");
+      bar.setAttribute("fill", task.status === "done" ? "#10b981" : task.status === "active" ? color.bar : "var(--border)");
       bar.setAttribute("opacity", task.status === "done" ? "0.8" : "1");
       group.appendChild(bar);
 
@@ -986,7 +1007,7 @@ async function renderGantt(container, diagramCode) {
       statusIcon.setAttribute("x", barX + 6);
       statusIcon.setAttribute("y", taskY + BAR_Y_OFF + 16);
       statusIcon.setAttribute("font-size", "10");
-      statusIcon.setAttribute("fill", "#fff");
+      statusIcon.setAttribute("fill", "white");
       statusIcon.textContent = task.status === "done" ? "✓" : task.status === "active" ? "●" : "○";
       group.appendChild(statusIcon);
 
@@ -995,7 +1016,7 @@ async function renderGantt(container, diagramCode) {
       label.setAttribute("y", taskY + ROW_H / 2 + 5);
       label.setAttribute("font-size", "13");
       label.setAttribute("font-weight", "600");
-      label.setAttribute("fill", "#1e293b");
+      label.setAttribute("fill", "var(--text)");
       label.textContent = task.label;
       group.appendChild(label);
 
@@ -1016,7 +1037,7 @@ async function renderGantt(container, diagramCode) {
         bar.setAttribute("filter", "none");
         const conns = connectionLayer.querySelectorAll(`.conn-${task.id}, .conn-parent-${task.id}`);
         conns.forEach(c => {
-          c.setAttribute("stroke", "#cbd5e1");
+          c.setAttribute("stroke", "var(--border)");
           c.setAttribute("stroke-width", "1.5");
         });
       };
