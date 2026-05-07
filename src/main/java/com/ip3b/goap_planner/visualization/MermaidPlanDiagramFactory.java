@@ -47,23 +47,42 @@ public class MermaidPlanDiagramFactory {
         builder.append("gantt\n");
         builder.append("    title ").append(safeGoal).append(" Timeline\n");
         builder.append("    dateFormat YYYY-MM-DD\n");
+        builder.append("    axisFormat %b %d\n");
+        builder.append("    tickInterval 1day\n");
+        builder.append("    excludes weekends\n");
 
         String currentSection = null;
+        String prevTaskId = null;
         for (MermaidGanttTask task : tasks) {
             if (!task.section().equals(currentSection)) {
                 builder.append("    section ").append(escapeMermaid(task.section())).append("\n");
                 currentSection = task.section();
             }
 
-            String taskDate = DATE_FORMATTER.format(startDate.plusDays(task.startOffsetDays()));
-            builder.append("    ")
-                    .append(escapeMermaid(task.label()))
-                    .append(" :s").append(sanitizeTaskId(task.taskId()))
-                    .append(", ")
-                    .append(taskDate)
-                    .append(", ")
-                    .append(task.durationDays())
-                    .append("d\n");
+            String label = escapeMermaid(task.label());
+            if (label.length() > 40) label = label.substring(0, 37) + "...";
+            String taskId = "s" + sanitizeTaskId(task.taskId());
+
+            if (prevTaskId == null) {
+                String taskDate = DATE_FORMATTER.format(startDate.plusDays(task.startOffsetDays()));
+                builder.append("    ")
+                        .append(label)
+                        .append(" :").append(taskId)
+                        .append(", ")
+                        .append(taskDate)
+                        .append(", ")
+                        .append(task.durationDays())
+                        .append("d\n");
+            } else {
+                builder.append("    ")
+                        .append(label)
+                        .append(" :").append(taskId)
+                        .append(", after ").append(prevTaskId)
+                        .append(", ")
+                        .append(task.durationDays())
+                        .append("d\n");
+            }
+            prevTaskId = taskId;
         }
 
         return builder.toString();

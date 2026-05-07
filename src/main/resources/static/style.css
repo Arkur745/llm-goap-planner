@@ -587,23 +587,97 @@ button:disabled {
   color: var(--muted);
 }
 
+.diagram-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.header-group {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.timeline-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 12px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+}
+
+.control-btn:hover {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  transform: scale(1.1);
+}
+
+.control-btn.secondary {
+  width: auto;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.control-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  min-width: 40px;
+  text-align: center;
+}
+
 .diagram-container {
   overflow-x: auto;
-  padding: 8px 0 0;
+  overflow-y: hidden;
   position: relative;
   min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #fafbfc;
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid var(--border);
 }
 
 .diagram-container svg {
   max-width: 100%;
   height: auto;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.06));
 }
 
 .diagram-wrapper {
@@ -611,6 +685,62 @@ button:disabled {
   display: flex;
   justify-content: center;
   animation: fadeIn 0.5s ease-out;
+}
+
+/* ── Gantt-specific overrides ── */
+.gantt-chart-container {
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  min-height: 400px;
+  position: relative;
+}
+
+.gantt-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.gantt-wrapper svg {
+  display: block;
+}
+
+.task-group {
+  transition: opacity 0.2s ease;
+}
+
+.task-group:hover {
+  opacity: 0.9;
+}
+
+.task-bar {
+  transition: filter 0.2s ease;
+}
+
+/* Scrollbar styling for the gantt wrapper */
+.gantt-wrapper::-webkit-scrollbar {
+  height: 10px;
+}
+
+.gantt-wrapper::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.gantt-wrapper::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border: 2px solid #f8fafc;
+  border-radius: 5px;
+}
+
+.gantt-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
 }
 
 .diagram-loading {

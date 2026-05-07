@@ -19,6 +19,18 @@ const ErrorTypes = {
   UNKNOWN: "unknown",
 };
 
+const GANTT_COLORS = [
+  { bar: "#6366f1", bg: "#f5f3ff", text: "#4338ca" }, // Indigo
+  { bar: "#0ea5e9", bg: "#f0f9ff", text: "#0369a1" }, // Sky
+  { bar: "#10b981", bg: "#ecfdf5", text: "#047857" }, // Emerald
+  { bar: "#f59e0b", bg: "#fffbeb", text: "#b45309" }, // Amber
+  { bar: "#ec4899", bg: "#fdf2f8", text: "#be185d" }, // Pink
+  { bar: "#8b5cf6", bg: "#f5f3ff", text: "#6d28d9" }, // Violet
+];
+
+let currentZoom = 1;
+let hiddenAgents = new Set();
+
 document.addEventListener("DOMContentLoaded", () => {
   const goalForm = document.getElementById("goalForm");
   const goalInput = document.getElementById("goalInput");
@@ -35,21 +47,38 @@ document.addEventListener("DOMContentLoaded", () => {
       flowchart: {
         nodeSpacing: 50,
         rankSpacing: 40,
-        padding: "10",
+        padding: 10,
         htmlLabels: true,
       },
       gantt: {
-        fontSize: 12,
-        gridLineStartPadding: 350,
+        barHeight: 28,
+        barGap: 8,
+        topPadding: 60,
+        rightPadding: 40,
+        leftPadding: 100,
+        gridLineStartPadding: 40,
+        fontSize: 13,
+        sectionFontSize: 14,
+        numberSectionStyles: 4,
+        axisFormat: "%b %d",
+        useWidth: 900,
       },
       themeVariables: {
-        primaryColor: "#e8eefc",
-        primaryBorderColor: "#6b7fd7",
-        primaryTextColor: "#18243a",
-        primaryBorderWidth: "2px",
-        lineColor: "#64748b",
+        primaryColor: "#dbeafe",
+        primaryBorderColor: "#3b82f6",
+        primaryTextColor: "#1e293b",
+        secondaryColor: "#e0e7ff",
+        tertiaryColor: "#f0fdf4",
+        primaryBorderWidth: "1.5px",
+        lineColor: "#94a3b8",
         fontSize: "13px",
-        fontFamily: "system-ui, sans-serif",
+        fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
+        gantt0: "#3b82f6",
+        gantt1: "#6366f1",
+        gantt2: "#8b5cf6",
+        gantt3: "#06b6d4",
+        gantt4: "#10b981",
+        gantt5: "#f59e0b",
       },
     });
   }
@@ -157,6 +186,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Setup tab buttons
   setupTabButtons();
+
+  // Timeline controls
+  const zoomInBtn = document.getElementById("zoomInBtn");
+  const zoomOutBtn = document.getElementById("zoomOutBtn");
+  const filterBtn = document.getElementById("filterBtn");
+  const zoomLabel = document.getElementById("zoomLabel");
+
+  if (zoomInBtn) {
+    zoomInBtn.onclick = () => {
+      if (currentZoom < 2.5) {
+        currentZoom += 0.25;
+        zoomLabel.textContent = `${Math.round(currentZoom * 100)}%`;
+        if (latestGantt) renderGantt(document.getElementById("ganttContainer"), latestGantt);
+      }
+    };
+  }
+  if (zoomOutBtn) {
+    zoomOutBtn.onclick = () => {
+      if (currentZoom > 0.4) {
+        currentZoom -= 0.25;
+        zoomLabel.textContent = `${Math.round(currentZoom * 100)}%`;
+        if (latestGantt) renderGantt(document.getElementById("ganttContainer"), latestGantt);
+      }
+    };
+  }
+  if (filterBtn) {
+    filterBtn.onclick = () => {
+        const { agents } = parseGanttSyntax(latestGantt);
+        if (!agents.length) return;
+        const agent = prompt(`Toggle Agent visibility:\n${agents.join(", ")}\n\nCurrently hidden: ${Array.from(hiddenAgents).join(", ") || "None"}`);
+        if (agent) {
+            const found = agents.find(a => a.toLowerCase() === agent.toLowerCase());
+            if (found) {
+                if (hiddenAgents.has(found)) hiddenAgents.delete(found);
+                else hiddenAgents.add(found);
+                renderGantt(document.getElementById("ganttContainer"), latestGantt);
+            }
+        }
+    };
+  }
 });
 
 async function generatePlan() {
@@ -338,7 +407,7 @@ function renderPlan(plan) {
   renderDiagram(diagramContainer, latestDiagram);
 
   latestGantt = plan.ganttDiagram || "";
-  renderDiagram(ganttContainer, latestGantt);
+  renderGantt(ganttContainer, latestGantt, plan.steps ? plan.steps.length : 4);
 
   // Render trace if available
   renderTrace(plan.trace);
@@ -430,6 +499,302 @@ async function renderDiagram(container, diagramCode) {
       <pre class="diagram-fallback">${escapeHtml(diagramCode)}</pre>
     </div>`;
   }
+}
+
+// ─── Custom Timeline Renderer ────────────────────────────────────────────────
+// Parses the Mermaid gantt syntax string and renders a premium custom SVG
+// timeline. Mermaid syntax is still stored in latestGantt for copy button.
+
+function parseGanttSyntax(mermaidCode) {
+  const lines = (mermaidCode || "").split("\n").map(l => l.trim()).filter(Boolean);
+  const BASE_DATE = new Date("2024-01-01");
+  const tasks = [];
+  const agentOrder = [];
+  let currentAgent = "General";
+  let dayCounter = 0;
+
+  for (const line of lines) {
+    if (!line || line.startsWith("gantt") || line.startsWith("title") ||
+        line.startsWith("dateFormat") || line.startsWith("axisFormat") ||
+        line.startsWith("tickInterval") || line.startsWith("excludes")) continue;
+
+    if (line.startsWith("section ")) {
+      currentAgent = line.replace("section ", "").trim();
+      if (!agentOrder.includes(currentAgent)) agentOrder.push(currentAgent);
+      continue;
+    }
+
+    const colonIdx = line.indexOf(":");
+    if (colonIdx === -1) continue;
+    
+    const label = line.substring(0, colonIdx).trim();
+    const rest = line.substring(colonIdx + 1).trim();
+    const parts = rest.split(",").map(p => p.trim());
+    if (parts.length < 1) continue;
+
+    // Handle status prefix if exists (e.g. "done id1")
+    let idPart = parts[0];
+    let status = "queued";
+    if (idPart.includes(" ")) {
+        const spaceIdx = idPart.indexOf(" ");
+        const first = idPart.substring(0, spaceIdx);
+        if (["done", "active", "crit"].includes(first)) {
+            status = first;
+            idPart = idPart.substring(spaceIdx + 1);
+        }
+    }
+
+    const id = idPart;
+    const durStr = parts[parts.length - 1];
+    const duration = parseInt(durStr) || 3;
+    let startDay = dayCounter;
+    let dependsOn = null;
+
+    if (parts.length >= 2) {
+      for (let i = 1; i < parts.length - 1; i++) {
+        const part = parts[i];
+        if (part.startsWith("after ")) {
+          dependsOn = part.replace("after ", "").trim();
+          const refTask = tasks.find(t => t.id === dependsOn);
+          if (refTask) startDay = refTask.startDay + refTask.duration;
+        } else if (/^\d{4}-\d{2}-\d{2}$/.test(part)) {
+          const refDate = new Date(part);
+          startDay = Math.round((refDate - BASE_DATE) / 86400000);
+        }
+      }
+    }
+
+    tasks.push({ id, label, agent: currentAgent, startDay, duration, dependsOn, status });
+    dayCounter = Math.max(dayCounter, startDay + duration);
+    if (!agentOrder.includes(currentAgent)) agentOrder.push(currentAgent);
+  }
+
+  return { tasks, agents: agentOrder };
+}
+
+async function renderGantt(container, diagramCode) {
+  if (!diagramCode) {
+    container.innerHTML = "<p class='diagram-fallback'>No timeline was generated.</p>";
+    return;
+  }
+
+  const { tasks, agents } = parseGanttSyntax(diagramCode);
+  const visibleAgents = agents.filter(a => !hiddenAgents.has(a));
+  const visibleTasks = tasks.filter(t => !hiddenAgents.has(t.agent));
+  
+  if (!visibleTasks.length && !tasks.length) {
+    container.innerHTML = `<pre class="diagram-fallback">${escapeHtml(diagramCode)}</pre>`;
+    return;
+  }
+
+  // Layout Constants (scaled by currentZoom)
+  const SIDEBAR_W = 200;
+  const DAY_W = 48 * currentZoom;
+  const ROW_H = 56;
+  const BAR_H = 24;
+  const BAR_Y_OFF = (ROW_H - BAR_H) / 2;
+  const HEADER_H = 80;
+  
+  const maxDay = Math.max(...visibleTasks.map(t => t.startDay + t.duration), 0) + 2;
+  const totalW = Math.max(800, SIDEBAR_W + (maxDay * DAY_W) + 300);
+
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("width", totalW);
+  svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", "Execution Timeline Gantt Chart");
+  svg.style.userSelect = "none";
+  
+  let currentY = HEADER_H;
+  const taskPositions = new Map();
+  visibleAgents.forEach(agent => {
+    const agentTasks = visibleTasks.filter(t => t.agent === agent);
+    agentTasks.forEach((task, i) => {
+      taskPositions.set(task.id, currentY + (i * ROW_H));
+    });
+    currentY += agentTasks.length * ROW_H;
+  });
+
+  const fullHeight = Math.max(400, currentY + 40);
+  svg.setAttribute("height", fullHeight);
+
+  const gridLayer = document.createElementNS(svgNS, "g");
+  const connectionLayer = document.createElementNS(svgNS, "g");
+  const barsLayer = document.createElementNS(svgNS, "g");
+  const headerLayer = document.createElementNS(svgNS, "g");
+  const sidebarLayer = document.createElementNS(svgNS, "g");
+
+  // Grid & Axis
+  const tickEvery = currentZoom < 0.7 ? 7 : maxDay > 20 ? 4 : maxDay > 10 ? 2 : 1;
+  const baseDate = new Date("2024-01-01");
+  for (let d = 0; d <= maxDay; d++) {
+    const x = SIDEBAR_W + (d * DAY_W);
+    if (d % tickEvery === 0) {
+      const line = document.createElementNS(svgNS, "line");
+      line.setAttribute("x1", x);
+      line.setAttribute("y1", HEADER_H);
+      line.setAttribute("x2", x);
+      line.setAttribute("y2", fullHeight - 40);
+      line.setAttribute("stroke", "#e2e8f0");
+      gridLayer.appendChild(line);
+
+      const date = new Date(baseDate);
+      date.setDate(date.getDate() + d);
+      const text = document.createElementNS(svgNS, "text");
+      text.setAttribute("x", x);
+      text.setAttribute("y", 50);
+      text.setAttribute("text-anchor", "middle");
+      text.setAttribute("font-size", "11");
+      text.setAttribute("font-weight", "700");
+      text.setAttribute("fill", "#64748b");
+      text.textContent = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+      headerLayer.appendChild(text);
+    }
+  }
+
+  // Draw Connections
+  visibleTasks.forEach(task => {
+    if (task.dependsOn && taskPositions.has(task.id) && taskPositions.has(task.dependsOn)) {
+      const parent = visibleTasks.find(t => t.id === task.dependsOn);
+      if (parent) {
+        const x1 = SIDEBAR_W + (parent.startDay + parent.duration) * DAY_W - 4;
+        const y1 = taskPositions.get(parent.id) + ROW_H / 2;
+        const x2 = SIDEBAR_W + task.startDay * DAY_W;
+        const y2 = taskPositions.get(task.id) + ROW_H / 2;
+
+        const path = document.createElementNS(svgNS, "path");
+        const cp = Math.min(30, (x2 - x1) / 2);
+        const d = `M ${x1} ${y1} C ${x1 + cp} ${y1}, ${x2 - cp} ${y2}, ${x2} ${y2}`;
+        path.setAttribute("d", d);
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", "#cbd5e1");
+        path.setAttribute("stroke-width", "1.5");
+        path.setAttribute("class", `handoff-line conn-${task.id} conn-parent-${parent.id}`);
+        connectionLayer.appendChild(path);
+      }
+    }
+  });
+
+  // Lanes & Tasks
+  currentY = HEADER_H;
+  visibleAgents.forEach((agent, ai) => {
+    const color = GANTT_COLORS[ai % GANTT_COLORS.length];
+    const agentTasks = visibleTasks.filter(t => t.agent === agent);
+    const laneH = agentTasks.length * ROW_H;
+
+    const sidebar = document.createElementNS(svgNS, "rect");
+    sidebar.setAttribute("x", 0);
+    sidebar.setAttribute("y", currentY);
+    sidebar.setAttribute("width", SIDEBAR_W);
+    sidebar.setAttribute("height", laneH);
+    sidebar.setAttribute("fill", "#f8fafc");
+    sidebarLayer.appendChild(sidebar);
+
+    const agentText = document.createElementNS(svgNS, "text");
+    agentText.setAttribute("x", 16);
+    agentText.setAttribute("y", currentY + 32);
+    agentText.setAttribute("font-weight", "800");
+    agentText.setAttribute("font-size", "11");
+    agentText.setAttribute("fill", color.text);
+    agentText.setAttribute("text-transform", "uppercase");
+    agentText.textContent = agent;
+    sidebarLayer.appendChild(agentText);
+
+    agentTasks.forEach((task, ti) => {
+      const taskY = currentY + (ti * ROW_H);
+      const barX = SIDEBAR_W + (task.startDay * DAY_W);
+      const barW = Math.max(task.duration * DAY_W - 8, 12);
+
+      const group = document.createElementNS(svgNS, "g");
+      group.setAttribute("class", "task-group");
+      group.setAttribute("tabindex", "0");
+      group.setAttribute("role", "button");
+      group.setAttribute("aria-label", `Task: ${task.label}, Status: ${task.status}`);
+      
+      const bar = document.createElementNS(svgNS, "rect");
+      bar.setAttribute("x", barX);
+      bar.setAttribute("y", taskY + BAR_Y_OFF);
+      bar.setAttribute("width", barW);
+      bar.setAttribute("height", BAR_H);
+      bar.setAttribute("rx", "6");
+      bar.setAttribute("fill", task.status === "done" ? "#10b981" : task.status === "active" ? color.bar : "#94a3b8");
+      bar.setAttribute("opacity", task.status === "done" ? "0.8" : "1");
+      group.appendChild(bar);
+
+      // Status Icon (small circle or emoji)
+      const statusIcon = document.createElementNS(svgNS, "text");
+      statusIcon.setAttribute("x", barX + 6);
+      statusIcon.setAttribute("y", taskY + BAR_Y_OFF + 16);
+      statusIcon.setAttribute("font-size", "10");
+      statusIcon.setAttribute("fill", "#fff");
+      statusIcon.textContent = task.status === "done" ? "✓" : task.status === "active" ? "●" : "○";
+      group.appendChild(statusIcon);
+
+      const label = document.createElementNS(svgNS, "text");
+      label.setAttribute("x", barX + barW + 12);
+      label.setAttribute("y", taskY + ROW_H / 2 + 5);
+      label.setAttribute("font-size", "13");
+      label.setAttribute("font-weight", "600");
+      label.setAttribute("fill", "#1e293b");
+      label.textContent = task.label;
+      group.appendChild(label);
+
+      const title = document.createElementNS(svgNS, "title");
+      title.textContent = `${task.label}\nStatus: ${task.status}\nAgent: ${task.agent}`;
+      group.appendChild(title);
+
+      // Hover Interaction
+      group.onmouseenter = () => {
+        bar.setAttribute("filter", "brightness(1.1)");
+        const conns = connectionLayer.querySelectorAll(`.conn-${task.id}, .conn-parent-${task.id}`);
+        conns.forEach(c => {
+          c.setAttribute("stroke", color.bar);
+          c.setAttribute("stroke-width", "2.5");
+        });
+      };
+      group.onmouseleave = () => {
+        bar.setAttribute("filter", "none");
+        const conns = connectionLayer.querySelectorAll(`.conn-${task.id}, .conn-parent-${task.id}`);
+        conns.forEach(c => {
+          c.setAttribute("stroke", "#cbd5e1");
+          c.setAttribute("stroke-width", "1.5");
+        });
+      };
+
+      barsLayer.appendChild(group);
+    });
+
+    const sep = document.createElementNS(svgNS, "line");
+    sep.setAttribute("x1", 0);
+    sep.setAttribute("y1", currentY + laneH);
+    sep.setAttribute("x2", totalW);
+    sep.setAttribute("y2", currentY + laneH);
+    sep.setAttribute("stroke", "#e2e8f0");
+    gridLayer.appendChild(sep);
+
+    currentY += laneH;
+  });
+
+  const vSep = document.createElementNS(svgNS, "line");
+  vSep.setAttribute("x1", SIDEBAR_W);
+  vSep.setAttribute("y1", 0);
+  vSep.setAttribute("x2", SIDEBAR_W);
+  vSep.setAttribute("y2", fullHeight);
+  vSep.setAttribute("stroke", "#cbd5e1");
+  vSep.setAttribute("stroke-width", "2");
+  gridLayer.appendChild(vSep);
+
+  svg.appendChild(gridLayer);
+  svg.appendChild(connectionLayer);
+  svg.appendChild(barsLayer);
+  svg.appendChild(headerLayer);
+  svg.appendChild(sidebarLayer);
+
+  container.innerHTML = "";
+  const wrapper = document.createElement("div");
+  wrapper.className = "gantt-wrapper";
+  wrapper.appendChild(svg);
+  container.appendChild(wrapper);
 }
 
 function clearStates() {
@@ -579,7 +944,7 @@ function setupTabButtons() {
               tabName === "timeline"
             ) {
               const container = document.getElementById("ganttContainer");
-              renderDiagram(container, latestGantt);
+              renderGantt(container, latestGantt);
             }
           }, 100);
         }

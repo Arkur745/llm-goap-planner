@@ -234,7 +234,21 @@
           <div class="tab-pane" id="tab-timeline">
             <div class="diagram-section">
               <div class="diagram-header">
-                <h3>Execution Timeline</h3>
+                <div class="header-group">
+                  <h3>Execution Timeline</h3>
+                  <div class="timeline-controls">
+                    <div class="control-group" aria-label="Zoom controls">
+                      <button id="zoomOutBtn" class="control-btn" title="Zoom Out">-</button>
+                      <span id="zoomLabel" class="control-label">100%</span>
+                      <button id="zoomInBtn" class="control-btn" title="Zoom In">+</button>
+                    </div>
+                    <div class="control-group" aria-label="Filter controls">
+                      <button id="filterBtn" class="control-btn secondary" title="Filter Agents">
+                        <span>Filter</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
                 <button id="copyGanttBtn" class="secondary-button">
                   Copy timeline
                 </button>

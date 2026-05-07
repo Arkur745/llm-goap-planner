@@ -40,24 +40,40 @@ def generate_flowchart(plan: dict) -> str:
 
 
 def generate_gantt(plan: dict) -> str:
-    from datetime import date, timedelta
+    from datetime import date
+    from collections import OrderedDict
 
     lines = [
         "gantt",
-        "    title Project Plan",
+        "    title Execution Timeline",
         "    dateFormat YYYY-MM-DD",
         "    axisFormat %b %d",
-        "    section Tasks"
+        "    tickInterval 1day",
+        "    excludes weekends",
     ]
 
-    base = date(2024, 1, 1)
-    day_offset = 0
-
+    # Group tasks by agent for section headers
+    grouped: OrderedDict = OrderedDict()
     for task in plan["tasks"]:
-        tid = task["id"]
-        desc = task["description"].replace(":", "")
-        start = base + timedelta(days=day_offset)
-        lines.append(f"    {desc} : {tid}, {start}, 2d")
-        day_offset += 2
+        agent = task.get("agent", "General")
+        grouped.setdefault(agent, []).append(task)
+
+    prev_id = None
+    base = date(2024, 1, 1)
+
+    for agent, tasks in grouped.items():
+        safe_agent = agent.replace(":", "").replace(";", "")
+        lines.append(f"    section {safe_agent}")
+        for task in tasks:
+            tid = task["id"]
+            desc = task["description"].replace(":", "").replace(";", "").replace("#", "")
+            if len(desc) > 40:
+                desc = desc[:37] + "..."
+
+            if prev_id is None:
+                lines.append(f"    {desc} : {tid}, {base}, 3d")
+            else:
+                lines.append(f"    {desc} : {tid}, after {prev_id}, 3d")
+            prev_id = tid
 
     return "\n".join(lines)
