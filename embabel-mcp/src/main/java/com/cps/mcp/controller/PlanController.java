@@ -12,19 +12,137 @@ import com.cps.mcp.util.PlanValidator;
 import com.embabel.plan.common.condition.ConditionAction;
 import com.embabel.plan.common.condition.ConditionGoal;
 import com.embabel.plan.common.condition.ConditionDetermination;
+import com.embabel.agent.api.common.autonomy.Autonomy;
+import com.embabel.agent.api.common.autonomy.AgentProcessExecution;
+import com.embabel.agent.core.AgentProcess;
+import com.embabel.agent.core.ProcessOptions;
+import com.embabel.agent.core.ActionInvocation;
 
 @RestController
 public class PlanController {
 
     private final LLMServiceFactory llmServiceFactory;
+    private final Autonomy autonomy;
 
-    public PlanController(LLMServiceFactory llmServiceFactory) {
+    public PlanController(LLMServiceFactory llmServiceFactory, Autonomy autonomy) {
         this.llmServiceFactory = llmServiceFactory;
+        this.autonomy = autonomy;
     }
 
     @PostMapping("/plan")
-    public Map<String, Object> plan(@RequestBody Map<String, Object> body) {
+    public Map<String, Object> plan(
+            @RequestBody Map<String, Object> body,
+            @RequestParam(value = "runtime", required = false) String runtime) {
         String goalStr = (String) body.get("goal");
+
+        String runtimeVal = runtime;
+        if (runtimeVal == null && body.containsKey("runtime")) {
+            runtimeVal = body.get("runtime").toString();
+        }
+
+        if (runtimeVal == null || runtimeVal.isBlank()) {
+            runtimeVal = "embabel";
+        }
+
+        if (!"embabel".equalsIgnoreCase(runtimeVal) && !"legacy".equalsIgnoreCase(runtimeVal)) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                org.springframework.http.HttpStatus.BAD_REQUEST,
+                "Invalid runtime: '" + runtimeVal + "'. Supported values: 'embabel', 'legacy'"
+            );
+        }
+
+        if ("legacy".equalsIgnoreCase(runtimeVal)) {
+            Map<String, Object> res = executeLegacyPlanner(goalStr, body);
+            res.put("fallbackUsed", false);
+            return res;
+        }
+
+        try {
+            Map<String, Object> res = executeEmbabelPlanner(goalStr, body);
+            res.put("fallbackUsed", false);
+            return res;
+        } catch (Exception ex) {
+            System.err.println("PlanController: Embabel execution failed, falling back to legacy: " + ex.getMessage());
+            ex.printStackTrace();
+
+            Map<String, Object> res = executeLegacyPlanner(goalStr, body);
+            res.put("classification", "legacy_runtime");
+            res.put("source", "LEGACY_FALLBACK");
+            res.put("fallbackUsed", true);
+            res.put("fallbackReason", ex.getMessage());
+            return res;
+        }
+    }
+
+    private Map<String, Object> executeEmbabelPlanner(String goalStr, Map<String, Object> body) throws Exception {
+        AgentProcessExecution execution = autonomy.chooseAndRunAgent(goalStr, new ProcessOptions());
+        AgentProcess process = execution.getAgentProcess();
+
+        Class<?> agentClass = com.cps.mcp.agent.TravelPlannerAgent.class;
+        List<ActionInvocation> history = process.getHistory();
+        if (!history.isEmpty()) {
+            String firstAction = history.get(0).getActionName();
+            int lastDot = firstAction.lastIndexOf('.');
+            if (lastDot != -1) {
+                try {
+                    agentClass = Class.forName(firstAction.substring(0, lastDot));
+                } catch (Exception e) {
+                    // ignore
+                }
+            }
+        }
+
+        List<Map<String, Object>> steps = com.cps.mcp.util.EmbabelTraceMapper.mapSteps(agentClass, process);
+        List<Map<String, Object>> trace = com.cps.mcp.util.EmbabelTraceMapper.mapTrace(agentClass, process);
+        String mermaidDiagram = com.cps.mcp.util.EmbabelGraphBuilder.generateMermaidDiagram(agentClass);
+
+        String summary = "";
+        Object finalReport = null;
+        for (Object obj : process.getObjects()) {
+            if ("TravelPlanReport".equals(obj.getClass().getSimpleName())) {
+                finalReport = obj;
+            }
+        }
+
+        if (finalReport != null) {
+            summary = com.cps.mcp.util.EmbabelTraceMapper.formatOutput(finalReport);
+        } else {
+            Object output = execution.getOutput();
+            summary = output != null ? output.toString() : "";
+        }
+
+        List<String> actionsExecuted = new ArrayList<>();
+        for (ActionInvocation inv : history) {
+            actionsExecuted.add(inv.getActionName());
+        }
+
+        List<String> blackboardObjects = new ArrayList<>();
+        for (Object obj : process.getObjects()) {
+            blackboardObjects.add(obj.getClass().getSimpleName());
+        }
+
+        Map<String, Object> embabelDebug = new LinkedHashMap<>();
+        embabelDebug.put("actionsExecuted", actionsExecuted);
+        embabelDebug.put("blackboardObjects", blackboardObjects);
+        embabelDebug.put("processStatus", process.getStatus() != null ? process.getStatus().name() : "COMPLETED");
+        embabelDebug.put("durationMs", process.getRunningTime() != null ? process.getRunningTime().toMillis() : 0L);
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("goal", goalStr);
+        response.put("classification", "embabel_runtime");
+        response.put("status", "Ready");
+        response.put("source", "EMBABEL");
+        response.put("summary", summary);
+        response.put("steps", steps);
+        response.put("trace", trace);
+        response.put("mermaidDiagram", mermaidDiagram);
+        response.put("flowchart", mermaidDiagram);
+        response.put("embabel", embabelDebug);
+
+        return response;
+    }
+
+    private Map<String, Object> executeLegacyPlanner(String goalStr, Map<String, Object> body) {
         List<String> tools = (List<String>) body.get("tools");
 
         if (goalStr == null || goalStr.isBlank()) {

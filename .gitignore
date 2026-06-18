@@ -41,3 +41,5 @@ venv/
 # General
 *.log
 .antigravity*
+embabel-mcp/src/main/resources/application.properties
+**/application-local.properties
