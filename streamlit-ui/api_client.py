@@ -27,6 +27,7 @@ def generate_plan(goal: str, provider: str = "auto", tools: list = None) -> dict
             def __init__(self, err_msg):
                 self.status_code = 500
                 self.err_msg = err_msg
+                self.text = err_msg
             def json(self):
                 return {"error": self.err_msg}
         return SimulatedResponse(f"Failed to connect to gateway service at {url}: {str(e)}")

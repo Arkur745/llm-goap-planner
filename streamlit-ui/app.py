@@ -194,11 +194,12 @@ if st.button("🚀 Execute Goal", type="primary", use_container_width=True):
                     if "last_error" in st.session_state:
                         del st.session_state.last_error
             else:
+                status_code = getattr(response, 'status_code', 500)
                 try:
-                    err_details = response.json().get("error", response.text)
+                    err_details = response.json().get("error", getattr(response, 'text', str(response)))
                 except Exception:
-                    err_details = response.text
-                st.session_state.last_error = f"HTTP {response.status_code} Error: {err_details}"
+                    err_details = getattr(response, 'text', str(response))
+                st.session_state.last_error = f"HTTP {status_code} Error: {err_details}"
                 if "last_plan" in st.session_state:
                     del st.session_state.last_plan
 
