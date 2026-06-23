@@ -8,10 +8,11 @@ import {
   Typography,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
+import type { ReactNode } from "react";
 
 export interface SidebarItem {
   label: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   selected?: boolean;
   disabled?: boolean;
   onClick?: () => void;

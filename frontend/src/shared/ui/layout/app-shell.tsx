@@ -2,12 +2,14 @@ import { AppBar, Box, Drawer, Toolbar } from "@mui/material";
 import type { PropsWithChildren } from "react";
 
 import { AppHeader } from "@shared/ui/navigation/header";
-import { AppSidebar } from "@shared/ui/navigation/sidebar";
+import { AppSidebar, type SidebarItem } from "@shared/ui/navigation/sidebar";
 
 export interface AppShellProps extends PropsWithChildren {
   sidebarOpen?: boolean;
   onSidebarClose?: () => void;
   drawerWidth?: number;
+  navigationItems?: SidebarItem[];
+  sidebarTitle?: string;
 }
 
 export function AppShell({
@@ -15,6 +17,8 @@ export function AppShell({
   sidebarOpen = false,
   onSidebarClose,
   drawerWidth = 280,
+  navigationItems,
+  sidebarTitle,
 }: AppShellProps) {
   return (
     <Box sx={{ display: "flex", minHeight: "100dvh" }}>
@@ -36,7 +40,7 @@ export function AppShell({
           "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" },
         }}
       >
-        <AppSidebar />
+        <AppSidebar items={navigationItems} title={sidebarTitle} />
       </Drawer>
 
       <Drawer
@@ -49,7 +53,7 @@ export function AppShell({
         }}
         open
       >
-        <AppSidebar />
+        <AppSidebar items={navigationItems} title={sidebarTitle} />
       </Drawer>
 
       <Box component="main" sx={{ flexGrow: 1, width: { md: `calc(100% - ${drawerWidth}px)` } }}>
