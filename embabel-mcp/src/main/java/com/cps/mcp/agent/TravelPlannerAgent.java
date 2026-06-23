@@ -30,6 +30,13 @@ public class TravelPlannerAgent {
 
     private static final Logger logger = LoggerFactory.getLogger(TravelPlannerAgent.class);
 
+    // Centralized Default Trip Settings
+    private static final int DEFAULT_DAYS = 3;
+    private static final BigDecimal DEFAULT_HOTEL_RATE = new BigDecimal("100.00");
+    private static final BigDecimal DEFAULT_FOOD_RATE = new BigDecimal("40.00");
+    private static final BigDecimal DEFAULT_TRANSPORT_RATE = new BigDecimal("30.00");
+    private static final BigDecimal DEFAULT_MISC_RATE = new BigDecimal("15.00");
+
     private final SearchProvider searchProvider;
     private final BudgetService budgetService;
     private final WeatherProvider weatherProvider;
@@ -88,17 +95,118 @@ public class TravelPlannerAgent {
     public Destination extractDestination(UserInput input) {
         logger.info("UserInput: Received UserInput object on blackboard");
         String content = getUserInputContent(input);
-        String text = content.toLowerCase();
-        String name = null;
-        if (text.contains("jaipur")) name = "Jaipur";
-        else if (text.contains("prague")) name = "Prague";
-        else if (text.contains("tokyo")) name = "Tokyo";
-
-        if (name == null) {
-            throw new IllegalArgumentException("Unknown destination in user input: " + content);
-        }
+        String name = extractDestinationName(content);
         logger.info("extractDestination: Extracted destination={}", name);
         return new Destination(name);
+    }
+
+    private String extractDestinationName(String prompt) {
+        if (prompt == null || prompt.isBlank()) {
+            throw new IllegalArgumentException("User input prompt is empty or null");
+        }
+        
+        // Normalize whitespace and remove trailing punctuation
+        String cleaned = prompt.trim().replaceAll("\\s+", " ");
+        String normalized = cleaned.replaceAll("[.,?!]$", "");
+        
+        String[] tokens = normalized.split(" ");
+        int keywordIdx = -1;
+        
+        // 1. Search from right to left for "in" or "to" case-insensitively
+        for (int i = tokens.length - 2; i >= 0; i--) {
+            String t = tokens[i].toLowerCase();
+            if (t.equals("in") || t.equals("to")) {
+                keywordIdx = i;
+                break;
+            }
+        }
+        
+        if (keywordIdx != -1 && keywordIdx < tokens.length - 1) {
+            // Gather consecutive capitalized words starting from the match location
+            StringBuilder sb = new StringBuilder();
+            for (int j = keywordIdx + 1; j < tokens.length; j++) {
+                String word = tokens[j];
+                if (word.isEmpty()) continue;
+                
+                char firstChar = word.charAt(0);
+                if (Character.isUpperCase(firstChar)) {
+                    if (sb.length() > 0) sb.append(" ");
+                    sb.append(word.replaceAll("[^a-zA-Z]", ""));
+                } else {
+                    // Check if it's a connective/preposition and there is a capitalized word next
+                    String lowerWord = word.toLowerCase();
+                    if ((lowerWord.equals("de") || lowerWord.equals("di") || lowerWord.equals("of") || 
+                         lowerWord.equals("and") || lowerWord.equals("the") || lowerWord.equals("la") || 
+                         lowerWord.equals("el") || lowerWord.equals("le")) && 
+                        j + 1 < tokens.length && !tokens[j+1].isEmpty() && Character.isUpperCase(tokens[j+1].charAt(0))) {
+                        if (sb.length() > 0) sb.append(" ");
+                        sb.append(word.replaceAll("[^a-zA-Z]", ""));
+                    } else {
+                        break;
+                    }
+                }
+            }
+            if (sb.length() > 0) {
+                String result = sb.toString();
+                if (isValidDestination(result)) {
+                    return result;
+                }
+            }
+        }
+        
+        // 2. Fallback: scan all tokens and find first capitalized token sequence
+        for (int i = 0; i < tokens.length; i++) {
+            String word = tokens[i];
+            if (word.isEmpty()) continue;
+            char firstChar = word.charAt(0);
+            if (Character.isUpperCase(firstChar)) {
+                // Skip common sentence starters if it's the first word
+                if (i == 0 && (word.equalsIgnoreCase("Plan") || word.equalsIgnoreCase("Travel") || 
+                               word.equalsIgnoreCase("Find") || word.equalsIgnoreCase("Go") ||
+                               word.equalsIgnoreCase("Create") || word.equalsIgnoreCase("Book") ||
+                               word.equalsIgnoreCase("Help") || word.equalsIgnoreCase("I"))) {
+                    continue;
+                }
+                StringBuilder tempSb = new StringBuilder();
+                int j = i;
+                while (j < tokens.length) {
+                    String nextWord = tokens[j];
+                    if (nextWord.isEmpty()) break;
+                    if (Character.isUpperCase(nextWord.charAt(0))) {
+                        if (tempSb.length() > 0) tempSb.append(" ");
+                        tempSb.append(nextWord.replaceAll("[^a-zA-Z]", ""));
+                        j++;
+                    } else {
+                        // Check if it's a connective/preposition and there is a capitalized word next
+                        String lowerWord = nextWord.toLowerCase();
+                        if ((lowerWord.equals("de") || lowerWord.equals("di") || lowerWord.equals("of") || 
+                             lowerWord.equals("and") || lowerWord.equals("the") || lowerWord.equals("la") || 
+                             lowerWord.equals("el") || lowerWord.equals("le")) && 
+                            j + 1 < tokens.length && !tokens[j+1].isEmpty() && Character.isUpperCase(tokens[j+1].charAt(0))) {
+                            if (tempSb.length() > 0) tempSb.append(" ");
+                            tempSb.append(nextWord.replaceAll("[^a-zA-Z]", ""));
+                            j++;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                String candidate = tempSb.toString();
+                if (isValidDestination(candidate)) {
+                    return candidate;
+                }
+                i = j;
+            }
+        }
+        
+        throw new IllegalArgumentException("Unknown destination in user input: " + prompt);
+    }
+    
+    private boolean isValidDestination(String dest) {
+        if (dest == null || dest.isBlank()) {
+            return false;
+        }
+        return dest.length() >= 2 && dest.length() <= 50 && dest.matches(".*[a-zA-Z].*");
     }
 
     @Action(description = "Search travel details for destination")
@@ -119,30 +227,94 @@ public class TravelPlannerAgent {
         return report;
     }
 
+    @Action(description = "Extract travel constraints from user prompt")
+    public TravelConstraints extractConstraints(UserInput input) {
+        logger.info("extractConstraints: Extracting constraints from UserInput");
+        String content = getUserInputContent(input);
+        if (content == null) {
+            content = "";
+        }
+        String normalized = content.toLowerCase();
+
+        // 1. Duration
+        int days = DEFAULT_DAYS;
+        if (normalized.contains("weekend")) {
+            days = 2;
+        } else {
+            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("(\\d+)\\s*-?\\s*days?");
+            java.util.regex.Matcher matcher = pattern.matcher(normalized);
+            if (matcher.find()) {
+                try {
+                    days = Integer.parseInt(matcher.group(1));
+                } catch (NumberFormatException e) {
+                    // fallback
+                }
+            }
+        }
+        TripDuration duration = new TripDuration(days);
+
+        // 2. Budget Preference
+        BudgetPreference.BudgetPrefValue budgetVal = BudgetPreference.BudgetPrefValue.STANDARD;
+        if (normalized.contains("budget")) {
+            budgetVal = BudgetPreference.BudgetPrefValue.BUDGET;
+        } else if (normalized.contains("luxury")) {
+            budgetVal = BudgetPreference.BudgetPrefValue.LUXURY;
+        }
+        BudgetPreference budgetPreference = new BudgetPreference(budgetVal);
+
+        // 3. Travel Style
+        TravelStyle.TravelStyleValue styleVal = TravelStyle.TravelStyleValue.LEISURE;
+        if (normalized.contains("family")) {
+            styleVal = TravelStyle.TravelStyleValue.FAMILY;
+        } else if (normalized.contains("solo")) {
+            styleVal = TravelStyle.TravelStyleValue.SOLO;
+        } else if (normalized.contains("adventure")) {
+            styleVal = TravelStyle.TravelStyleValue.ADVENTURE;
+        } else if (normalized.contains("business")) {
+            styleVal = TravelStyle.TravelStyleValue.BUSINESS;
+        }
+        TravelStyle travelStyle = new TravelStyle(styleVal);
+
+        TravelConstraints constraints = new TravelConstraints(duration, budgetPreference, travelStyle);
+        logger.info("extractConstraints: Extracted constraints={}", constraints);
+        return constraints;
+    }
+
     @Action(description = "Calculate travel budget for destination")
-    public BudgetEstimate calculateBudget(Destination dest) {
+    public BudgetEstimate calculateBudget(Destination dest, TravelConstraints constraints) {
         logger.info("Destination: Received Destination object on blackboard: {}", dest.name());
-        logger.info("calculateBudget: Calculating budget for {}", dest.name());
+        logger.info("calculateBudget: Calculating budget for destination={}, constraints={}", dest.name(), constraints);
         
-        int days = 3;
-        BigDecimal hotel = new BigDecimal("100.00");
-        BigDecimal food = new BigDecimal("40.00");
-        BigDecimal transport = new BigDecimal("30.00");
-        BigDecimal misc = new BigDecimal("15.00");
+        int days = constraints.duration().days();
+        BigDecimal hotel = DEFAULT_HOTEL_RATE;
+        BigDecimal food = DEFAULT_FOOD_RATE;
+        BigDecimal transport = DEFAULT_TRANSPORT_RATE;
+        BigDecimal misc = DEFAULT_MISC_RATE;
 
         if ("Prague".equalsIgnoreCase(dest.name())) {
-            days = 2;
             hotel = new BigDecimal("150.00");
             food = new BigDecimal("50.00");
             transport = new BigDecimal("40.00");
             misc = new BigDecimal("20.00");
         } else if ("Tokyo".equalsIgnoreCase(dest.name())) {
-            days = 5;
             hotel = new BigDecimal("120.00");
             food = new BigDecimal("60.00");
             transport = new BigDecimal("50.00");
             misc = new BigDecimal("25.00");
         }
+
+        // Apply budget preference scaling factor
+        BigDecimal factor = BigDecimal.ONE;
+        if (constraints.budgetPreference().value() == BudgetPreference.BudgetPrefValue.BUDGET) {
+            factor = new BigDecimal("0.8");
+        } else if (constraints.budgetPreference().value() == BudgetPreference.BudgetPrefValue.LUXURY) {
+            factor = new BigDecimal("2.0");
+        }
+
+        hotel = hotel.multiply(factor).setScale(2, java.math.RoundingMode.HALF_UP);
+        food = food.multiply(factor).setScale(2, java.math.RoundingMode.HALF_UP);
+        transport = transport.multiply(factor).setScale(2, java.math.RoundingMode.HALF_UP);
+        misc = misc.multiply(factor).setScale(2, java.math.RoundingMode.HALF_UP);
 
         BudgetEstimate estimate = budgetService.estimateTripBudget(dest.name(), days, hotel, food, transport, misc);
         logger.info("BudgetEstimate: Budget calculated, bound BudgetEstimate to blackboard");

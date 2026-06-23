@@ -84,7 +84,12 @@ public class DummyLlmService implements LlmService<DummyLlmService> {
                                     if (userInput.contains("trip") || 
                                         userInput.contains("jaipur") || 
                                         userInput.contains("prague") || 
-                                        userInput.contains("tokyo")) {
+                                        userInput.contains("tokyo") ||
+                                        userInput.contains("rome") ||
+                                        userInput.contains("berlin") ||
+                                        userInput.contains("paris") ||
+                                        userInput.contains("vienna") ||
+                                        userInput.contains("travel")) {
                                         isTravel = true;
                                         break;
                                     }

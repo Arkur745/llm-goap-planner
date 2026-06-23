@@ -64,20 +64,19 @@ public class EmbabelRuntimeAdapterTests {
         Map<String, String> request = Map.of("goal", "Plan a weekend in Prague");
 
         MvcResult result = mockMvc.perform(post("/plan")
-                .param("runtime", "embabel")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andReturn();
 
         String json = result.getResponse().getContentAsString();
-        System.out.println("--- Adapted Response from POST /plan?runtime=embabel ---");
+        System.out.println("--- Adapted Response from POST /plan ---");
         System.out.println(json);
 
         Map<String, Object> response = objectMapper.readValue(json, Map.class);
         assertEquals("Plan a weekend in Prague", response.get("goal"));
         assertEquals("embabel_runtime", response.get("classification"));
-        assertEquals("Ready", response.get("status"));
+        assertEquals("COMPLETED", response.get("status"));
         assertEquals("EMBABEL", response.get("source"));
 
         // Retrieve steps
@@ -89,16 +88,6 @@ public class EmbabelRuntimeAdapterTests {
         List<Map<String, Object>> trace = (List<Map<String, Object>>) response.get("trace");
         assertNotNull(trace, "trace list should not be null");
         assertTrue(trace.size() > 0, "trace list should not be empty");
-
-        // Retrieve embabel debug block
-        Map<String, Object> embabelDebug = (Map<String, Object>) response.get("embabel");
-        assertNotNull(embabelDebug, "embabel debug block should not be null");
-        
-        List<String> actionsExecuted = (List<String>) embabelDebug.get("actionsExecuted");
-        assertNotNull(actionsExecuted, "actionsExecuted should not be null");
-        
-        // Assert: steps.size() == actionsExecuted.size()
-        assertEquals(actionsExecuted.size(), steps.size(), "steps size should match actionsExecuted size");
 
         // Validate steps mapping
         for (int i = 0; i < steps.size(); i++) {
@@ -150,12 +139,20 @@ public class EmbabelRuntimeAdapterTests {
         assertTrue(mermaid.contains("getWeather"), "Mermaid should contain getWeather");
         assertTrue(mermaid.contains("composeTravelPlan"), "Mermaid should contain composeTravelPlan");
 
-        // Validate legacy flowchart key matches mermaidDiagram
-        assertEquals(mermaid, response.get("flowchart"), "flowchart key should match mermaidDiagram");
-
         // Validate TravelPlanReport summary output is surfaced
         String summary = (String) response.get("summary");
         assertNotNull(summary, "summary should not be null");
         assertTrue(summary.contains("TRIP PLAN: Prague"), "summary should contain final travel plan content");
+
+        // Verify that only the stable contract keys are present in the response map
+        assertEquals(8, response.size(), "Response map should contain exactly 8 keys");
+        assertTrue(response.containsKey("goal"));
+        assertTrue(response.containsKey("classification"));
+        assertTrue(response.containsKey("status"));
+        assertTrue(response.containsKey("steps"));
+        assertTrue(response.containsKey("trace"));
+        assertTrue(response.containsKey("mermaidDiagram"));
+        assertTrue(response.containsKey("summary"));
+        assertTrue(response.containsKey("source"));
     }
 }

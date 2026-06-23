@@ -63,42 +63,33 @@ public class EmbabelRuntimeSmokeTests {
         Map<String, String> request = Map.of("goal", "Plan a weekend in Prague");
 
         MvcResult result = mockMvc.perform(post("/plan")
-                .param("runtime", "embabel")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andReturn();
 
         String json = result.getResponse().getContentAsString();
-        System.out.println("--- Raw Response from POST /plan?runtime=embabel ---");
+        System.out.println("--- Raw Response from POST /plan ---");
         System.out.println(json);
 
         Map<?, ?> response = objectMapper.readValue(json, Map.class);
         assertEquals("Plan a weekend in Prague", response.get("goal"));
         assertEquals("embabel_runtime", response.get("classification"));
-        assertEquals("Ready", response.get("status"));
+        assertEquals("COMPLETED", response.get("status"));
+        assertEquals("EMBABEL", response.get("source"));
 
         assertNotNull(response.get("summary"), "Summary should not be null");
         assertTrue(response.get("summary").toString().contains("TRIP PLAN: Prague"), "Summary should contain Prague travel report content");
 
-        Map<?, ?> embabelDebug = (Map<?, ?>) response.get("embabel");
-        assertNotNull(embabelDebug, "embabel debug block should not be null");
-
-        List<?> actionsExecuted = (List<?>) embabelDebug.get("actionsExecuted");
-        assertNotNull(actionsExecuted, "actionsExecuted should not be null");
-        assertFalse(actionsExecuted.isEmpty(), "actionsExecuted should not be empty");
-        
-        System.out.println("Actions Executed (in order): " + actionsExecuted);
-
-        List<?> blackboardObjects = (List<?>) embabelDebug.get("blackboardObjects");
-        assertNotNull(blackboardObjects, "blackboardObjects should not be null");
-        
-        System.out.println("Blackboard Objects simple class names: " + blackboardObjects);
-
-        assertTrue(blackboardObjects.contains("Destination"), "blackboardObjects should contain Destination");
-        assertTrue(blackboardObjects.contains("SearchResponse"), "blackboardObjects should contain SearchResponse");
-        assertTrue(blackboardObjects.contains("BudgetEstimate"), "blackboardObjects should contain BudgetEstimate");
-        assertTrue(blackboardObjects.contains("WeatherReport"), "blackboardObjects should contain WeatherReport");
-        assertTrue(blackboardObjects.contains("TravelPlanReport"), "blackboardObjects should contain TravelPlanReport");
+        // Verify exactly the 8 stable response contract keys are returned
+        assertEquals(8, response.size(), "Response map should contain exactly 8 keys");
+        assertTrue(response.containsKey("goal"));
+        assertTrue(response.containsKey("classification"));
+        assertTrue(response.containsKey("status"));
+        assertTrue(response.containsKey("steps"));
+        assertTrue(response.containsKey("trace"));
+        assertTrue(response.containsKey("mermaidDiagram"));
+        assertTrue(response.containsKey("summary"));
+        assertTrue(response.containsKey("source"));
     }
 }

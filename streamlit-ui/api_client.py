@@ -3,7 +3,7 @@ import os
 
 GATEWAY_URL = os.environ.get("GATEWAY_URL", "http://localhost:8080")
 
-def generate_plan(goal: str, provider: str = "auto", tools: list = None) -> dict:
+def generate_plan(goal: str, provider: str = "auto", tools: list = None, runtime: str = "embabel") -> dict:
     """
     Calls the Spring Boot planning gateway endpoint /api/plans.
     """
@@ -14,7 +14,8 @@ def generate_plan(goal: str, provider: str = "auto", tools: list = None) -> dict
     payload = {
         "goal": goal,
         "tools": tools,
-        "provider": provider
+        "provider": provider,
+        "runtime": runtime
     }
     
     try:

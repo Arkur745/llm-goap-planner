@@ -36,7 +36,8 @@ public class PlanService {
 
         // Try internal planner API first
         try {
-            PlanResponse plannerResp = plannerClient.generate(goal, tools, provider);
+            String runtime = request != null && request.runtime() != null ? request.runtime() : "embabel";
+            PlanResponse plannerResp = plannerClient.generate(goal, tools, provider, runtime);
             if (plannerResp != null) {
                 return new PlanWithSource("PLANNER", plannerResp);
             }

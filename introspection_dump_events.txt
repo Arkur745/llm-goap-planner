@@ -1,0 +1,698 @@
+Scanning event package...
+Autonomy Jar Path: /C:/Users/atmar/.m2/repository/com/embabel/agent/embabel-agent-api/0.4.0/embabel-agent-api-0.4.0.jar
+Found 50 event classes:
+ - com.embabel.agent.api.event.AbstractAgentProcessEvent
+ - com.embabel.agent.api.event.ActionExecutionResultEvent
+ - com.embabel.agent.api.event.ActionExecutionStartEvent
+ - com.embabel.agent.api.event.AgentDeploymentEvent
+ - com.embabel.agent.api.event.AgenticEvent
+ - com.embabel.agent.api.event.AgenticEventListener$Companion$DevNull$1
+ - com.embabel.agent.api.event.AgenticEventListener$Companion
+ - com.embabel.agent.api.event.AgenticEventListener
+ - com.embabel.agent.api.event.AgentPlatformEvent
+ - com.embabel.agent.api.event.AgentProcessCompletedEvent
+ - com.embabel.agent.api.event.AgentProcessCreationEvent
+ - com.embabel.agent.api.event.AgentProcessEmbeddingEvent
+ - com.embabel.agent.api.event.AgentProcessEvent
+ - com.embabel.agent.api.event.AgentProcessFailedEvent
+ - com.embabel.agent.api.event.AgentProcessFinishedEvent
+ - com.embabel.agent.api.event.AgentProcessPausedEvent
+ - com.embabel.agent.api.event.AgentProcessPlanFormulatedEvent
+ - com.embabel.agent.api.event.AgentProcessReadyToPlanEvent
+ - com.embabel.agent.api.event.AgentProcessStuckEvent
+ - com.embabel.agent.api.event.AgentProcessWaitingEvent
+ - com.embabel.agent.api.event.DynamicAgentCreationEvent
+ - com.embabel.agent.api.event.EmbeddingEvent
+ - com.embabel.agent.api.event.EmbeddingEventListener$Companion
+ - com.embabel.agent.api.event.EmbeddingEventListener
+ - com.embabel.agent.api.event.EmbeddingInvocationEvent
+ - com.embabel.agent.api.event.EmbeddingRequestEvent
+ - com.embabel.agent.api.event.EmbeddingResponseEvent
+ - com.embabel.agent.api.event.GoalAchievedEvent
+ - com.embabel.agent.api.event.LlmInvocationEvent
+ - com.embabel.agent.api.event.LlmRequestEvent
+ - com.embabel.agent.api.event.LlmResponseEvent
+ - com.embabel.agent.api.event.MulticastAgenticEventListener
+ - com.embabel.agent.api.event.MulticastEmbeddingEventListener
+ - com.embabel.agent.api.event.ObjectAddedEvent
+ - com.embabel.agent.api.event.ObjectBindingEvent
+ - com.embabel.agent.api.event.ObjectBoundEvent
+ - com.embabel.agent.api.event.ProcessKilledEvent
+ - com.embabel.agent.api.event.progress.OutputChannelHighlightingEventListener$Companion
+ - com.embabel.agent.api.event.progress.OutputChannelHighlightingEventListener
+ - com.embabel.agent.api.event.ProgressUpdateEvent
+ - com.embabel.agent.api.event.RankingChoiceCouldNotBeMadeEvent
+ - com.embabel.agent.api.event.RankingChoiceMadeEvent
+ - com.embabel.agent.api.event.RankingChoiceRequestEvent
+ - com.embabel.agent.api.event.RankingEvent
+ - com.embabel.agent.api.event.ReplanRequestedEvent
+ - com.embabel.agent.api.event.StateTransitionEvent
+ - com.embabel.agent.api.event.ToolCallRequestEvent
+ - com.embabel.agent.api.event.ToolCallResponseEvent
+ - com.embabel.agent.api.event.ToolLoopCompletedEvent
+ - com.embabel.agent.api.event.ToolLoopStartEvent
+
+==================================================
+CLASS: com.embabel.agent.api.event.AbstractAgentProcessEvent
+==================================================
+Implements: com.embabel.agent.api.event.AgentProcessEvent
+PUBLIC METHODS:
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.ActionExecutionResultEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+Implements: com.embabel.common.core.types.Timed
+PUBLIC METHODS:
+  public final com.embabel.agent.core.Action getAction()
+  public java.time.Duration getRunningTime()
+  public final com.embabel.agent.core.ActionStatus getActionStatus()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.ActionExecutionStartEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public final com.embabel.agent.core.Action getAction()
+  public final com.embabel.agent.api.event.ActionExecutionResultEvent resultEvent(com.embabel.agent.core.ActionStatus)
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgentDeploymentEvent
+==================================================
+Implements: com.embabel.agent.api.event.AgentPlatformEvent
+PUBLIC METHODS:
+  public boolean equals(java.lang.Object)
+  public java.lang.String toString()
+  public int hashCode()
+  public final com.embabel.agent.api.event.AgentDeploymentEvent copy(com.embabel.agent.core.AgentPlatform, com.embabel.agent.core.Agent)
+  public java.time.Instant getTimestamp()
+  public com.embabel.agent.core.AgentPlatform getAgentPlatform()
+  public final com.embabel.agent.core.Agent getAgent()
+  public final com.embabel.agent.core.AgentPlatform component1()
+  public final com.embabel.agent.core.Agent component2()
+  public static com.embabel.agent.api.event.AgentDeploymentEvent copy$default(com.embabel.agent.api.event.AgentDeploymentEvent, com.embabel.agent.core.AgentPlatform, com.embabel.agent.core.Agent, int, java.lang.Object)
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgenticEvent
+==================================================
+Implements: com.embabel.common.core.types.Timestamped
+PUBLIC METHODS:
+  public abstract java.time.Instant getTimestamp()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgenticEventListener$Companion$DevNull$1
+==================================================
+Implements: com.embabel.agent.api.event.AgenticEventListener
+PUBLIC METHODS:
+  public void onPlatformEvent(com.embabel.agent.api.event.AgentPlatformEvent)
+  public void onProcessEvent(com.embabel.agent.api.event.AgentProcessEvent)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgenticEventListener$Companion
+==================================================
+PUBLIC METHODS:
+  public final transient com.embabel.agent.api.event.AgenticEventListener of([Lcom.embabel.agent.api.event.AgenticEventListener;)
+  public final com.embabel.agent.api.event.AgenticEventListener from(java.util.List)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgenticEventListener
+==================================================
+PUBLIC METHODS:
+  public void onPlatformEvent(com.embabel.agent.api.event.AgentPlatformEvent)
+  public void onProcessEvent(com.embabel.agent.api.event.AgentProcessEvent)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgentPlatformEvent
+==================================================
+Implements: com.embabel.agent.api.event.AgenticEvent
+PUBLIC METHODS:
+  public abstract com.embabel.agent.core.AgentPlatform getAgentPlatform()
+  public abstract java.time.Instant getTimestamp()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgentProcessCompletedEvent
+==================================================
+Extends: com.embabel.agent.api.event.AgentProcessFinishedEvent
+PUBLIC METHODS:
+  public final java.lang.Object getResult()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgentProcessCreationEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgentProcessEmbeddingEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public final com.embabel.agent.api.event.EmbeddingEvent getEmbeddingEvent()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgentProcessEvent
+==================================================
+Implements: com.embabel.agent.api.event.AgenticEvent, com.embabel.agent.core.InProcess
+PUBLIC METHODS:
+  public abstract java.time.Instant getTimestamp()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+  public abstract java.lang.String getProcessId()
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgentProcessFailedEvent
+==================================================
+Extends: com.embabel.agent.api.event.AgentProcessFinishedEvent
+PUBLIC METHODS:
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgentProcessFinishedEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgentProcessPausedEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgentProcessPlanFormulatedEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public final com.embabel.plan.WorldState getWorldState()
+  public final com.embabel.plan.Plan getPlan()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgentProcessReadyToPlanEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public final com.embabel.plan.WorldState getWorldState()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgentProcessStuckEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.AgentProcessWaitingEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.DynamicAgentCreationEvent
+==================================================
+Implements: com.embabel.agent.api.event.AgentPlatformEvent
+PUBLIC METHODS:
+  public boolean equals(java.lang.Object)
+  public java.lang.String toString()
+  public int hashCode()
+  public final com.embabel.agent.api.event.DynamicAgentCreationEvent copy(com.embabel.agent.core.AgentPlatform, com.embabel.agent.core.Agent, java.lang.Object, java.time.Instant)
+  public java.time.Instant getTimestamp()
+  public com.embabel.agent.core.AgentPlatform getAgentPlatform()
+  public final com.embabel.agent.core.Agent getAgent()
+  public final com.embabel.agent.core.AgentPlatform component1()
+  public final java.time.Instant component4()
+  public final com.embabel.agent.core.Agent component2()
+  public final java.lang.Object component3()
+  public static com.embabel.agent.api.event.DynamicAgentCreationEvent copy$default(com.embabel.agent.api.event.DynamicAgentCreationEvent, com.embabel.agent.core.AgentPlatform, com.embabel.agent.core.Agent, java.lang.Object, java.time.Instant, int, java.lang.Object)
+  public final java.lang.Object getBasis()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.EmbeddingEvent
+==================================================
+Implements: com.embabel.common.core.types.Timestamped
+PUBLIC METHODS:
+  public abstract java.lang.String getId()
+  public abstract com.embabel.common.ai.model.EmbeddingServiceMetadata getEmbeddingMetadata()
+  public abstract java.util.List getInputs()
+  public abstract java.time.Instant getTimestamp()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.EmbeddingEventListener$Companion
+==================================================
+PUBLIC METHODS:
+
+==================================================
+CLASS: com.embabel.agent.api.event.EmbeddingEventListener
+==================================================
+PUBLIC METHODS:
+  public com.embabel.agent.api.event.EmbeddingEventListener plus(com.embabel.agent.api.event.EmbeddingEventListener)
+  public abstract void onEmbeddingEvent(com.embabel.agent.api.event.EmbeddingEvent)
+
+==================================================
+CLASS: com.embabel.agent.api.event.EmbeddingInvocationEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public java.lang.String toString()
+  public final java.lang.String getInteractionId()
+  public final com.embabel.agent.core.EmbeddingInvocation getInvocation()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.EmbeddingRequestEvent
+==================================================
+Implements: com.embabel.agent.api.event.EmbeddingEvent
+PUBLIC METHODS:
+  public java.lang.String toString()
+  public java.lang.String getId()
+  public java.time.Instant getTimestamp()
+  public com.embabel.common.ai.model.EmbeddingServiceMetadata getEmbeddingMetadata()
+  public final com.embabel.agent.api.event.EmbeddingResponseEvent responseEvent(com.embabel.agent.core.Usage, java.time.Duration)
+  public java.util.List getInputs()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.EmbeddingResponseEvent
+==================================================
+Implements: com.embabel.agent.api.event.EmbeddingEvent, com.embabel.common.core.types.Timed
+PUBLIC METHODS:
+  public java.lang.String toString()
+  public java.lang.String getId()
+  public java.time.Instant getTimestamp()
+  public com.embabel.common.ai.model.EmbeddingServiceMetadata getEmbeddingMetadata()
+  public final com.embabel.agent.api.event.EmbeddingRequestEvent getRequest()
+  public java.time.Duration getRunningTime()
+  public final com.embabel.agent.core.Usage getUsage()
+  public java.util.List getInputs()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.GoalAchievedEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public final com.embabel.plan.Goal getGoal()
+  public final com.embabel.plan.WorldState getWorldState()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.LlmInvocationEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public java.lang.String toString()
+  public final java.lang.String getInteractionId()
+  public final com.embabel.agent.core.LlmInvocation getInvocation()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.LlmRequestEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public java.lang.String toString()
+  public final com.embabel.agent.core.Action getAction()
+  public final java.util.List getMessages()
+  public final com.embabel.common.ai.model.LlmMetadata getLlmMetadata()
+  public final java.lang.Class getOutputClass()
+  public final com.embabel.agent.api.event.LlmResponseEvent maybeThinkingResponseEvent(java.lang.Object, java.time.Duration)
+  public final com.embabel.agent.api.event.LlmResponseEvent thinkingResponseEvent(com.embabel.common.core.thinking.ThinkingResponse, java.time.Duration)
+  public final com.embabel.agent.api.event.LlmResponseEvent responseEvent(java.lang.Object, java.time.Duration)
+  public final com.embabel.agent.api.event.LlmResponseEvent maybeResponseEvent(java.lang.Object, java.time.Duration)
+  public final com.embabel.agent.core.support.LlmInteraction getInteraction()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.LlmResponseEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+Implements: com.embabel.common.core.types.Timed
+PUBLIC METHODS:
+  public java.lang.String toString()
+  public final java.lang.Object getResponse()
+  public final com.embabel.agent.api.event.LlmRequestEvent getRequest()
+  public java.time.Duration getRunningTime()
+  public final java.lang.Class getOutputClass()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.MulticastAgenticEventListener
+==================================================
+Implements: com.embabel.agent.api.event.AgenticEventListener
+PUBLIC METHODS:
+  public void onPlatformEvent(com.embabel.agent.api.event.AgentPlatformEvent)
+  public void onProcessEvent(com.embabel.agent.api.event.AgentProcessEvent)
+
+==================================================
+CLASS: com.embabel.agent.api.event.MulticastEmbeddingEventListener
+==================================================
+Implements: com.embabel.agent.api.event.EmbeddingEventListener
+PUBLIC METHODS:
+  public void onEmbeddingEvent(com.embabel.agent.api.event.EmbeddingEvent)
+  public com.embabel.agent.api.event.EmbeddingEventListener plus(com.embabel.agent.api.event.EmbeddingEventListener)
+
+==================================================
+CLASS: com.embabel.agent.api.event.ObjectAddedEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+Implements: com.embabel.agent.api.event.ObjectBindingEvent
+PUBLIC METHODS:
+  public java.lang.Object getValue()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+  public java.lang.String getType()
+
+==================================================
+CLASS: com.embabel.agent.api.event.ObjectBindingEvent
+==================================================
+Implements: com.embabel.agent.api.event.AgentProcessEvent
+PUBLIC METHODS:
+  public abstract java.lang.Object getValue()
+  public java.lang.String getType()
+  public abstract java.time.Instant getTimestamp()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+  public abstract java.lang.String getProcessId()
+
+==================================================
+CLASS: com.embabel.agent.api.event.ObjectBoundEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+Implements: com.embabel.agent.api.event.ObjectBindingEvent
+PUBLIC METHODS:
+  public final java.lang.String getName()
+  public java.lang.Object getValue()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+  public java.lang.String getType()
+
+==================================================
+CLASS: com.embabel.agent.api.event.ProcessKilledEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.progress.OutputChannelHighlightingEventListener$Companion
+==================================================
+PUBLIC METHODS:
+
+==================================================
+CLASS: com.embabel.agent.api.event.progress.OutputChannelHighlightingEventListener
+==================================================
+Implements: com.embabel.agent.api.event.AgenticEventListener
+PUBLIC METHODS:
+  public void onProcessEvent(com.embabel.agent.api.event.AgentProcessEvent)
+  public void onPlatformEvent(com.embabel.agent.api.event.AgentPlatformEvent)
+
+==================================================
+CLASS: com.embabel.agent.api.event.ProgressUpdateEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+Implements: com.embabel.common.util.VisualizableTask
+PUBLIC METHODS:
+  public java.lang.String getName()
+  public int getTotal()
+  public int getCurrent()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+  public java.lang.String createProgressBar(int)
+
+==================================================
+CLASS: com.embabel.agent.api.event.RankingChoiceCouldNotBeMadeEvent
+==================================================
+Extends: com.embabel.agent.api.event.RankingEvent
+PUBLIC METHODS:
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.api.common.ranking.Rankings getRankings()
+  public final double getConfidenceCutOff()
+  public final java.lang.Class getType()
+  public com.embabel.agent.core.AgentPlatform getAgentPlatform()
+  public final java.lang.Object getBasis()
+  public final java.util.Collection getChoices()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.RankingChoiceMadeEvent
+==================================================
+Extends: com.embabel.agent.api.event.RankingEvent
+PUBLIC METHODS:
+  public final com.embabel.agent.api.common.ranking.Rankings getRankings()
+  public final com.embabel.agent.api.common.ranking.Ranking getChoice()
+  public final java.lang.Class getType()
+  public java.time.Instant getTimestamp()
+  public com.embabel.agent.core.AgentPlatform getAgentPlatform()
+  public final java.lang.Object getBasis()
+  public final java.util.Collection getChoices()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.RankingChoiceRequestEvent
+==================================================
+Extends: com.embabel.agent.api.event.RankingEvent
+PUBLIC METHODS:
+  public final com.embabel.agent.api.event.RankingChoiceMadeEvent determinationEvent(com.embabel.agent.api.common.ranking.Ranking, com.embabel.agent.api.common.ranking.Rankings)
+  public final com.embabel.agent.api.event.RankingChoiceCouldNotBeMadeEvent noDeterminationEvent(com.embabel.agent.api.common.ranking.Rankings, double)
+  public final java.lang.Class getType()
+  public java.time.Instant getTimestamp()
+  public com.embabel.agent.core.AgentPlatform getAgentPlatform()
+  public final java.lang.Object getBasis()
+  public final java.util.Collection getChoices()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.RankingEvent
+==================================================
+Implements: com.embabel.agent.api.event.AgentPlatformEvent
+PUBLIC METHODS:
+  public final java.lang.Class getType()
+  public java.time.Instant getTimestamp()
+  public com.embabel.agent.core.AgentPlatform getAgentPlatform()
+  public final java.lang.Object getBasis()
+  public final java.util.Collection getChoices()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.ReplanRequestedEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public final java.lang.String getReason()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.StateTransitionEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public final boolean isSameInstance()
+  public final java.lang.Object getNewState()
+  public final boolean isInitialState()
+  public final java.lang.Object getPreviousState()
+  public final boolean isSameType()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.ToolCallRequestEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public final com.embabel.agent.core.Action getAction()
+  public final java.lang.String getToolInput()
+  public final com.embabel.agent.api.event.ToolCallResponseEvent responseEvent(java.lang.Object, java.time.Duration)
+  public final java.lang.String getTool()
+  public final java.lang.String getCorrelationId()
+  public final com.embabel.common.ai.model.LlmOptions getLlmOptions()
+  public final com.embabel.agent.core.ToolGroupMetadata getToolGroupMetadata()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.ToolCallResponseEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+Implements: com.embabel.common.core.types.Timed
+PUBLIC METHODS:
+  public final com.embabel.agent.api.event.ToolCallRequestEvent getRequest()
+  public java.time.Duration getRunningTime()
+  public final java.lang.Object getResult-d1pmJ48()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.ToolLoopCompletedEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+Implements: com.embabel.common.core.types.Timed
+PUBLIC METHODS:
+  public final com.embabel.agent.core.Action getAction()
+  public final java.lang.String getInteractionId()
+  public final int getMaxIterations()
+  public java.time.Duration getRunningTime()
+  public final java.lang.Class getOutputClass()
+  public final java.util.List getToolNames()
+  public final int getTotalIterations()
+  public final boolean getReplanRequested()
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)
+
+==================================================
+CLASS: com.embabel.agent.api.event.ToolLoopStartEvent
+==================================================
+Extends: com.embabel.agent.api.event.AbstractAgentProcessEvent
+PUBLIC METHODS:
+  public final com.embabel.agent.core.Action getAction()
+  public final java.lang.String getInteractionId()
+  public final int getMaxIterations()
+  public final java.lang.Class getOutputClass()
+  public final java.util.List getToolNames()
+  public final com.embabel.agent.api.event.ToolLoopCompletedEvent completedEvent(int, boolean)
+  public java.lang.String getProcessId()
+  public java.time.Instant getTimestamp()
+  public final com.embabel.agent.core.AgentProcessStatusReport getStatus()
+  public final java.util.List getHistory()
+  public final com.embabel.agent.core.AgentProcess getAgentProcess()
+  public boolean isLaterThan(com.embabel.common.core.types.Timestamped)

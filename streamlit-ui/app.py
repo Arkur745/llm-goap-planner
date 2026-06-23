@@ -107,6 +107,13 @@ with st.sidebar:
         help="Sets the LLM provider bean used by the gateway to decompose goals into tasks."
     )
     
+    runtime_selection = st.selectbox(
+        "Execution Runtime:",
+        options=["embabel", "legacy"],
+        index=0,
+        help="Selects the GOAP planning runtime. 'embabel' uses compiled type-based agents; 'legacy' uses LLM goal decomposition."
+    )
+    
     st.divider()
     st.markdown("### 📊 Planner Metadata")
     
@@ -174,7 +181,7 @@ if st.button("🚀 Execute Goal", type="primary", use_container_width=True):
     else:
         with st.spinner("Embabel GOAP Solver: Formulating optimal action graph and executing tools..."):
             start_time = time.time()
-            response = generate_plan(goal_input, provider=provider_selection)
+            response = generate_plan(goal_input, provider=provider_selection, runtime=runtime_selection)
             end_time = time.time()
             
             elapsed_ms = (end_time - start_time) * 1000

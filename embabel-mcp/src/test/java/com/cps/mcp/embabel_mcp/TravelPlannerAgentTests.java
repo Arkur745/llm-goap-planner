@@ -137,8 +137,66 @@ public class TravelPlannerAgentTests {
         assertNotNull(output, "Plan output should not be null");
 
         assertTrue(output.contains("TRIP PLAN: Tokyo"), "Output should contain Tokyo title");
-        // Verify cost calculation accuracy: 5 days * (120 + 60 + 50 + 25) = 5 * 255 = 1275.00
-        assertTrue(output.contains("1275.00"), "Tokyo trip total budget calculation should equal 1275.00");
+        // Verify cost calculation accuracy: 3 days * (120 + 60 + 50 + 25) * 0.8 = 3 * 204 = 612.00
+        assertTrue(output.contains("612.00"), "Tokyo trip total budget calculation should equal 612.00");
+
+        logger.info("Test completed successfully for: {}", goal);
+    }
+
+    @Test
+    public void testRomeTripPlanning() throws Exception {
+        String goal = "Plan a weekend in Rome";
+        logger.info("Test starting: {}", goal);
+
+        AgentProcessExecution execution = autonomy.chooseAndRunAgent(goal, new ProcessOptions());
+        assertNotNull(execution, "Agent process execution should not be null");
+
+        TravelPlannerAgent.TravelPlanReport report = (TravelPlannerAgent.TravelPlanReport) execution.getOutput();
+        assertNotNull(report, "Plan report should not be null");
+        String output = report.content();
+        assertNotNull(output, "Plan output should not be null");
+
+        assertTrue(output.contains("TRIP PLAN: Rome"), "Output should contain Rome title");
+        // Verify default cost calculation: 2 days * (100 + 40 + 30 + 15) = 370.00
+        assertTrue(output.contains("370.00"), "Rome trip total budget calculation should equal 370.00");
+
+        logger.info("Test completed successfully for: {}", goal);
+    }
+
+    @Test
+    public void testParisTripPlanning() throws Exception {
+        String goal = "Plan a trip to Paris";
+        logger.info("Test starting: {}", goal);
+
+        AgentProcessExecution execution = autonomy.chooseAndRunAgent(goal, new ProcessOptions());
+        assertNotNull(execution, "Agent process execution should not be null");
+
+        TravelPlannerAgent.TravelPlanReport report = (TravelPlannerAgent.TravelPlanReport) execution.getOutput();
+        assertNotNull(report, "Plan report should not be null");
+        String output = report.content();
+        assertNotNull(output, "Plan output should not be null");
+
+        assertTrue(output.contains("TRIP PLAN: Paris"), "Output should contain Paris title");
+        assertTrue(output.contains("555.00"), "Paris trip total budget calculation should equal 555.00");
+
+        logger.info("Test completed successfully for: {}", goal);
+    }
+
+    @Test
+    public void testBerlinTripPlanning() throws Exception {
+        String goal = "Travel to Berlin next month";
+        logger.info("Test starting: {}", goal);
+
+        AgentProcessExecution execution = autonomy.chooseAndRunAgent(goal, new ProcessOptions());
+        assertNotNull(execution, "Agent process execution should not be null");
+
+        TravelPlannerAgent.TravelPlanReport report = (TravelPlannerAgent.TravelPlanReport) execution.getOutput();
+        assertNotNull(report, "Plan report should not be null");
+        String output = report.content();
+        assertNotNull(output, "Plan output should not be null");
+
+        assertTrue(output.contains("TRIP PLAN: Berlin"), "Output should contain Berlin title");
+        assertTrue(output.contains("555.00"), "Berlin trip total budget calculation should equal 555.00");
 
         logger.info("Test completed successfully for: {}", goal);
     }

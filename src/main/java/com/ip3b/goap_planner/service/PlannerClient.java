@@ -30,6 +30,10 @@ public class PlannerClient {
      * Returns null on error so the caller can fallback.
      */
     public PlanResponse generate(String goal, List<String> tools, String provider) {
+        return generate(goal, tools, provider, "embabel");
+    }
+
+    public PlanResponse generate(String goal, List<String> tools, String provider, String runtime) {
         try {
             URL url = new URL(PLANNER_URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -43,6 +47,7 @@ public class PlannerClient {
             req.put("goal", goal);
             req.put("tools", tools != null ? tools : List.of());
             req.put("provider", provider != null ? provider : "auto");
+            req.put("runtime", runtime != null ? runtime : "embabel");
             
             String payload = mapper.writeValueAsString(req);
             try (OutputStream os = conn.getOutputStream()) {
