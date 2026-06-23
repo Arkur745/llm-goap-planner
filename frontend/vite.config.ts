@@ -4,6 +4,18 @@ import { fileURLToPath, URL } from "node:url";
 
 export default defineConfig({
   plugins: [react()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          router: ["react-router-dom"],
+          mui: ["@mui/material", "@mui/icons-material", "@emotion/react", "@emotion/styled"],
+          query: ["@tanstack/react-query"],
+          utility: ["axios", "zustand", "zod", "mermaid"],
+        },
+      },
+    },
+  },
   server: {
     host: "0.0.0.0",
     port: 5173,
