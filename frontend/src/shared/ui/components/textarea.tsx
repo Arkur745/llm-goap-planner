@@ -39,22 +39,28 @@ export const AppTextarea = forwardRef<HTMLDivElement, AppTextareaProps>(
                   : "0 20px 40px rgba(0, 0, 0, 0.08), 0 0 40px rgba(124, 92, 255, 0.02)",
             },
             "&:focus-within": {
-              borderColor: "var(--color-accent)",
+              borderColor: (theme) =>
+                theme.palette.mode === "dark" ? "rgba(124, 92, 255, 0.45)" : "rgba(124, 92, 255, 0.3)",
+              backgroundColor: (theme) =>
+                theme.palette.mode === "dark" ? "rgba(14, 20, 38, 0.55)" : "rgba(255, 255, 255, 0.75)",
               transform: "translateY(-2px)",
               boxShadow: (theme) =>
                 theme.palette.mode === "dark"
-                  ? "0 0 0 1px var(--color-accent), 0 25px 60px rgba(0, 0, 0, 0.45), 0 0 50px rgba(124, 92, 255, 0.08)"
-                  : "0 0 0 1px var(--color-accent), 0 20px 40px rgba(0, 0, 0, 0.08), 0 0 40px rgba(124, 92, 255, 0.03)",
+                  ? "0 25px 60px rgba(0, 0, 0, 0.4), 0 0 50px rgba(124, 92, 255, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.08)"
+                  : "0 20px 40px rgba(0, 0, 0, 0.06), 0 0 45px rgba(124, 92, 255, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.8)",
             },
             ...(error && {
               borderColor: "var(--color-danger)",
               "&:focus-within": {
-                borderColor: "var(--color-danger)",
+                borderColor: (theme) =>
+                  theme.palette.mode === "dark" ? "rgba(239, 68, 68, 0.45)" : "rgba(239, 68, 68, 0.3)",
+                backgroundColor: (theme) =>
+                  theme.palette.mode === "dark" ? "rgba(20, 12, 12, 0.55)" : "rgba(255, 250, 250, 0.75)",
                 transform: "translateY(-2px)",
                 boxShadow: (theme) =>
                   theme.palette.mode === "dark"
-                    ? "0 0 0 1px var(--color-danger), 0 25px 60px rgba(0, 0, 0, 0.45), 0 0 50px rgba(239, 68, 68, 0.08)"
-                    : "0 0 0 1px var(--color-danger), 0 20px 40px rgba(0, 0, 0, 0.08), 0 0 40px rgba(239, 68, 68, 0.03)",
+                    ? "0 25px 60px rgba(0, 0, 0, 0.4), 0 0 50px rgba(239, 68, 68, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.08)"
+                    : "0 20px 40px rgba(0, 0, 0, 0.06), 0 0 45px rgba(239, 68, 68, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.8)",
               },
             }),
           }}
@@ -70,20 +76,28 @@ export const AppTextarea = forwardRef<HTMLDivElement, AppTextareaProps>(
             {...props}
             sx={{
               "& .MuiOutlinedInput-root": {
-                backgroundColor: "transparent",
+                backgroundColor: "transparent !important",
                 padding: 0,
                 fontSize: "1.05rem",
                 lineHeight: 1.6,
                 color: "var(--color-text-primary)",
+                "&.Mui-focused": {
+                  backgroundColor: "transparent !important",
+                },
                 "& .MuiOutlinedInput-notchedOutline": {
-                  border: "none",
+                  border: "none !important",
                 },
                 "&:hover .MuiOutlinedInput-notchedOutline": {
-                  border: "none",
+                  border: "none !important",
                 },
                 "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  border: "none",
+                  border: "none !important",
                 },
+              },
+              "& .MuiInputBase-input": {
+                backgroundColor: "transparent !important",
+                outline: "none !important",
+                boxShadow: "none !important",
               },
               "& .MuiInputBase-input::placeholder": {
                 color: "var(--color-text-secondary)",
