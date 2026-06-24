@@ -210,10 +210,27 @@ public class ReflectionTest {
             for (java.lang.reflect.Method m : Autonomy.class.getDeclaredMethods()) {
                 pw.println("  " + m.toString());
             }
+            pw.println("--- Methods of Blackboard ---");
+            for (java.lang.reflect.Method m : Blackboard.class.getMethods()) {
+                pw.println("  " + m.toString());
+            }
+            pw.println("--- Constructors of InMemoryBlackboard ---");
+            try {
+                Class<?> immClass = Class.forName("com.embabel.agent.core.support.InMemoryBlackboard");
+                for (java.lang.reflect.Constructor<?> c : immClass.getConstructors()) {
+                    pw.println("  " + c.toString());
+                }
+            } catch (Exception e) {
+                pw.println("Failed to load InMemoryBlackboard: " + e.getMessage());
+            }
+            pw.println("--- Methods of ProcessOptions ---");
+            for (java.lang.reflect.Method m : ProcessOptions.class.getMethods()) {
+                pw.println("  " + m.toString());
+            }
             pw.println("---------------------------");
             // Spawn child blackboard
-            Blackboard childBlackboard = blackboard.spawn();
-            pw.println("Spawned child blackboard: " + childBlackboard);
+            Blackboard childBlackboard = new com.embabel.agent.core.support.InMemoryBlackboard();
+            pw.println("Instantiated new InMemoryBlackboard: " + childBlackboard);
             
             // Wrap with filtering proxy
             Blackboard proxyBlackboard = createFilteringBlackboardProxy(childBlackboard, "Weather in Rome", "Provide weather forecast");

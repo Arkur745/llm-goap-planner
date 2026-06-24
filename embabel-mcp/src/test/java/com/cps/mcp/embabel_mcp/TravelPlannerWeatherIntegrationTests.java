@@ -19,9 +19,9 @@ import com.cps.mcp.weather.model.WeatherReport.WeatherSeverity;
 import com.cps.mcp.weather.provider.WeatherProvider;
 
 @SpringBootTest(properties = {
-    "embabel.llm.provider=openai",
-    "embabel.models.default-llm=gpt-4.1-mini",
-    "embabel.search.provider=mock"
+        "embabel.llm.provider=openai",
+        "embabel.models.default-llm=gpt-4.1-mini",
+        "embabel.search.provider=mock"
 })
 public class TravelPlannerWeatherIntegrationTests {
 
@@ -30,13 +30,17 @@ public class TravelPlannerWeatherIntegrationTests {
     @org.springframework.boot.test.context.TestConfiguration
     static class TestConfig implements org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor {
         @Override
-        public void postProcessBeanDefinitionRegistry(org.springframework.beans.factory.support.BeanDefinitionRegistry registry) {
+        public void postProcessBeanDefinitionRegistry(
+                org.springframework.beans.factory.support.BeanDefinitionRegistry registry) {
             if (registry.containsBeanDefinition("llmService")) {
                 registry.removeBeanDefinition("llmService");
             }
         }
+
         @Override
-        public void postProcessBeanFactory(org.springframework.beans.factory.config.ConfigurableListableBeanFactory beanFactory) {}
+        public void postProcessBeanFactory(
+                org.springframework.beans.factory.config.ConfigurableListableBeanFactory beanFactory) {
+        }
     }
 
     @Autowired
@@ -51,11 +55,10 @@ public class TravelPlannerWeatherIntegrationTests {
         String goal = "Plan a weekend in Prague";
 
         when(weatherProvider.getName()).thenReturn("open-meteo");
-        
+
         WeatherReport mockWeatherReport = new WeatherReport(
                 destination, 15.5, "Partly Cloudy", 75.0, 18.2,
-                System.currentTimeMillis(), "open-meteo", WeatherSeverity.GOOD
-        );
+                System.currentTimeMillis(), "open-meteo", WeatherSeverity.GOOD);
         when(weatherProvider.getWeather(eq(destination))).thenReturn(mockWeatherReport);
 
         logger.info("Executing autonomy process for: {}", goal);

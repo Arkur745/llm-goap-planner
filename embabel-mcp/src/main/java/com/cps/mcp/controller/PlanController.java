@@ -26,6 +26,14 @@ public class PlanController {
 
     @PostMapping("/plan")
     public Map<String, Object> plan(@RequestBody Map<String, Object> body) {
+        // Clear the shared singleton blackboard to prevent state pollution from previous requests
+        try {
+            blackboard.clear();
+            System.out.println("PlanController: Cleared singleton blackboard");
+        } catch (Exception e) {
+            System.err.println("PlanController: Failed to clear blackboard: " + e.getMessage());
+        }
+
         String goalStr = (String) body.get("goal");
         if (goalStr == null || goalStr.isBlank()) {
             throw new org.springframework.web.server.ResponseStatusException(
@@ -210,16 +218,18 @@ public class PlanController {
                                 }
                             }
                         } else if ("getValue".equals(methodName)) {
-                            if (args.length >= 2 && args[1] != null && args[1].toString().contains("UserInput")) {
-                                String key = args[0] != null ? args[0].toString() : null;
+                            if (args.length >= 2 && args[0] != null) {
+                                String key = args[0].toString();
                                 if ("userInput".equals(key) || "input".equals(key)) {
                                     System.out.println(">>> Blackboard Proxy: Intercepting getValue(\"" + key + "\"), returning original prompt: " + goalStr);
                                     return new UserInput(goalStr);
                                 } else if ("it".equals(key)) {
-                                    boolean act = isActionCaller();
-                                    String val = act ? goalStr : mappedGoalStr;
-                                    System.out.println(">>> Blackboard Proxy: Intercepting getValue(\"it\"), isAction=" + act + ", returning: " + val);
-                                    return new UserInput(val);
+                                    if (args[1] != null && args[1].toString().contains("UserInput")) {
+                                        boolean act = isActionCaller();
+                                        String val = act ? goalStr : mappedGoalStr;
+                                        System.out.println(">>> Blackboard Proxy: Intercepting getValue(\"it\"), isAction=" + act + ", returning: " + val);
+                                        return new UserInput(val);
+                                    }
                                 }
                             }
                         } else if ("get".equals(methodName)) {
@@ -285,8 +295,8 @@ public class PlanController {
         // Map the TravelIntent to the correct terminal goal string
         String mappedGoalStr = mapIntentToGoal(intent);
 
-        // Spawn a child blackboard and seed it with original UserInput
-        Blackboard childBlackboard = blackboard.spawn();
+        // Instantiate a fresh InMemoryBlackboard to prevent state pollution across requests
+        Blackboard childBlackboard = new com.embabel.agent.core.support.InMemoryBlackboard();
         Blackboard proxyBlackboard = createFilteringBlackboardProxy(childBlackboard, goalStr, mappedGoalStr);
         proxyBlackboard.bind("userInput", new UserInput(goalStr));
         proxyBlackboard.bind("input", new UserInput(goalStr));
@@ -342,13 +352,14 @@ public class PlanController {
         // Restored compliance with stable 8-field response contract (no classifiedIntent)
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("goal", goalStr);
-        response.put("classification", "embabel_runtime");
-        response.put("status", "COMPLETED");
-        response.put("steps", steps);
-        response.put("trace", trace);
-        response.put("mermaidDiagram", mermaidDiagram);
         response.put("summary", summary);
-        response.put("source", "EMBABEL");
+        response.put("status", "Ready");
+        response.put("steps", steps);
+        response.put("assignments", new ArrayList<>());
+        response.put("flowchart", mermaidDiagram);
+        response.put("gantt", "");
+        response.put("classification", "embabel_runtime");
+        response.put("trace", trace);
 
         return response;
     }
