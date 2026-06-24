@@ -72,39 +72,66 @@ public class DummyLlmService implements LlmService<DummyLlmService> {
                 }
 
                 if (tools.isEmpty() || isRanking) {
-                    boolean isTravel = false;
+                    String userInput = "";
+                    boolean isGoalRanking = false;
                     for (Message msg : messages) {
                         if (msg.getContent() != null) {
                             String content = msg.getContent();
+                            if (content.contains("Goal (goal)")) {
+                                isGoalRanking = true;
+                            }
                             int startIdx = content.indexOf("User input: <");
                             if (startIdx != -1) {
                                 int endIdx = content.indexOf(">", startIdx);
                                 if (endIdx != -1) {
-                                    String userInput = content.substring(startIdx + "User input: <".length(), endIdx).toLowerCase();
-                                    if (userInput.contains("trip") || 
-                                        userInput.contains("jaipur") || 
-                                        userInput.contains("prague") || 
-                                        userInput.contains("tokyo") ||
-                                        userInput.contains("rome") ||
-                                        userInput.contains("berlin") ||
-                                        userInput.contains("paris") ||
-                                        userInput.contains("vienna") ||
-                                        userInput.contains("travel")) {
-                                        isTravel = true;
-                                        break;
-                                    }
+                                    userInput = content.substring(startIdx + "User input: <".length(), endIdx);
                                 }
                             }
                         }
                     }
 
                     String json;
-                    if (isTravel) {
-                        json = "{\"rankings\": [{\"name\": \"TravelPlannerAgent\", \"confidence\": 1.0}]}";
-                        System.out.println("  Action: Ranking -> Returning TravelPlannerAgent JSON");
+                    if (isGoalRanking) {
+                        String normalized = userInput.toLowerCase();
+                        String matchedGoal = "Plan Travel Itinerary";
+                        if (normalized.contains("weather") || normalized.contains("forecast")) {
+                            matchedGoal = "Provide weather forecast";
+                        } else if (normalized.contains("budget") || normalized.contains("cost") || 
+                                   normalized.contains("expense") || normalized.contains("estimate")) {
+                            matchedGoal = "Provide budget estimate";
+                        } else if (normalized.contains("attractions") || normalized.contains("information") || 
+                                   normalized.contains("search")) {
+                            matchedGoal = "Provide destination information";
+                        }
+                        json = "{\"rankings\": [{\"name\": \"" + matchedGoal + "\", \"confidence\": 1.0}]}";
+                        System.out.println("  Action: Goal Ranking -> Returning " + matchedGoal + " JSON");
                     } else {
-                        json = "{\"rankings\": [{\"name\": \"DemoAgent\", \"confidence\": 1.0}]}";
-                        System.out.println("  Action: Ranking -> Returning DemoAgent JSON");
+                        boolean isTravel = false;
+                        String normalized = userInput.toLowerCase();
+                        if (normalized.contains("trip") || 
+                            normalized.contains("jaipur") || 
+                            normalized.contains("prague") || 
+                            normalized.contains("tokyo") ||
+                            normalized.contains("rome") ||
+                            normalized.contains("berlin") ||
+                            normalized.contains("paris") ||
+                            normalized.contains("vienna") ||
+                            normalized.contains("weather") ||
+                            normalized.contains("forecast") ||
+                            normalized.contains("budget") ||
+                            normalized.contains("estimate") ||
+                            normalized.contains("attractions") ||
+                            normalized.contains("travel")) {
+                            isTravel = true;
+                        }
+
+                        if (isTravel) {
+                            json = "{\"rankings\": [{\"name\": \"TravelPlannerAgent\", \"confidence\": 1.0}]}";
+                            System.out.println("  Action: Agent Ranking -> Returning TravelPlannerAgent JSON");
+                        } else {
+                            json = "{\"rankings\": [{\"name\": \"DemoAgent\", \"confidence\": 1.0}]}";
+                            System.out.println("  Action: Agent Ranking -> Returning DemoAgent JSON");
+                        }
                     }
                     return new LlmMessageResponse(new AssistantMessage(json), json, new Usage(0, 0, null));
                 }
