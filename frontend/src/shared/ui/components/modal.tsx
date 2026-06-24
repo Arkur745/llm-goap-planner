@@ -19,7 +19,7 @@ export function AppModalContent({ children }: PropsWithChildren) {
         maxWidth: 640,
         width: "calc(100% - 32px)",
         outline: 0,
-        borderRadius: 3,
+        borderRadius: "var(--radius-lg)",
       }}
     >
       {children}

@@ -16,7 +16,7 @@ export function AppShell({
   children,
   sidebarOpen = false,
   onSidebarClose,
-  drawerWidth = 280,
+  drawerWidth = 220,
   navigationItems,
   sidebarTitle,
 }: AppShellProps) {
@@ -56,9 +56,29 @@ export function AppShell({
         <AppSidebar items={navigationItems} title={sidebarTitle} />
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, width: { md: `calc(100% - ${drawerWidth}px)` } }}>
-        <Toolbar />
-        {children}
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          display: "flex",
+          justifyContent: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: "1400px",
+            px: { xs: 3, sm: 6, md: 8 },
+            py: { xs: 4, md: 8 },
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Toolbar />
+          {children}
+        </Box>
       </Box>
     </Box>
   );

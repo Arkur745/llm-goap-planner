@@ -19,11 +19,13 @@ export function GlobalLayout() {
     () => [
       {
         label: "Goal Input",
+        iconName: "goal",
         selected: location.pathname === ROUTE_PATHS.planner,
         onClick: () => navigate(ROUTE_PATHS.planner),
       },
       {
         label: "Plan Result",
+        iconName: "result",
         selected: location.pathname === ROUTE_PATHS.plannerResult,
         onClick: () => navigate(ROUTE_PATHS.plannerResult),
       },
@@ -51,8 +53,8 @@ export function GlobalLayout() {
           speed={0.3}
           scale={1.2}
           brightness={isDarkMode ? 0.8 : 0.4}
-          color1={isDarkMode ? "#8b5cf6" : "#4f46e5"}
-          color2={isDarkMode ? "#22d3ee" : "#0891b2"}
+          color1="#7C5CFF"
+          color2={isDarkMode ? "#050816" : "#F9FAFB"}
           noiseFrequency={2.0}
           noiseAmplitude={0.8}
           bandHeight={0.6}
