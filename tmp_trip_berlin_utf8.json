@@ -1,0 +1,202 @@
+﻿{
+    "goal":  "Plan a trip to Berlin",
+    "classifiedIntent":  "TRAVEL_PLAN",
+    "classification":  "embabel_runtime",
+    "status":  "COMPLETED",
+    "steps":  [
+                  {
+                      "order":  1,
+                      "title":  "extractConstraints",
+                      "details":  "Extract travel constraints from user prompt",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "Duration: 3 days, Budget: STANDARD, Style: LEISURE"
+                  },
+                  {
+                      "order":  2,
+                      "title":  "extractDestination",
+                      "details":  "Extract destination from user prompt",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "Berlin"
+                  },
+                  {
+                      "order":  3,
+                      "title":  "calculateBudget",
+                      "details":  "Calculate travel budget for destination",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "Destination: Berlin\nDuration: 3 days\nTotal Estimate: 555.00\nBreakdown:\n  * Hotel: 300.00\n  * Food: 120.00\n  * Transport: 90.00\n  * Misc: 45.00"
+                  },
+                  {
+                      "order":  4,
+                      "title":  "getWeather",
+                      "details":  "Get weather forecast for destination",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "Location: Berlin\nCondition: Sunny\nTemperature: 23.9Â°C\nHumidity: 37.0%\nWind Speed: 5.8 km/h\nSeverity: GOOD\nProvider: open-meteo"
+                  },
+                  {
+                      "order":  5,
+                      "title":  "executeSearch",
+                      "details":  "Search travel details for destination",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "Provider: tavily, Query: Berlin\n- Berlin - Wikipedia (https://en.wikipedia.org/wiki/Berlin): [Jump to content](https://en.wikipedia.org/wiki/Berlin#bodyContent). *   [(Top)](https://en.wikipedia.org/wiki/Berlin#). *   [1 History](https://en.wikipedia.org/wiki/Berlin#History)Toggle History subsection. *   [1.1 Etymology](https://en.wikipedia.org/wiki/Berlin#Etymology). *   [1.2 Prehistory](https://en.wikipedia.org/wiki/Berlin#Prehistory). *   [2.1 Topography](https://en.wikipedia.org/wiki/Berlin#Topography). *   [2.2 Climate](https://en.wikipedia.org/wiki/Berlin#Climate). *   [3.1 Cityscape](https://en.wikipedia.org/wiki/Berlin#Cityscape). *   [3.2 Architecture](https://en.wikipedia.org/wiki/Berlin#Architecture). *   [4.1 Nationalities](https://en.wikipedia.org/wiki/Berlin#Nationalities). *   [4.2 Languages](https://en.wikipedia.org/wiki/Berlin#Languages). *   [4.3 Religion](https://en.wikipedia.org/wiki/Berlin#Religion). *   [5.1 City state](https://en.wikipedia.org/wiki/Berlin#City_state). *   [5.2 Boroughs](https://en.wikipedia.org/wiki/Berlin#Boroughs). *   [5.3 City partnerships](https://en.wikipedia.org/wiki/Berlin#City_partnerships). *   [5.4 Capital city](https://en.wikipedia.org/wiki/Berlin#Capital_city). *   [5.5 Embassies](https://en.wikipedia.org/wiki/Berlin#Embassies). *   [6.1 Companies](https://en.wikipedia.org/wiki/Berlin#Companies). *   [6.4 Media](https://en.wikipedia.org/wiki/Berlin#Media). *   [8.1 Airports](https://en.wikipedia.org/wiki/Berlin#Airports). *   [8.2 Roads](https://en.wikipedia.org/wiki/Berlin#Roads). *   [8.3 Rail](https://en.wikipedia.org/wiki/Berlin#Rail). *   [8.7 Cycling](https://en.wikipedia.org/wiki/Berlin#Cycling). *   [8.8 Taxicabs](https://en.wikipedia.org/wiki/Berlin#Taxicabs). *   [9 Energy](https://en.wikipedia.org/wiki/Berlin#Energy). *   [10 Health](https://en.wikipedia.org/wiki/Berlin#Health). *   [11.2 Research](https://en.wikipedia.org/wiki/Berlin#Research). *   [12.4 Cuisine](https://en.wikipedia.org/wiki/Berlin#Cuisine). *   [12.5 Recreation](https://en.wikipedia.org/wiki/Berlin#Recreation). *   [13 Sports](https://en.wikipedia.org/wiki/Berlin#Sports). *   [14 See also](https://en.wikipedia.org/wiki/Berlin#See_also). *   [15.1 Notes](https://en.wikipedia.org/wiki/Berlin#Notes). *   [15.2 Citations](https://en.wikipedia.org/wiki/Berlin#Citations). *   [15.3 Sources](https://en.wikipedia.org/wiki/Berlin#Sources). *   [Deutsch](https://de.wikipedia.org/wiki/Berlin \"Berlin â German\"). *   [FranÃ§ais](https://fr.wikipedia.org/wiki/Berlin \"Berlin â French\"). *   [Interlingue](https://ie.wikipedia.org/wiki/Berlin \"Berlin â Interlingue\"). *   [Kongo](https://kg.wikipedia.org/wiki/Berlin \"Berlin â Kongo\"). *   [Winaray](https://war.wikipedia.org/wiki/Berlin \"Berlin â Waray\"). *   [Article](https://en.wikipedia.org/wiki/Berlin \"View the content page [c]\"). *   [Read](https://en.wikipedia.org/wiki/Berlin). *   [Read](https://en.wikipedia.org/wiki/Berlin). | Population (2022 census)[[2]](https://en.wikipedia.org/wiki/Berlin#cite_note-2) |. | GDP [[5]](https://en.wikipedia.org/wiki/Berlin#cite_note-destatis-5) |. *   [Berlin](https://en.wikipedia.org/wiki/Category:Berlin \"Category:Berlin\"). 268 languages[Add topic](https://en.wikipedia.org/wiki/Berlin#).\n- Berlin and the Jewels of Paris (TV Mini Series 2023) â­ 7.1 | Action, Crime, Drama (https://www.imdb.com/title/tt16288804): During his glory days, Berlin and a gang assembled in Paris for one of his greatest plans ever: stealing 44 million euros\u0027 worth of jewels in one night.During his glory days, Berlin and a gang assembled in Paris for one of his greatest plans ever: stealing 44 million euros\u0027 worth of jewels in one night.During his glory days, Berlin and a gang assembled in Paris for one of his greatest plans ever: stealing 44 million euros\u0027 worth of jewels in one night. Image 6: Julio PeÃ±a, Michelle Jenner, Joel SÃ¡nchez, and BegoÃ±a Vargas in Berlin and the Jewels of Paris (2023). In his prime, Berlin gathers a team in Paris to execute an incredibly challenging heist, aiming to steal jewels valued at 44 million euros from 34 cities in a single night. Image 7: Julio PeÃ±a and BegoÃ±a Vargas in Berlin and the Jewels of Paris (2023). Meanwhile, love is in the air on Paris\u0027s streets - and in the Catacombs. Image 9: TristÃ¡n Ulloa in Berlin and the Jewels of Paris (2023). Image 11: TristÃ¡n Ulloa and BegoÃ±a Vargas in Berlin and the Jewels of Paris (2023).\n- Berlin - Official Website of the City of Berlin, Capital of Germany â Berlin.de (https://www.berlin.de/en): Berlin.deThe Official Website of Berlin. ### Who can you contact if you have questions, comments or feedback regarding digital accessibility? ### Where can I find additional information about accessibility in Berlin? # Berlin - Official Website of the City of Berlin, Capital of Germany. Suchanimation Olympia und Ukraine (Hintergrund) (EN). Suchanimation Olympia und Ukraine (EN). ### Berlin to get two new women\u0027s shelters. More than 13,000 victims of domestic violence - Berlin is responding by providing more shelter spaces and mobile counseling centers for affected women and children. Mehrzu: Berlin to get two new women\u0027s shelters. ### Wegner commemorates victims of East German uprising of 1953. Mehrzu: Wegner commemorates victims of East German uprising of 1953. ### \"MuseumsMeileMitte\" Opens at Berlin Central Station. Mehrzu: \"MuseumsMeileMitte\" Opens at Berlin Central Station. ## Weitere Informationen zu Berlin.de. ### Official Website of Berlin. ### New in Berlin. Berlin.de is a service of the State of Berlin.\n- Berlin\u0027s official travel website - visitBerlin.de (https://www.visitberlin.de/en): Stay up-to-date with the Berlin News! Tickets and tours for groups. The head of Nefertiti against a black background in the Neues Museum in Berlin. From Museum Island to the GDR Museum. Travel deals and budget hotels in Berlin - visitberlin.de. **1 ticket for all museums**. Admission to all museums \u0026 exhibitions. # Tips for your journey to Berlin. Visit the great museums \u0026 sights and then relax in a cafÃ©. Look forward to concerts \u0026 shows, stroll through the shops and discover with us all the diversity of Berlin. In 2026, the glass hall of the Neue Nationalgalerie Berlin will become the venue for the first major exhibition of the exceptional artist. Celebrate the first day of summer in Berlin as the streets come alive with free live music of all genres and styles in every part of the. ### Tickets for the museums \u0026 exhibitions in Berlin.\n- Berlin | History, Map, Population, Attractions, \u0026 Facts | Britannica (https://www.britannica.com/place/Berlin): Brandenburg Gate  Modern Berlin: Blending history with modernity  Berlin   Berlin skyline   Central Berlin   Berlin: Reichstag   Berlin: Charlottenburg Palace   Berlin: Brandenburg Gate   Berlin Philharmonic Concert Hall   Berlin street scene. Top of Brandenburg Gate, Berlin, Germany. # Berlin. It lies at the heart of the North German Plain in the wide glacial valley of the Spree River, which runs through the center of the city. Though partitioned into East and West Berlin after World War II, the reunification of East and West Germany led to Berlinâs reinstatement as the all-German capital in 1990. The city lies at the heart of the North German Plain, athwart an east-west commercial and geographic axis that helped make it the capital of the kingdom of Prussia and then, from 1871, of a unified Germany. The city itself echoed the national partitionâEast Berlin being the capital of East Germany and West Berlin a *Land* (state) of the Federal Republic of Germany (FRG, or West Germany)."
+                  },
+                  {
+                      "order":  6,
+                      "title":  "composeTravelPlan",
+                      "details":  "Compose travel plan report",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "==================================================\nTRIP PLAN: Berlin\n==================================================\n\n[1] Travel Summary\n--------------------------------------------------\nItinerary and cost calculations successfully finalized.\nDestination is verified via active search.\nTotal trip cost: 555.00\n\n[2] Search Highlights\n--------------------------------------------------\n- Berlin - Wikipedia (https://en.wikipedia.org/wiki/Berlin):\n  [Jump to content](https://en.wikipedia.org/wiki/Berlin#bodyContent). *   [(Top)](https://en.wikipedia.org/wiki/Berlin#). *   [1 History](https://en.wikipedia.org/wiki/Berlin#History)Toggle History subsection. *   [1.1 Etymology](https://en.wikipedia.org/wiki/Berlin#Etymology). *   [1.2 Prehistory](https://en.wikipedia.org/wiki/Berlin#Prehistory). *   [2.1 Topography](https://en.wikipedia.org/wiki/Berlin#Topography). *   [2.2 Climate](https://en.wikipedia.org/wiki/Berlin#Climate). *   [3.1 Cityscape](https://en.wikipedia.org/wiki/Berlin#Cityscape). *   [3.2 Architecture](https://en.wikipedia.org/wiki/Berlin#Architecture). *   [4.1 Nationalities](https://en.wikipedia.org/wiki/Berlin#Nationalities). *   [4.2 Languages](https://en.wikipedia.org/wiki/Berlin#Languages). *   [4.3 Religion](https://en.wikipedia.org/wiki/Berlin#Religion). *   [5.1 City state](https://en.wikipedia.org/wiki/Berlin#City_state). *   [5.2 Boroughs](https://en.wikipedia.org/wiki/Berlin#Boroughs). *   [5.3 City partnerships](https://en.wikipedia.org/wiki/Berlin#City_partnerships). *   [5.4 Capital city](https://en.wikipedia.org/wiki/Berlin#Capital_city). *   [5.5 Embassies](https://en.wikipedia.org/wiki/Berlin#Embassies). *   [6.1 Companies](https://en.wikipedia.org/wiki/Berlin#Companies). *   [6.4 Media](https://en.wikipedia.org/wiki/Berlin#Media). *   [8.1 Airports](https://en.wikipedia.org/wiki/Berlin#Airports). *   [8.2 Roads](https://en.wikipedia.org/wiki/Berlin#Roads). *   [8.3 Rail](https://en.wikipedia.org/wiki/Berlin#Rail). *   [8.7 Cycling](https://en.wikipedia.org/wiki/Berlin#Cycling). *   [8.8 Taxicabs](https://en.wikipedia.org/wiki/Berlin#Taxicabs). *   [9 Energy](https://en.wikipedia.org/wiki/Berlin#Energy). *   [10 Health](https://en.wikipedia.org/wiki/Berlin#Health). *   [11.2 Research](https://en.wikipedia.org/wiki/Berlin#Research). *   [12.4 Cuisine](https://en.wikipedia.org/wiki/Berlin#Cuisine). *   [12.5 Recreation](https://en.wikipedia.org/wiki/Berlin#Recreation). *   [13 Sports](https://en.wikipedia.org/wiki/Berlin#Sports). *   [14 See also](https://en.wikipedia.org/wiki/Berlin#See_also). *   [15.1 Notes](https://en.wikipedia.org/wiki/Berlin#Notes). *   [15.2 Citations](https://en.wikipedia.org/wiki/Berlin#Citations). *   [15.3 Sources](https://en.wikipedia.org/wiki/Berlin#Sources). *   [Deutsch](https://de.wikipedia.org/wiki/Berlin \"Berlin â German\"). *   [FranÃ§ais](https://fr.wikipedia.org/wiki/Berlin \"Berlin â French\"). *   [Interlingue](https://ie.wikipedia.org/wiki/Berlin \"Berlin â Interlingue\"). *   [Kongo](https://kg.wikipedia.org/wiki/Berlin \"Berlin â Kongo\"). *   [Winaray](https://war.wikipedia.org/wiki/Berlin \"Berlin â Waray\"). *   [Article](https://en.wikipedia.org/wiki/Berlin \"View the content page [c]\"). *   [Read](https://en.wikipedia.org/wiki/Berlin). *   [Read](https://en.wikipedia.org/wiki/Berlin). | Population (2022 census)[[2]](https://en.wikipedia.org/wiki/Berlin#cite_note-2) |. | GDP [[5]](https://en.wikipedia.org/wiki/Berlin#cite_note-destatis-5) |. *   [Berlin](https://en.wikipedia.org/wiki/Category:Berlin \"Category:Berlin\"). 268 languages[Add topic](https://en.wikipedia.org/wiki/Berlin#).\n- Berlin and the Jewels of Paris (TV Mini Series 2023) â­ 7.1 | Action, Crime, Drama (https://www.imdb.com/title/tt16288804):\n  During his glory days, Berlin and a gang assembled in Paris for one of his greatest plans ever: stealing 44 million euros\u0027 worth of jewels in one night.During his glory days, Berlin and a gang assembled in Paris for one of his greatest plans ever: stealing 44 million euros\u0027 worth of jewels in one night.During his glory days, Berlin and a gang assembled in Paris for one of his greatest plans ever: stealing 44 million euros\u0027 worth of jewels in one night. Image 6: Julio PeÃ±a, Michelle Jenner, Joel SÃ¡nchez, and BegoÃ±a Vargas in Berlin and the Jewels of Paris (2023). In his prime, Berlin gathers a team in Paris to execute an incredibly challenging heist, aiming to steal jewels valued at 44 million euros from 34 cities in a single night. Image 7: Julio PeÃ±a and BegoÃ±a Vargas in Berlin and the Jewels of Paris (2023). Meanwhile, love is in the air on Paris\u0027s streets - and in the Catacombs. Image 9: TristÃ¡n Ulloa in Berlin and the Jewels of Paris (2023). Image 11: TristÃ¡n Ulloa and BegoÃ±a Vargas in Berlin and the Jewels of Paris (2023).\n- Berlin - Official Website of the City of Berlin, Capital of Germany â Berlin.de (https://www.berlin.de/en):\n  Berlin.deThe Official Website of Berlin. ### Who can you contact if you have questions, comments or feedback regarding digital accessibility? ### Where can I find additional information about accessibility in Berlin? # Berlin - Official Website of the City of Berlin, Capital of Germany. Suchanimation Olympia und Ukraine (Hintergrund) (EN). Suchanimation Olympia und Ukraine (EN). ### Berlin to get two new women\u0027s shelters. More than 13,000 victims of domestic violence - Berlin is responding by providing more shelter spaces and mobile counseling centers for affected women and children. Mehrzu: Berlin to get two new women\u0027s shelters. ### Wegner commemorates victims of East German uprising of 1953. Mehrzu: Wegner commemorates victims of East German uprising of 1953. ### \"MuseumsMeileMitte\" Opens at Berlin Central Station. Mehrzu: \"MuseumsMeileMitte\" Opens at Berlin Central Station. ## Weitere Informationen zu Berlin.de. ### Official Website of Berlin. ### New in Berlin. Berlin.de is a service of the State of Berlin.\n- Berlin\u0027s official travel website - visitBerlin.de (https://www.visitberlin.de/en):\n  Stay up-to-date with the Berlin News! Tickets and tours for groups. The head of Nefertiti against a black background in the Neues Museum in Berlin. From Museum Island to the GDR Museum. Travel deals and budget hotels in Berlin - visitberlin.de. **1 ticket for all museums**. Admission to all museums \u0026 exhibitions. # Tips for your journey to Berlin. Visit the great museums \u0026 sights and then relax in a cafÃ©. Look forward to concerts \u0026 shows, stroll through the shops and discover with us all the diversity of Berlin. In 2026, the glass hall of the Neue Nationalgalerie Berlin will become the venue for the first major exhibition of the exceptional artist. Celebrate the first day of summer in Berlin as the streets come alive with free live music of all genres and styles in every part of the. ### Tickets for the museums \u0026 exhibitions in Berlin.\n- Berlin | History, Map, Population, Attractions, \u0026 Facts | Britannica (https://www.britannica.com/place/Berlin):\n  Brandenburg Gate  Modern Berlin: Blending history with modernity  Berlin   Berlin skyline   Central Berlin   Berlin: Reichstag   Berlin: Charlottenburg Palace   Berlin: Brandenburg Gate   Berlin Philharmonic Concert Hall   Berlin street scene. Top of Brandenburg Gate, Berlin, Germany. # Berlin. It lies at the heart of the North German Plain in the wide glacial valley of the Spree River, which runs through the center of the city. Though partitioned into East and West Berlin after World War II, the reunification of East and West Germany led to Berlinâs reinstatement as the all-German capital in 1990. The city lies at the heart of the North German Plain, athwart an east-west commercial and geographic axis that helped make it the capital of the kingdom of Prussia and then, from 1871, of a unified Germany. The city itself echoed the national partitionâEast Berlin being the capital of East Germany and West Berlin a *Land* (state) of the Federal Republic of Germany (FRG, or West Germany).\n\n[3] Budget Estimate\n--------------------------------------------------\n- Duration: 3 days\n- Hotel per Day: 100.00\n- Food per Day: 40.00\n- Transport per Day: 30.00\n- Misc per Day: 15.00\n\nBudget Breakdown:\n  * Hotel: 300.00\n  * Food: 120.00\n  * Transport: 90.00\n  * Misc: 45.00\n\n[4] Weather Forecast\n--------------------------------------------------\n- Location: Berlin\n- Condition: Sunny\n- Temperature: 23.9Â°C\n- Humidity: 37.0%\n- Wind Speed: 5.8 km/h\n- Severity: GOOD\n- Provider: open-meteo\n"
+                  }
+              ],
+    "trace":  [
+                  {
+                      "action":  "extractConstraints",
+                      "state_before":  [
+                                           "UserInput"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "UserInput"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "TravelConstraints"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints"
+                                      ]
+                  },
+                  {
+                      "action":  "extractDestination",
+                      "state_before":  [
+                                           "UserInput",
+                                           "TravelConstraints"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "UserInput"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "Destination"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints",
+                                          "Destination"
+                                      ]
+                  },
+                  {
+                      "action":  "calculateBudget",
+                      "state_before":  [
+                                           "UserInput",
+                                           "TravelConstraints",
+                                           "Destination"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "Destination",
+                                                    "TravelConstraints"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "BudgetEstimate"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints",
+                                          "Destination",
+                                          "BudgetEstimate"
+                                      ]
+                  },
+                  {
+                      "action":  "getWeather",
+                      "state_before":  [
+                                           "UserInput",
+                                           "TravelConstraints",
+                                           "Destination",
+                                           "BudgetEstimate"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "Destination"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "WeatherReport"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints",
+                                          "Destination",
+                                          "BudgetEstimate",
+                                          "WeatherReport"
+                                      ]
+                  },
+                  {
+                      "action":  "executeSearch",
+                      "state_before":  [
+                                           "UserInput",
+                                           "TravelConstraints",
+                                           "Destination",
+                                           "BudgetEstimate",
+                                           "WeatherReport"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "Destination"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "SearchResponse"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints",
+                                          "Destination",
+                                          "BudgetEstimate",
+                                          "WeatherReport",
+                                          "SearchResponse"
+                                      ]
+                  },
+                  {
+                      "action":  "composeTravelPlan",
+                      "state_before":  [
+                                           "UserInput",
+                                           "TravelConstraints",
+                                           "Destination",
+                                           "BudgetEstimate",
+                                           "WeatherReport",
+                                           "SearchResponse"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "SearchResponse",
+                                                    "BudgetEstimate",
+                                                    "WeatherReport"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "TravelPlanReport"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints",
+                                          "Destination",
+                                          "BudgetEstimate",
+                                          "WeatherReport",
+                                          "SearchResponse",
+                                          "TravelPlanReport"
+                                      ]
+                  }
+              ],
+    "mermaidDiagram":  "flowchart TD\n  calculateBudget --\u003e composeBudgetInfo\n  calculateBudget --\u003e composeTravelPlan\n  executeSearch --\u003e composeDestinationInfo\n  executeSearch --\u003e composeTravelPlan\n  extractConstraints --\u003e calculateBudget\n  extractDestination --\u003e calculateBudget\n  extractDestination --\u003e executeSearch\n  extractDestination --\u003e getWeather\n  getWeather --\u003e composeTravelPlan\n  getWeather --\u003e composeWeatherInfo",
+    "summary":  "==================================================\nTRIP PLAN: Berlin\n==================================================\n\n[1] Travel Summary\n--------------------------------------------------\nItinerary and cost calculations successfully finalized.\nDestination is verified via active search.\nTotal trip cost: 555.00\n\n[2] Search Highlights\n--------------------------------------------------\n- Berlin - Wikipedia (https://en.wikipedia.org/wiki/Berlin):\n  [Jump to content](https://en.wikipedia.org/wiki/Berlin#bodyContent). *   [(Top)](https://en.wikipedia.org/wiki/Berlin#). *   [1 History](https://en.wikipedia.org/wiki/Berlin#History)Toggle History subsection. *   [1.1 Etymology](https://en.wikipedia.org/wiki/Berlin#Etymology). *   [1.2 Prehistory](https://en.wikipedia.org/wiki/Berlin#Prehistory). *   [2.1 Topography](https://en.wikipedia.org/wiki/Berlin#Topography). *   [2.2 Climate](https://en.wikipedia.org/wiki/Berlin#Climate). *   [3.1 Cityscape](https://en.wikipedia.org/wiki/Berlin#Cityscape). *   [3.2 Architecture](https://en.wikipedia.org/wiki/Berlin#Architecture). *   [4.1 Nationalities](https://en.wikipedia.org/wiki/Berlin#Nationalities). *   [4.2 Languages](https://en.wikipedia.org/wiki/Berlin#Languages). *   [4.3 Religion](https://en.wikipedia.org/wiki/Berlin#Religion). *   [5.1 City state](https://en.wikipedia.org/wiki/Berlin#City_state). *   [5.2 Boroughs](https://en.wikipedia.org/wiki/Berlin#Boroughs). *   [5.3 City partnerships](https://en.wikipedia.org/wiki/Berlin#City_partnerships). *   [5.4 Capital city](https://en.wikipedia.org/wiki/Berlin#Capital_city). *   [5.5 Embassies](https://en.wikipedia.org/wiki/Berlin#Embassies). *   [6.1 Companies](https://en.wikipedia.org/wiki/Berlin#Companies). *   [6.4 Media](https://en.wikipedia.org/wiki/Berlin#Media). *   [8.1 Airports](https://en.wikipedia.org/wiki/Berlin#Airports). *   [8.2 Roads](https://en.wikipedia.org/wiki/Berlin#Roads). *   [8.3 Rail](https://en.wikipedia.org/wiki/Berlin#Rail). *   [8.7 Cycling](https://en.wikipedia.org/wiki/Berlin#Cycling). *   [8.8 Taxicabs](https://en.wikipedia.org/wiki/Berlin#Taxicabs). *   [9 Energy](https://en.wikipedia.org/wiki/Berlin#Energy). *   [10 Health](https://en.wikipedia.org/wiki/Berlin#Health). *   [11.2 Research](https://en.wikipedia.org/wiki/Berlin#Research). *   [12.4 Cuisine](https://en.wikipedia.org/wiki/Berlin#Cuisine). *   [12.5 Recreation](https://en.wikipedia.org/wiki/Berlin#Recreation). *   [13 Sports](https://en.wikipedia.org/wiki/Berlin#Sports). *   [14 See also](https://en.wikipedia.org/wiki/Berlin#See_also). *   [15.1 Notes](https://en.wikipedia.org/wiki/Berlin#Notes). *   [15.2 Citations](https://en.wikipedia.org/wiki/Berlin#Citations). *   [15.3 Sources](https://en.wikipedia.org/wiki/Berlin#Sources). *   [Deutsch](https://de.wikipedia.org/wiki/Berlin \"Berlin â German\"). *   [FranÃ§ais](https://fr.wikipedia.org/wiki/Berlin \"Berlin â French\"). *   [Interlingue](https://ie.wikipedia.org/wiki/Berlin \"Berlin â Interlingue\"). *   [Kongo](https://kg.wikipedia.org/wiki/Berlin \"Berlin â Kongo\"). *   [Winaray](https://war.wikipedia.org/wiki/Berlin \"Berlin â Waray\"). *   [Article](https://en.wikipedia.org/wiki/Berlin \"View the content page [c]\"). *   [Read](https://en.wikipedia.org/wiki/Berlin). *   [Read](https://en.wikipedia.org/wiki/Berlin). | Population (2022 census)[[2]](https://en.wikipedia.org/wiki/Berlin#cite_note-2) |. | GDP [[5]](https://en.wikipedia.org/wiki/Berlin#cite_note-destatis-5) |. *   [Berlin](https://en.wikipedia.org/wiki/Category:Berlin \"Category:Berlin\"). 268 languages[Add topic](https://en.wikipedia.org/wiki/Berlin#).\n- Berlin and the Jewels of Paris (TV Mini Series 2023) â­ 7.1 | Action, Crime, Drama (https://www.imdb.com/title/tt16288804):\n  During his glory days, Berlin and a gang assembled in Paris for one of his greatest plans ever: stealing 44 million euros\u0027 worth of jewels in one night.During his glory days, Berlin and a gang assembled in Paris for one of his greatest plans ever: stealing 44 million euros\u0027 worth of jewels in one night.During his glory days, Berlin and a gang assembled in Paris for one of his greatest plans ever: stealing 44 million euros\u0027 worth of jewels in one night. Image 6: Julio PeÃ±a, Michelle Jenner, Joel SÃ¡nchez, and BegoÃ±a Vargas in Berlin and the Jewels of Paris (2023). In his prime, Berlin gathers a team in Paris to execute an incredibly challenging heist, aiming to steal jewels valued at 44 million euros from 34 cities in a single night. Image 7: Julio PeÃ±a and BegoÃ±a Vargas in Berlin and the Jewels of Paris (2023). Meanwhile, love is in the air on Paris\u0027s streets - and in the Catacombs. Image 9: TristÃ¡n Ulloa in Berlin and the Jewels of Paris (2023). Image 11: TristÃ¡n Ulloa and BegoÃ±a Vargas in Berlin and the Jewels of Paris (2023).\n- Berlin - Official Website of the City of Berlin, Capital of Germany â Berlin.de (https://www.berlin.de/en):\n  Berlin.deThe Official Website of Berlin. ### Who can you contact if you have questions, comments or feedback regarding digital accessibility? ### Where can I find additional information about accessibility in Berlin? # Berlin - Official Website of the City of Berlin, Capital of Germany. Suchanimation Olympia und Ukraine (Hintergrund) (EN). Suchanimation Olympia und Ukraine (EN). ### Berlin to get two new women\u0027s shelters. More than 13,000 victims of domestic violence - Berlin is responding by providing more shelter spaces and mobile counseling centers for affected women and children. Mehrzu: Berlin to get two new women\u0027s shelters. ### Wegner commemorates victims of East German uprising of 1953. Mehrzu: Wegner commemorates victims of East German uprising of 1953. ### \"MuseumsMeileMitte\" Opens at Berlin Central Station. Mehrzu: \"MuseumsMeileMitte\" Opens at Berlin Central Station. ## Weitere Informationen zu Berlin.de. ### Official Website of Berlin. ### New in Berlin. Berlin.de is a service of the State of Berlin.\n- Berlin\u0027s official travel website - visitBerlin.de (https://www.visitberlin.de/en):\n  Stay up-to-date with the Berlin News! Tickets and tours for groups. The head of Nefertiti against a black background in the Neues Museum in Berlin. From Museum Island to the GDR Museum. Travel deals and budget hotels in Berlin - visitberlin.de. **1 ticket for all museums**. Admission to all museums \u0026 exhibitions. # Tips for your journey to Berlin. Visit the great museums \u0026 sights and then relax in a cafÃ©. Look forward to concerts \u0026 shows, stroll through the shops and discover with us all the diversity of Berlin. In 2026, the glass hall of the Neue Nationalgalerie Berlin will become the venue for the first major exhibition of the exceptional artist. Celebrate the first day of summer in Berlin as the streets come alive with free live music of all genres and styles in every part of the. ### Tickets for the museums \u0026 exhibitions in Berlin.\n- Berlin | History, Map, Population, Attractions, \u0026 Facts | Britannica (https://www.britannica.com/place/Berlin):\n  Brandenburg Gate  Modern Berlin: Blending history with modernity  Berlin   Berlin skyline   Central Berlin   Berlin: Reichstag   Berlin: Charlottenburg Palace   Berlin: Brandenburg Gate   Berlin Philharmonic Concert Hall   Berlin street scene. Top of Brandenburg Gate, Berlin, Germany. # Berlin. It lies at the heart of the North German Plain in the wide glacial valley of the Spree River, which runs through the center of the city. Though partitioned into East and West Berlin after World War II, the reunification of East and West Germany led to Berlinâs reinstatement as the all-German capital in 1990. The city lies at the heart of the North German Plain, athwart an east-west commercial and geographic axis that helped make it the capital of the kingdom of Prussia and then, from 1871, of a unified Germany. The city itself echoed the national partitionâEast Berlin being the capital of East Germany and West Berlin a *Land* (state) of the Federal Republic of Germany (FRG, or West Germany).\n\n[3] Budget Estimate\n--------------------------------------------------\n- Duration: 3 days\n- Hotel per Day: 100.00\n- Food per Day: 40.00\n- Transport per Day: 30.00\n- Misc per Day: 15.00\n\nBudget Breakdown:\n  * Hotel: 300.00\n  * Food: 120.00\n  * Transport: 90.00\n  * Misc: 45.00\n\n[4] Weather Forecast\n--------------------------------------------------\n- Location: Berlin\n- Condition: Sunny\n- Temperature: 23.9Â°C\n- Humidity: 37.0%\n- Wind Speed: 5.8 km/h\n- Severity: GOOD\n- Provider: open-meteo\n",
+    "source":  "EMBABEL"
+}

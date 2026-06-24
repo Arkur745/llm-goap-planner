@@ -1,0 +1,202 @@
+﻿{
+    "goal":  "Plan a weekend in Rome",
+    "classifiedIntent":  "TRAVEL_PLAN",
+    "classification":  "embabel_runtime",
+    "status":  "COMPLETED",
+    "steps":  [
+                  {
+                      "order":  1,
+                      "title":  "extractConstraints",
+                      "details":  "Extract travel constraints from user prompt",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "Duration: 2 days, Budget: STANDARD, Style: LEISURE"
+                  },
+                  {
+                      "order":  2,
+                      "title":  "extractDestination",
+                      "details":  "Extract destination from user prompt",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "Rome"
+                  },
+                  {
+                      "order":  3,
+                      "title":  "calculateBudget",
+                      "details":  "Calculate travel budget for destination",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "Destination: Rome\nDuration: 2 days\nTotal Estimate: 370.00\nBreakdown:\n  * Hotel: 200.00\n  * Food: 80.00\n  * Transport: 60.00\n  * Misc: 30.00"
+                  },
+                  {
+                      "order":  4,
+                      "title":  "getWeather",
+                      "details":  "Get weather forecast for destination",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "Location: Rome\nCondition: Sunny\nTemperature: 26.1Â°C\nHumidity: 75.0%\nWind Speed: 2.6 km/h\nSeverity: GOOD\nProvider: open-meteo"
+                  },
+                  {
+                      "order":  5,
+                      "title":  "executeSearch",
+                      "details":  "Search travel details for destination",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "Provider: tavily, Query: Rome\n- Rome | Italy, History, Map, Population, Climate, \u0026 Facts | Britannica (https://www.britannica.com/place/Rome): - The Colosseum and the Arch of Constantine. - The city in the Renaissance. - Capital of a united Italy. Rome   Rome, Italy   Rome: Colosseum   Mussolini, Benito   Rome   Rome; Vatican City   Rome  Exploring the ancient Roman Appian Way How an underground labyrinth threatens Rome\u0027s monuments Learn about the magnificent infrastructural work of imperial Rome, especially Roman masonry. * Why is Rome important for the country of Italy? Rome is located in the central portion of the Italian peninsula, on the Tiber River about 15 miles (24 km) inland from the Tyrrhenian Sea. Once the capital of an ancient republic and empire whose armies and polity defined the Western world in antiquity and left seemingly indelible imprints thereafter, the spiritual and physical seat of the Roman Catholic Church, and the site of major pinnacles of artistic and intellectual achievement, Rome is the Eternal City, remaining today a political capital, a religious centre, and a memorial to the creative imagination of the past.\n- Rome - Wikipedia (https://en.wikipedia.org/wiki/Rome): [Jump to content](https://en.wikipedia.org/wiki/Rome#bodyContent). *   [(Top)](https://en.wikipedia.org/wiki/Rome#). *   [1 Name and symbol](https://en.wikipedia.org/wiki/Rome#Name_and_symbol)Toggle Name and symbol subsection. *   [1.1 Etymology](https://en.wikipedia.org/wiki/Rome#Etymology). *   [1.2 Other names and symbols](https://en.wikipedia.org/wiki/Rome#Other_names_and_symbols). *   [2 History](https://en.wikipedia.org/wiki/Rome#History)Toggle History subsection. *   [2.1 Earliest history](https://en.wikipedia.org/wiki/Rome#Earliest_history). *   [2.2 Monarchy and republic](https://en.wikipedia.org/wiki/Rome#Monarchy_and_republic). *   [2.3 Empire](https://en.wikipedia.org/wiki/Rome#Empire). *   [3.1 Location](https://en.wikipedia.org/wiki/Rome#Location). *   [3.3 Climate](https://en.wikipedia.org/wiki/Rome#Climate). *   [4.2 Language](https://en.wikipedia.org/wiki/Rome#Language). *   [4.3 Religion](https://en.wikipedia.org/wiki/Rome#Religion). *   [6.1 Tourism](https://en.wikipedia.org/wiki/Rome#Tourism). *   [7 Education](https://en.wikipedia.org/wiki/Rome#Education). *   [8.1 Architecture](https://en.wikipedia.org/wiki/Rome#Architecture). *   [8.1.2 Statues](https://en.wikipedia.org/wiki/Rome#Statues). *   [8.1.4 Bridges](https://en.wikipedia.org/wiki/Rome#Bridges). *   [8.1.5 Catacombs](https://en.wikipedia.org/wiki/Rome#Catacombs). *   [8.3 Fashion](https://en.wikipedia.org/wiki/Rome#Fashion). *   [8.4 Cuisine](https://en.wikipedia.org/wiki/Rome#Cuisine). *   [8.5 Cinema](https://en.wikipedia.org/wiki/Rome#Cinema). *   [8.6 Sports](https://en.wikipedia.org/wiki/Rome#Sports). *   [9 Transport](https://en.wikipedia.org/wiki/Rome#Transport). *   [10 See also](https://en.wikipedia.org/wiki/Rome#See_also). *   [11 Notes](https://en.wikipedia.org/wiki/Rome#Notes). *   [12 References](https://en.wikipedia.org/wiki/Rome#References). *   [13 Bibliography](https://en.wikipedia.org/wiki/Rome#Bibliography). *   [Afrikaans](https://af.wikipedia.org/wiki/Rome \"Rome â Afrikaans\"). *   [FranÃ§ais](https://fr.wikipedia.org/wiki/Rome \"Rome â French\"). *   [Nouormand](https://nrm.wikipedia.org/wiki/Rome \"Rome â Norman\"). *   [Picard](https://pcd.wikipedia.org/wiki/Rome \"Rome â Picard\"). *   [Article](https://en.wikipedia.org/wiki/Rome \"View the content page [c]\"). *   [Read](https://en.wikipedia.org/wiki/Rome). *   [Read](https://en.wikipedia.org/wiki/Rome). | Etymology: various theories (See _[Etymology](https://en.wikipedia.org/wiki/Rome#Etymology)_). | Country | Italy[[a]](https://en.wikipedia.org/wiki/Rome#cite_note-1) |. | Area [[2]](https://en.wikipedia.org/wiki/Rome#cite_note-area-3) |. | Population (2025)[[3]](https://en.wikipedia.org/wiki/Rome#cite_note-population-4) |. | GDP (nominal, 2023) [[4]](https://en.wikipedia.org/wiki/Rome#cite_note-5) |. *   [Rome](https://en.wikipedia.org/wiki/Category:Rome \"Category:Rome\"). 269 languages[Add topic](https://en.wikipedia.org/wiki/Rome#).\n- Rome Tourism and Travel Guide - Visitors Travel Guide (https://www.rome.net): With its unparalleled **history**, Rome is the 3rd most visited city in Europe and the 14th worldwide.It attracts visitors from all over the world who come to discover the cityâs impressive **monuments and archaeological sites**; not to mentionÂ its renowned **cuisine** andÂ its **lively atmosphere**. On thisÂ **guided tour of the Vatican Museums and the Sistine Chapel**, we\u0027ll see one of the most important art collections in the world. Travel back in time to Ancient Rome and discover the **Colosseum, the Roman Forum, and Palatine Hill** on this **guided tour with** **priority access**! With this ticket to the **Colosseum**, **Roman Forum**, **and Palatine Hill**, you will discover the greatness of the Roman Empire thanks to an **audio guide in English**. With this skip-the-lineÂ ticket for the **Pantheon**, you\u0027ll visit one of the most iconic **monuments from Ancient Rome**âa must-see in theÂ Eternal City!\n- Rome, Italy - Reddit (https://www.reddit.com/r/rome): r/rome: The subreddit for the city of Rome, ancient and modern, including Vatican City, and seagulls. For general travel enquiries please\n- 12 Interesting Facts About Rome | WorldStrides (https://worldstrides.com/en-us/teachers/how-it-works/blog/12-interesting-facts-about-rome): # 12 Interesting Facts About Rome. All roads lead to Rome, right? Rome, the âEternal City,â brims with ancient history, from the Colosseum to the port of Ostia Antica to majestic Vatican City and the Sistine Chapel. The proceeds are donated to Caritas to help those in need. Each Roman mile was about 4,800 feet and marked by a milestone, giving birth to the saying âAll roads lead to Rome.â. 4. In Ancient Rome, only free-born men were allowed to wear togas, a sign of Roman citizenship. 5. The mascot of Rome is a she-wolf that cared for brothers Romulus and Remus, the mythological founders of Rome. 7. Law in Rome allows cats to live without disruption in the place they were born. Romeâs first university, La Sapienza, established in 1303 AD, is the largest in Europe and the second largest in the world. WorldStrides educational travel programs offer adventure and unique experiences for students of all ages, in the US and abroad."
+                  },
+                  {
+                      "order":  6,
+                      "title":  "composeTravelPlan",
+                      "details":  "Compose travel plan report",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "==================================================\nTRIP PLAN: Rome\n==================================================\n\n[1] Travel Summary\n--------------------------------------------------\nItinerary and cost calculations successfully finalized.\nDestination is verified via active search.\nTotal trip cost: 370.00\n\n[2] Search Highlights\n--------------------------------------------------\n- Rome | Italy, History, Map, Population, Climate, \u0026 Facts | Britannica (https://www.britannica.com/place/Rome):\n  - The Colosseum and the Arch of Constantine. - The city in the Renaissance. - Capital of a united Italy. Rome   Rome, Italy   Rome: Colosseum   Mussolini, Benito   Rome   Rome; Vatican City   Rome  Exploring the ancient Roman Appian Way How an underground labyrinth threatens Rome\u0027s monuments Learn about the magnificent infrastructural work of imperial Rome, especially Roman masonry. * Why is Rome important for the country of Italy? Rome is located in the central portion of the Italian peninsula, on the Tiber River about 15 miles (24 km) inland from the Tyrrhenian Sea. Once the capital of an ancient republic and empire whose armies and polity defined the Western world in antiquity and left seemingly indelible imprints thereafter, the spiritual and physical seat of the Roman Catholic Church, and the site of major pinnacles of artistic and intellectual achievement, Rome is the Eternal City, remaining today a political capital, a religious centre, and a memorial to the creative imagination of the past.\n- Rome - Wikipedia (https://en.wikipedia.org/wiki/Rome):\n  [Jump to content](https://en.wikipedia.org/wiki/Rome#bodyContent). *   [(Top)](https://en.wikipedia.org/wiki/Rome#). *   [1 Name and symbol](https://en.wikipedia.org/wiki/Rome#Name_and_symbol)Toggle Name and symbol subsection. *   [1.1 Etymology](https://en.wikipedia.org/wiki/Rome#Etymology). *   [1.2 Other names and symbols](https://en.wikipedia.org/wiki/Rome#Other_names_and_symbols). *   [2 History](https://en.wikipedia.org/wiki/Rome#History)Toggle History subsection. *   [2.1 Earliest history](https://en.wikipedia.org/wiki/Rome#Earliest_history). *   [2.2 Monarchy and republic](https://en.wikipedia.org/wiki/Rome#Monarchy_and_republic). *   [2.3 Empire](https://en.wikipedia.org/wiki/Rome#Empire). *   [3.1 Location](https://en.wikipedia.org/wiki/Rome#Location). *   [3.3 Climate](https://en.wikipedia.org/wiki/Rome#Climate). *   [4.2 Language](https://en.wikipedia.org/wiki/Rome#Language). *   [4.3 Religion](https://en.wikipedia.org/wiki/Rome#Religion). *   [6.1 Tourism](https://en.wikipedia.org/wiki/Rome#Tourism). *   [7 Education](https://en.wikipedia.org/wiki/Rome#Education). *   [8.1 Architecture](https://en.wikipedia.org/wiki/Rome#Architecture). *   [8.1.2 Statues](https://en.wikipedia.org/wiki/Rome#Statues). *   [8.1.4 Bridges](https://en.wikipedia.org/wiki/Rome#Bridges). *   [8.1.5 Catacombs](https://en.wikipedia.org/wiki/Rome#Catacombs). *   [8.3 Fashion](https://en.wikipedia.org/wiki/Rome#Fashion). *   [8.4 Cuisine](https://en.wikipedia.org/wiki/Rome#Cuisine). *   [8.5 Cinema](https://en.wikipedia.org/wiki/Rome#Cinema). *   [8.6 Sports](https://en.wikipedia.org/wiki/Rome#Sports). *   [9 Transport](https://en.wikipedia.org/wiki/Rome#Transport). *   [10 See also](https://en.wikipedia.org/wiki/Rome#See_also). *   [11 Notes](https://en.wikipedia.org/wiki/Rome#Notes). *   [12 References](https://en.wikipedia.org/wiki/Rome#References). *   [13 Bibliography](https://en.wikipedia.org/wiki/Rome#Bibliography). *   [Afrikaans](https://af.wikipedia.org/wiki/Rome \"Rome â Afrikaans\"). *   [FranÃ§ais](https://fr.wikipedia.org/wiki/Rome \"Rome â French\"). *   [Nouormand](https://nrm.wikipedia.org/wiki/Rome \"Rome â Norman\"). *   [Picard](https://pcd.wikipedia.org/wiki/Rome \"Rome â Picard\"). *   [Article](https://en.wikipedia.org/wiki/Rome \"View the content page [c]\"). *   [Read](https://en.wikipedia.org/wiki/Rome). *   [Read](https://en.wikipedia.org/wiki/Rome). | Etymology: various theories (See _[Etymology](https://en.wikipedia.org/wiki/Rome#Etymology)_). | Country | Italy[[a]](https://en.wikipedia.org/wiki/Rome#cite_note-1) |. | Area [[2]](https://en.wikipedia.org/wiki/Rome#cite_note-area-3) |. | Population (2025)[[3]](https://en.wikipedia.org/wiki/Rome#cite_note-population-4) |. | GDP (nominal, 2023) [[4]](https://en.wikipedia.org/wiki/Rome#cite_note-5) |. *   [Rome](https://en.wikipedia.org/wiki/Category:Rome \"Category:Rome\"). 269 languages[Add topic](https://en.wikipedia.org/wiki/Rome#).\n- Rome Tourism and Travel Guide - Visitors Travel Guide (https://www.rome.net):\n  With its unparalleled **history**, Rome is the 3rd most visited city in Europe and the 14th worldwide.It attracts visitors from all over the world who come to discover the cityâs impressive **monuments and archaeological sites**; not to mentionÂ its renowned **cuisine** andÂ its **lively atmosphere**. On thisÂ **guided tour of the Vatican Museums and the Sistine Chapel**, we\u0027ll see one of the most important art collections in the world. Travel back in time to Ancient Rome and discover the **Colosseum, the Roman Forum, and Palatine Hill** on this **guided tour with** **priority access**! With this ticket to the **Colosseum**, **Roman Forum**, **and Palatine Hill**, you will discover the greatness of the Roman Empire thanks to an **audio guide in English**. With this skip-the-lineÂ ticket for the **Pantheon**, you\u0027ll visit one of the most iconic **monuments from Ancient Rome**âa must-see in theÂ Eternal City!\n- Rome, Italy - Reddit (https://www.reddit.com/r/rome):\n  r/rome: The subreddit for the city of Rome, ancient and modern, including Vatican City, and seagulls. For general travel enquiries please\n- 12 Interesting Facts About Rome | WorldStrides (https://worldstrides.com/en-us/teachers/how-it-works/blog/12-interesting-facts-about-rome):\n  # 12 Interesting Facts About Rome. All roads lead to Rome, right? Rome, the âEternal City,â brims with ancient history, from the Colosseum to the port of Ostia Antica to majestic Vatican City and the Sistine Chapel. The proceeds are donated to Caritas to help those in need. Each Roman mile was about 4,800 feet and marked by a milestone, giving birth to the saying âAll roads lead to Rome.â. 4. In Ancient Rome, only free-born men were allowed to wear togas, a sign of Roman citizenship. 5. The mascot of Rome is a she-wolf that cared for brothers Romulus and Remus, the mythological founders of Rome. 7. Law in Rome allows cats to live without disruption in the place they were born. Romeâs first university, La Sapienza, established in 1303 AD, is the largest in Europe and the second largest in the world. WorldStrides educational travel programs offer adventure and unique experiences for students of all ages, in the US and abroad.\n\n[3] Budget Estimate\n--------------------------------------------------\n- Duration: 2 days\n- Hotel per Day: 100.00\n- Food per Day: 40.00\n- Transport per Day: 30.00\n- Misc per Day: 15.00\n\nBudget Breakdown:\n  * Hotel: 200.00\n  * Food: 80.00\n  * Transport: 60.00\n  * Misc: 30.00\n\n[4] Weather Forecast\n--------------------------------------------------\n- Location: Rome\n- Condition: Sunny\n- Temperature: 26.1Â°C\n- Humidity: 75.0%\n- Wind Speed: 2.6 km/h\n- Severity: GOOD\n- Provider: open-meteo\n"
+                  }
+              ],
+    "trace":  [
+                  {
+                      "action":  "extractConstraints",
+                      "state_before":  [
+                                           "UserInput"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "UserInput"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "TravelConstraints"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints"
+                                      ]
+                  },
+                  {
+                      "action":  "extractDestination",
+                      "state_before":  [
+                                           "UserInput",
+                                           "TravelConstraints"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "UserInput"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "Destination"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints",
+                                          "Destination"
+                                      ]
+                  },
+                  {
+                      "action":  "calculateBudget",
+                      "state_before":  [
+                                           "UserInput",
+                                           "TravelConstraints",
+                                           "Destination"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "Destination",
+                                                    "TravelConstraints"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "BudgetEstimate"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints",
+                                          "Destination",
+                                          "BudgetEstimate"
+                                      ]
+                  },
+                  {
+                      "action":  "getWeather",
+                      "state_before":  [
+                                           "UserInput",
+                                           "TravelConstraints",
+                                           "Destination",
+                                           "BudgetEstimate"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "Destination"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "WeatherReport"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints",
+                                          "Destination",
+                                          "BudgetEstimate",
+                                          "WeatherReport"
+                                      ]
+                  },
+                  {
+                      "action":  "executeSearch",
+                      "state_before":  [
+                                           "UserInput",
+                                           "TravelConstraints",
+                                           "Destination",
+                                           "BudgetEstimate",
+                                           "WeatherReport"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "Destination"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "SearchResponse"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints",
+                                          "Destination",
+                                          "BudgetEstimate",
+                                          "WeatherReport",
+                                          "SearchResponse"
+                                      ]
+                  },
+                  {
+                      "action":  "composeTravelPlan",
+                      "state_before":  [
+                                           "UserInput",
+                                           "TravelConstraints",
+                                           "Destination",
+                                           "BudgetEstimate",
+                                           "WeatherReport",
+                                           "SearchResponse"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "SearchResponse",
+                                                    "BudgetEstimate",
+                                                    "WeatherReport"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "TravelPlanReport"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints",
+                                          "Destination",
+                                          "BudgetEstimate",
+                                          "WeatherReport",
+                                          "SearchResponse",
+                                          "TravelPlanReport"
+                                      ]
+                  }
+              ],
+    "mermaidDiagram":  "flowchart TD\n  calculateBudget --\u003e composeBudgetInfo\n  calculateBudget --\u003e composeTravelPlan\n  executeSearch --\u003e composeDestinationInfo\n  executeSearch --\u003e composeTravelPlan\n  extractConstraints --\u003e calculateBudget\n  extractDestination --\u003e calculateBudget\n  extractDestination --\u003e executeSearch\n  extractDestination --\u003e getWeather\n  getWeather --\u003e composeTravelPlan\n  getWeather --\u003e composeWeatherInfo",
+    "summary":  "==================================================\nTRIP PLAN: Rome\n==================================================\n\n[1] Travel Summary\n--------------------------------------------------\nItinerary and cost calculations successfully finalized.\nDestination is verified via active search.\nTotal trip cost: 370.00\n\n[2] Search Highlights\n--------------------------------------------------\n- Rome | Italy, History, Map, Population, Climate, \u0026 Facts | Britannica (https://www.britannica.com/place/Rome):\n  - The Colosseum and the Arch of Constantine. - The city in the Renaissance. - Capital of a united Italy. Rome   Rome, Italy   Rome: Colosseum   Mussolini, Benito   Rome   Rome; Vatican City   Rome  Exploring the ancient Roman Appian Way How an underground labyrinth threatens Rome\u0027s monuments Learn about the magnificent infrastructural work of imperial Rome, especially Roman masonry. * Why is Rome important for the country of Italy? Rome is located in the central portion of the Italian peninsula, on the Tiber River about 15 miles (24 km) inland from the Tyrrhenian Sea. Once the capital of an ancient republic and empire whose armies and polity defined the Western world in antiquity and left seemingly indelible imprints thereafter, the spiritual and physical seat of the Roman Catholic Church, and the site of major pinnacles of artistic and intellectual achievement, Rome is the Eternal City, remaining today a political capital, a religious centre, and a memorial to the creative imagination of the past.\n- Rome - Wikipedia (https://en.wikipedia.org/wiki/Rome):\n  [Jump to content](https://en.wikipedia.org/wiki/Rome#bodyContent). *   [(Top)](https://en.wikipedia.org/wiki/Rome#). *   [1 Name and symbol](https://en.wikipedia.org/wiki/Rome#Name_and_symbol)Toggle Name and symbol subsection. *   [1.1 Etymology](https://en.wikipedia.org/wiki/Rome#Etymology). *   [1.2 Other names and symbols](https://en.wikipedia.org/wiki/Rome#Other_names_and_symbols). *   [2 History](https://en.wikipedia.org/wiki/Rome#History)Toggle History subsection. *   [2.1 Earliest history](https://en.wikipedia.org/wiki/Rome#Earliest_history). *   [2.2 Monarchy and republic](https://en.wikipedia.org/wiki/Rome#Monarchy_and_republic). *   [2.3 Empire](https://en.wikipedia.org/wiki/Rome#Empire). *   [3.1 Location](https://en.wikipedia.org/wiki/Rome#Location). *   [3.3 Climate](https://en.wikipedia.org/wiki/Rome#Climate). *   [4.2 Language](https://en.wikipedia.org/wiki/Rome#Language). *   [4.3 Religion](https://en.wikipedia.org/wiki/Rome#Religion). *   [6.1 Tourism](https://en.wikipedia.org/wiki/Rome#Tourism). *   [7 Education](https://en.wikipedia.org/wiki/Rome#Education). *   [8.1 Architecture](https://en.wikipedia.org/wiki/Rome#Architecture). *   [8.1.2 Statues](https://en.wikipedia.org/wiki/Rome#Statues). *   [8.1.4 Bridges](https://en.wikipedia.org/wiki/Rome#Bridges). *   [8.1.5 Catacombs](https://en.wikipedia.org/wiki/Rome#Catacombs). *   [8.3 Fashion](https://en.wikipedia.org/wiki/Rome#Fashion). *   [8.4 Cuisine](https://en.wikipedia.org/wiki/Rome#Cuisine). *   [8.5 Cinema](https://en.wikipedia.org/wiki/Rome#Cinema). *   [8.6 Sports](https://en.wikipedia.org/wiki/Rome#Sports). *   [9 Transport](https://en.wikipedia.org/wiki/Rome#Transport). *   [10 See also](https://en.wikipedia.org/wiki/Rome#See_also). *   [11 Notes](https://en.wikipedia.org/wiki/Rome#Notes). *   [12 References](https://en.wikipedia.org/wiki/Rome#References). *   [13 Bibliography](https://en.wikipedia.org/wiki/Rome#Bibliography). *   [Afrikaans](https://af.wikipedia.org/wiki/Rome \"Rome â Afrikaans\"). *   [FranÃ§ais](https://fr.wikipedia.org/wiki/Rome \"Rome â French\"). *   [Nouormand](https://nrm.wikipedia.org/wiki/Rome \"Rome â Norman\"). *   [Picard](https://pcd.wikipedia.org/wiki/Rome \"Rome â Picard\"). *   [Article](https://en.wikipedia.org/wiki/Rome \"View the content page [c]\"). *   [Read](https://en.wikipedia.org/wiki/Rome). *   [Read](https://en.wikipedia.org/wiki/Rome). | Etymology: various theories (See _[Etymology](https://en.wikipedia.org/wiki/Rome#Etymology)_). | Country | Italy[[a]](https://en.wikipedia.org/wiki/Rome#cite_note-1) |. | Area [[2]](https://en.wikipedia.org/wiki/Rome#cite_note-area-3) |. | Population (2025)[[3]](https://en.wikipedia.org/wiki/Rome#cite_note-population-4) |. | GDP (nominal, 2023) [[4]](https://en.wikipedia.org/wiki/Rome#cite_note-5) |. *   [Rome](https://en.wikipedia.org/wiki/Category:Rome \"Category:Rome\"). 269 languages[Add topic](https://en.wikipedia.org/wiki/Rome#).\n- Rome Tourism and Travel Guide - Visitors Travel Guide (https://www.rome.net):\n  With its unparalleled **history**, Rome is the 3rd most visited city in Europe and the 14th worldwide.It attracts visitors from all over the world who come to discover the cityâs impressive **monuments and archaeological sites**; not to mentionÂ its renowned **cuisine** andÂ its **lively atmosphere**. On thisÂ **guided tour of the Vatican Museums and the Sistine Chapel**, we\u0027ll see one of the most important art collections in the world. Travel back in time to Ancient Rome and discover the **Colosseum, the Roman Forum, and Palatine Hill** on this **guided tour with** **priority access**! With this ticket to the **Colosseum**, **Roman Forum**, **and Palatine Hill**, you will discover the greatness of the Roman Empire thanks to an **audio guide in English**. With this skip-the-lineÂ ticket for the **Pantheon**, you\u0027ll visit one of the most iconic **monuments from Ancient Rome**âa must-see in theÂ Eternal City!\n- Rome, Italy - Reddit (https://www.reddit.com/r/rome):\n  r/rome: The subreddit for the city of Rome, ancient and modern, including Vatican City, and seagulls. For general travel enquiries please\n- 12 Interesting Facts About Rome | WorldStrides (https://worldstrides.com/en-us/teachers/how-it-works/blog/12-interesting-facts-about-rome):\n  # 12 Interesting Facts About Rome. All roads lead to Rome, right? Rome, the âEternal City,â brims with ancient history, from the Colosseum to the port of Ostia Antica to majestic Vatican City and the Sistine Chapel. The proceeds are donated to Caritas to help those in need. Each Roman mile was about 4,800 feet and marked by a milestone, giving birth to the saying âAll roads lead to Rome.â. 4. In Ancient Rome, only free-born men were allowed to wear togas, a sign of Roman citizenship. 5. The mascot of Rome is a she-wolf that cared for brothers Romulus and Remus, the mythological founders of Rome. 7. Law in Rome allows cats to live without disruption in the place they were born. Romeâs first university, La Sapienza, established in 1303 AD, is the largest in Europe and the second largest in the world. WorldStrides educational travel programs offer adventure and unique experiences for students of all ages, in the US and abroad.\n\n[3] Budget Estimate\n--------------------------------------------------\n- Duration: 2 days\n- Hotel per Day: 100.00\n- Food per Day: 40.00\n- Transport per Day: 30.00\n- Misc per Day: 15.00\n\nBudget Breakdown:\n  * Hotel: 200.00\n  * Food: 80.00\n  * Transport: 60.00\n  * Misc: 30.00\n\n[4] Weather Forecast\n--------------------------------------------------\n- Location: Rome\n- Condition: Sunny\n- Temperature: 26.1Â°C\n- Humidity: 75.0%\n- Wind Speed: 2.6 km/h\n- Severity: GOOD\n- Provider: open-meteo\n",
+    "source":  "EMBABEL"
+}

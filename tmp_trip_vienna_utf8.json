@@ -1,0 +1,202 @@
+﻿{
+    "goal":  "Plan a trip to Vienna",
+    "classifiedIntent":  "TRAVEL_PLAN",
+    "classification":  "embabel_runtime",
+    "status":  "COMPLETED",
+    "steps":  [
+                  {
+                      "order":  1,
+                      "title":  "extractConstraints",
+                      "details":  "Extract travel constraints from user prompt",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "Duration: 3 days, Budget: STANDARD, Style: LEISURE"
+                  },
+                  {
+                      "order":  2,
+                      "title":  "extractDestination",
+                      "details":  "Extract destination from user prompt",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "Vienna"
+                  },
+                  {
+                      "order":  3,
+                      "title":  "calculateBudget",
+                      "details":  "Calculate travel budget for destination",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "Destination: Vienna\nDuration: 3 days\nTotal Estimate: 555.00\nBreakdown:\n  * Hotel: 300.00\n  * Food: 120.00\n  * Transport: 90.00\n  * Misc: 45.00"
+                  },
+                  {
+                      "order":  4,
+                      "title":  "getWeather",
+                      "details":  "Get weather forecast for destination",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "Location: Vienna\nCondition: Mostly Sunny\nTemperature: 24.7Â°C\nHumidity: 49.0%\nWind Speed: 7.1 km/h\nSeverity: GOOD\nProvider: open-meteo"
+                  },
+                  {
+                      "order":  5,
+                      "title":  "executeSearch",
+                      "details":  "Search travel details for destination",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "Provider: tavily, Query: Vienna\n- Vienna - Wikipedia (https://en.wikipedia.org/wiki/Vienna): # Vienna. | Flag of Vienna Flag  Official seal of Vienna Seal  Coat of arms of Vienna Coat of arms  Official logo of Vienna Logo | |. | Vienna is located in Austria Vienna  Vienna  Location within Austria Show map of Austria  Vienna is located in Europe Vienna  Vienna  Location within Europe Show map of Europe | |. Vienna is located in Austria. Vienna is located in Europe. Vienna is the cultural, economic, and political centre of the country, the fifth-largest city by population in the European Union, and the most populous of the cities on the river Danube. The city lies on the eastern edge of the Vienna Woods (*Wienerwald*), the northeasternmost foothills of the Alps, that separate Vienna from the more western parts of Austria, at the transition to the Pannonian Basin. During the 16th century, the Habsburgs, who had succeeded the Babenbergs, established Vienna as the seat of the emperors of the Holy Roman Empire, a position it held until the empire\u0027s dissolution in 1806, with only a brief interruption.\n- Vienna\u0027s online travel guide: the latest information and services ... (https://www.wien.info/en): Outdoor furniture at the MuseumsQuarter in Vienna. ### City oases in the open air. ### Explore Viennaâs Taverns and Beisl with ivie. # The official travel guide of the City of Vienna. ## ivie - The official city guide app. ivie, the digital city guide for Vienna, is your perfect companion. ### Summer in Vienna. That summer feeling is coming: summer in Vienna offers numerous outdoor activities, open-air events and cozy places to relax. Summer day on the Old Danube, boats in the water, Vienna skyline in the background. Two women walking in the city center of Vienna. An overview of Vienna\u0027s main sights from A to Z at a glance. ### ivie App. ivie is the digital city guide app for Vienna. The Vienna City Card is the perfect companion for exploring Vienna. Our event search feature presents you with a selection of events in Vienna. Tips for a visit to Vienna with the kids.\n- A guide to Vienna for visitors (https://www.visitingvienna.com/visitorinfo/introduction-to-vienna): # A Guide to Vienna. This article is going to be biased because I live here and love the city. But let me just introduce you to a few topics that should help you find your way around Vienna (literally and figuratively) as you consider or plan a visit. Weâll look (briefly) at what the city offers visitors, its history, its layout, and some basic information on issues like public transport and languages. + What to do in a day. + What to do in the evening. This really is a beautiful clean city full of urban charm, with a rich and long history, lots of culture, plenty to see and do (also with children), excellent services and amenities, and a selection of cakes that will do evil things to your willpower. Many people choose to visit the landmarks associated with the famous composers, such as their homes, or listen to their works in one of the cityâs (often historical) concert venues: Vienna has one of the worldâs greatest opera houses and one of itâs best classical music concert halls.\n- Vienna | History, Population, \u0026 Facts | Britannica (https://www.britannica.com/place/Vienna): Neptune\u0027s Fountain (foreground) and the Gloriette, on the grounds of Schloss SchÃ¶nbrunn, Vienna. # Vienna. Encyclopaedia Britannica\u0027s editors oversee subject areas in which they have extensive knowledge, whether from years of experience gained by working on that content or via study for an advanced degree.... * What is Vienna known for? * What are some famous landmarks or buildings in Vienna? In 1955 the State Treaty, by which the country regained independence, was signed with the four occupying powers, and Vienna became once again the capital of a sovereign Austria. Observe Vienna\u0027s Schloss SchÃ¶nbrunn, Gothic St. Stephen\u0027s Cathedral, and postmodern Haas Haus buildingOnce the seat of the Austro-Hungarian Empire, Vienna is filled with majestic sights, both old and new. It is still possible to live in Vienna at almost the same pace and in much the same style as it was a century ago. Tour Vienna\u0027s Rococo, Gothic, and postmodern buildings and learn about the city\u0027s imperial pastAn introduction to Vienna, Austria.\n- City of Vienna - Information and services of the City of Vienna (https://www.wien.gv.at/en): # German classes in parks. ## News. ## Caution with gas appliances in summer. ## Public baths. ## Recognition of foreign university degrees. ## Libraries in Vienna. ## Events. ### Material Worlds. Information for visitors on hotels, events and attractions. Useful information for making contact with the City of Vienna. Advice and assistance on all issues relating to your professional and personal start in Vienna. ## Vienna Water audio guide. With the free audio guide you can visit specific sights from the comfort of your home. ## Smart City. The project combines measures for an intelligent and sustainable city with ample opportunities for the future. ## Mayor Michael Ludwig. * Mayor\u0027s press conÂ­ferÂ­ence. ## Contact. **City of Vienna - wien.gv.at-English Edition**. ### Diesen Inhalt teilen. ### Diesen Inhalt einbetten. Der eingebettete Inhalt aktualisiert sich automatisch, sobald wir ihn auf wien.gv.at Ã¤ndern. ### Informationen zum Inhalt. Dieser Inhalt wird von der Stadt Wien kostenfrei gemÃ¤Ã Creative Commons CC-BY 4.0 zur VerfÃ¼gung gestellt."
+                  },
+                  {
+                      "order":  6,
+                      "title":  "composeTravelPlan",
+                      "details":  "Compose travel plan report",
+                      "agent":  "TravelPlannerAgent",
+                      "output":  "==================================================\nTRIP PLAN: Vienna\n==================================================\n\n[1] Travel Summary\n--------------------------------------------------\nItinerary and cost calculations successfully finalized.\nDestination is verified via active search.\nTotal trip cost: 555.00\n\n[2] Search Highlights\n--------------------------------------------------\n- Vienna - Wikipedia (https://en.wikipedia.org/wiki/Vienna):\n  # Vienna. | Flag of Vienna Flag  Official seal of Vienna Seal  Coat of arms of Vienna Coat of arms  Official logo of Vienna Logo | |. | Vienna is located in Austria Vienna  Vienna  Location within Austria Show map of Austria  Vienna is located in Europe Vienna  Vienna  Location within Europe Show map of Europe | |. Vienna is located in Austria. Vienna is located in Europe. Vienna is the cultural, economic, and political centre of the country, the fifth-largest city by population in the European Union, and the most populous of the cities on the river Danube. The city lies on the eastern edge of the Vienna Woods (*Wienerwald*), the northeasternmost foothills of the Alps, that separate Vienna from the more western parts of Austria, at the transition to the Pannonian Basin. During the 16th century, the Habsburgs, who had succeeded the Babenbergs, established Vienna as the seat of the emperors of the Holy Roman Empire, a position it held until the empire\u0027s dissolution in 1806, with only a brief interruption.\n- Vienna\u0027s online travel guide: the latest information and services ... (https://www.wien.info/en):\n  Outdoor furniture at the MuseumsQuarter in Vienna. ### City oases in the open air. ### Explore Viennaâs Taverns and Beisl with ivie. # The official travel guide of the City of Vienna. ## ivie - The official city guide app. ivie, the digital city guide for Vienna, is your perfect companion. ### Summer in Vienna. That summer feeling is coming: summer in Vienna offers numerous outdoor activities, open-air events and cozy places to relax. Summer day on the Old Danube, boats in the water, Vienna skyline in the background. Two women walking in the city center of Vienna. An overview of Vienna\u0027s main sights from A to Z at a glance. ### ivie App. ivie is the digital city guide app for Vienna. The Vienna City Card is the perfect companion for exploring Vienna. Our event search feature presents you with a selection of events in Vienna. Tips for a visit to Vienna with the kids.\n- A guide to Vienna for visitors (https://www.visitingvienna.com/visitorinfo/introduction-to-vienna):\n  # A Guide to Vienna. This article is going to be biased because I live here and love the city. But let me just introduce you to a few topics that should help you find your way around Vienna (literally and figuratively) as you consider or plan a visit. Weâll look (briefly) at what the city offers visitors, its history, its layout, and some basic information on issues like public transport and languages. + What to do in a day. + What to do in the evening. This really is a beautiful clean city full of urban charm, with a rich and long history, lots of culture, plenty to see and do (also with children), excellent services and amenities, and a selection of cakes that will do evil things to your willpower. Many people choose to visit the landmarks associated with the famous composers, such as their homes, or listen to their works in one of the cityâs (often historical) concert venues: Vienna has one of the worldâs greatest opera houses and one of itâs best classical music concert halls.\n- Vienna | History, Population, \u0026 Facts | Britannica (https://www.britannica.com/place/Vienna):\n  Neptune\u0027s Fountain (foreground) and the Gloriette, on the grounds of Schloss SchÃ¶nbrunn, Vienna. # Vienna. Encyclopaedia Britannica\u0027s editors oversee subject areas in which they have extensive knowledge, whether from years of experience gained by working on that content or via study for an advanced degree.... * What is Vienna known for? * What are some famous landmarks or buildings in Vienna? In 1955 the State Treaty, by which the country regained independence, was signed with the four occupying powers, and Vienna became once again the capital of a sovereign Austria. Observe Vienna\u0027s Schloss SchÃ¶nbrunn, Gothic St. Stephen\u0027s Cathedral, and postmodern Haas Haus buildingOnce the seat of the Austro-Hungarian Empire, Vienna is filled with majestic sights, both old and new. It is still possible to live in Vienna at almost the same pace and in much the same style as it was a century ago. Tour Vienna\u0027s Rococo, Gothic, and postmodern buildings and learn about the city\u0027s imperial pastAn introduction to Vienna, Austria.\n- City of Vienna - Information and services of the City of Vienna (https://www.wien.gv.at/en):\n  # German classes in parks. ## News. ## Caution with gas appliances in summer. ## Public baths. ## Recognition of foreign university degrees. ## Libraries in Vienna. ## Events. ### Material Worlds. Information for visitors on hotels, events and attractions. Useful information for making contact with the City of Vienna. Advice and assistance on all issues relating to your professional and personal start in Vienna. ## Vienna Water audio guide. With the free audio guide you can visit specific sights from the comfort of your home. ## Smart City. The project combines measures for an intelligent and sustainable city with ample opportunities for the future. ## Mayor Michael Ludwig. * Mayor\u0027s press conÂ­ferÂ­ence. ## Contact. **City of Vienna - wien.gv.at-English Edition**. ### Diesen Inhalt teilen. ### Diesen Inhalt einbetten. Der eingebettete Inhalt aktualisiert sich automatisch, sobald wir ihn auf wien.gv.at Ã¤ndern. ### Informationen zum Inhalt. Dieser Inhalt wird von der Stadt Wien kostenfrei gemÃ¤Ã Creative Commons CC-BY 4.0 zur VerfÃ¼gung gestellt.\n\n[3] Budget Estimate\n--------------------------------------------------\n- Duration: 3 days\n- Hotel per Day: 100.00\n- Food per Day: 40.00\n- Transport per Day: 30.00\n- Misc per Day: 15.00\n\nBudget Breakdown:\n  * Hotel: 300.00\n  * Food: 120.00\n  * Transport: 90.00\n  * Misc: 45.00\n\n[4] Weather Forecast\n--------------------------------------------------\n- Location: Vienna\n- Condition: Mostly Sunny\n- Temperature: 24.7Â°C\n- Humidity: 49.0%\n- Wind Speed: 7.1 km/h\n- Severity: GOOD\n- Provider: open-meteo\n"
+                  }
+              ],
+    "trace":  [
+                  {
+                      "action":  "extractConstraints",
+                      "state_before":  [
+                                           "UserInput"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "UserInput"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "TravelConstraints"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints"
+                                      ]
+                  },
+                  {
+                      "action":  "extractDestination",
+                      "state_before":  [
+                                           "UserInput",
+                                           "TravelConstraints"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "UserInput"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "Destination"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints",
+                                          "Destination"
+                                      ]
+                  },
+                  {
+                      "action":  "calculateBudget",
+                      "state_before":  [
+                                           "UserInput",
+                                           "TravelConstraints",
+                                           "Destination"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "Destination",
+                                                    "TravelConstraints"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "BudgetEstimate"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints",
+                                          "Destination",
+                                          "BudgetEstimate"
+                                      ]
+                  },
+                  {
+                      "action":  "getWeather",
+                      "state_before":  [
+                                           "UserInput",
+                                           "TravelConstraints",
+                                           "Destination",
+                                           "BudgetEstimate"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "Destination"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "WeatherReport"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints",
+                                          "Destination",
+                                          "BudgetEstimate",
+                                          "WeatherReport"
+                                      ]
+                  },
+                  {
+                      "action":  "executeSearch",
+                      "state_before":  [
+                                           "UserInput",
+                                           "TravelConstraints",
+                                           "Destination",
+                                           "BudgetEstimate",
+                                           "WeatherReport"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "Destination"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "SearchResponse"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints",
+                                          "Destination",
+                                          "BudgetEstimate",
+                                          "WeatherReport",
+                                          "SearchResponse"
+                                      ]
+                  },
+                  {
+                      "action":  "composeTravelPlan",
+                      "state_before":  [
+                                           "UserInput",
+                                           "TravelConstraints",
+                                           "Destination",
+                                           "BudgetEstimate",
+                                           "WeatherReport",
+                                           "SearchResponse"
+                                       ],
+                      "preconditions_checked":  [
+                                                    "SearchResponse",
+                                                    "BudgetEstimate",
+                                                    "WeatherReport"
+                                                ],
+                      "missing_preconditions":  [
+
+                                                ],
+                      "effects_applied":  [
+                                              "TravelPlanReport"
+                                          ],
+                      "state_after":  [
+                                          "UserInput",
+                                          "TravelConstraints",
+                                          "Destination",
+                                          "BudgetEstimate",
+                                          "WeatherReport",
+                                          "SearchResponse",
+                                          "TravelPlanReport"
+                                      ]
+                  }
+              ],
+    "mermaidDiagram":  "flowchart TD\n  calculateBudget --\u003e composeBudgetInfo\n  calculateBudget --\u003e composeTravelPlan\n  executeSearch --\u003e composeDestinationInfo\n  executeSearch --\u003e composeTravelPlan\n  extractConstraints --\u003e calculateBudget\n  extractDestination --\u003e calculateBudget\n  extractDestination --\u003e executeSearch\n  extractDestination --\u003e getWeather\n  getWeather --\u003e composeTravelPlan\n  getWeather --\u003e composeWeatherInfo",
+    "summary":  "==================================================\nTRIP PLAN: Vienna\n==================================================\n\n[1] Travel Summary\n--------------------------------------------------\nItinerary and cost calculations successfully finalized.\nDestination is verified via active search.\nTotal trip cost: 555.00\n\n[2] Search Highlights\n--------------------------------------------------\n- Vienna - Wikipedia (https://en.wikipedia.org/wiki/Vienna):\n  # Vienna. | Flag of Vienna Flag  Official seal of Vienna Seal  Coat of arms of Vienna Coat of arms  Official logo of Vienna Logo | |. | Vienna is located in Austria Vienna  Vienna  Location within Austria Show map of Austria  Vienna is located in Europe Vienna  Vienna  Location within Europe Show map of Europe | |. Vienna is located in Austria. Vienna is located in Europe. Vienna is the cultural, economic, and political centre of the country, the fifth-largest city by population in the European Union, and the most populous of the cities on the river Danube. The city lies on the eastern edge of the Vienna Woods (*Wienerwald*), the northeasternmost foothills of the Alps, that separate Vienna from the more western parts of Austria, at the transition to the Pannonian Basin. During the 16th century, the Habsburgs, who had succeeded the Babenbergs, established Vienna as the seat of the emperors of the Holy Roman Empire, a position it held until the empire\u0027s dissolution in 1806, with only a brief interruption.\n- Vienna\u0027s online travel guide: the latest information and services ... (https://www.wien.info/en):\n  Outdoor furniture at the MuseumsQuarter in Vienna. ### City oases in the open air. ### Explore Viennaâs Taverns and Beisl with ivie. # The official travel guide of the City of Vienna. ## ivie - The official city guide app. ivie, the digital city guide for Vienna, is your perfect companion. ### Summer in Vienna. That summer feeling is coming: summer in Vienna offers numerous outdoor activities, open-air events and cozy places to relax. Summer day on the Old Danube, boats in the water, Vienna skyline in the background. Two women walking in the city center of Vienna. An overview of Vienna\u0027s main sights from A to Z at a glance. ### ivie App. ivie is the digital city guide app for Vienna. The Vienna City Card is the perfect companion for exploring Vienna. Our event search feature presents you with a selection of events in Vienna. Tips for a visit to Vienna with the kids.\n- A guide to Vienna for visitors (https://www.visitingvienna.com/visitorinfo/introduction-to-vienna):\n  # A Guide to Vienna. This article is going to be biased because I live here and love the city. But let me just introduce you to a few topics that should help you find your way around Vienna (literally and figuratively) as you consider or plan a visit. Weâll look (briefly) at what the city offers visitors, its history, its layout, and some basic information on issues like public transport and languages. + What to do in a day. + What to do in the evening. This really is a beautiful clean city full of urban charm, with a rich and long history, lots of culture, plenty to see and do (also with children), excellent services and amenities, and a selection of cakes that will do evil things to your willpower. Many people choose to visit the landmarks associated with the famous composers, such as their homes, or listen to their works in one of the cityâs (often historical) concert venues: Vienna has one of the worldâs greatest opera houses and one of itâs best classical music concert halls.\n- Vienna | History, Population, \u0026 Facts | Britannica (https://www.britannica.com/place/Vienna):\n  Neptune\u0027s Fountain (foreground) and the Gloriette, on the grounds of Schloss SchÃ¶nbrunn, Vienna. # Vienna. Encyclopaedia Britannica\u0027s editors oversee subject areas in which they have extensive knowledge, whether from years of experience gained by working on that content or via study for an advanced degree.... * What is Vienna known for? * What are some famous landmarks or buildings in Vienna? In 1955 the State Treaty, by which the country regained independence, was signed with the four occupying powers, and Vienna became once again the capital of a sovereign Austria. Observe Vienna\u0027s Schloss SchÃ¶nbrunn, Gothic St. Stephen\u0027s Cathedral, and postmodern Haas Haus buildingOnce the seat of the Austro-Hungarian Empire, Vienna is filled with majestic sights, both old and new. It is still possible to live in Vienna at almost the same pace and in much the same style as it was a century ago. Tour Vienna\u0027s Rococo, Gothic, and postmodern buildings and learn about the city\u0027s imperial pastAn introduction to Vienna, Austria.\n- City of Vienna - Information and services of the City of Vienna (https://www.wien.gv.at/en):\n  # German classes in parks. ## News. ## Caution with gas appliances in summer. ## Public baths. ## Recognition of foreign university degrees. ## Libraries in Vienna. ## Events. ### Material Worlds. Information for visitors on hotels, events and attractions. Useful information for making contact with the City of Vienna. Advice and assistance on all issues relating to your professional and personal start in Vienna. ## Vienna Water audio guide. With the free audio guide you can visit specific sights from the comfort of your home. ## Smart City. The project combines measures for an intelligent and sustainable city with ample opportunities for the future. ## Mayor Michael Ludwig. * Mayor\u0027s press conÂ­ferÂ­ence. ## Contact. **City of Vienna - wien.gv.at-English Edition**. ### Diesen Inhalt teilen. ### Diesen Inhalt einbetten. Der eingebettete Inhalt aktualisiert sich automatisch, sobald wir ihn auf wien.gv.at Ã¤ndern. ### Informationen zum Inhalt. Dieser Inhalt wird von der Stadt Wien kostenfrei gemÃ¤Ã Creative Commons CC-BY 4.0 zur VerfÃ¼gung gestellt.\n\n[3] Budget Estimate\n--------------------------------------------------\n- Duration: 3 days\n- Hotel per Day: 100.00\n- Food per Day: 40.00\n- Transport per Day: 30.00\n- Misc per Day: 15.00\n\nBudget Breakdown:\n  * Hotel: 300.00\n  * Food: 120.00\n  * Transport: 90.00\n  * Misc: 45.00\n\n[4] Weather Forecast\n--------------------------------------------------\n- Location: Vienna\n- Condition: Mostly Sunny\n- Temperature: 24.7Â°C\n- Humidity: 49.0%\n- Wind Speed: 7.1 km/h\n- Severity: GOOD\n- Provider: open-meteo\n",
+    "source":  "EMBABEL"
+}
