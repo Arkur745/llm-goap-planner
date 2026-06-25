@@ -134,7 +134,7 @@ export function GoalInputPage() {
               fontSize: { xs: "1rem", sm: "1.05rem" },
             }}
           >
-            Describe your objective in natural language. The planner will decompose it into an executable multi-agent workflow.
+            Describe your objective in natural language or use the form wizard. The planner will decompose it into an executable multi-agent workflow.
           </Typography>
         </Stack>
 
@@ -143,6 +143,7 @@ export function GoalInputPage() {
           <GoalSubmissionForm
             control={form.control}
             register={form.register}
+            setValue={form.setValue}
             errors={form.formState.errors}
             isSubmitting={isSubmitting}
             onSubmit={submit}
@@ -161,7 +162,7 @@ export function GoalInputPage() {
           >
             <InfoIcon />
             <Typography variant="caption" color="text.secondary" sx={{ letterSpacing: "-0.01em" }}>
-              Requires a minimum of 3 characters. Your goal is parsed securely before plan generation.
+              Your goal is parsed securely before plan generation.
             </Typography>
           </Box>
         </Box>

@@ -125,6 +125,51 @@ public class AirbnbService {
         }
         
         // Fallback or Mock listings if empty
+        if (listings.isEmpty() && chatModel != null) {
+            try {
+                logger.info("AirbnbService: Web search empty, requesting LLM estimation for {}", destination);
+                String prompt = String.format(
+                    "Generate 3 realistic homestay/hotel/Airbnb accommodation options for the destination: %s.\n" +
+                    "For each option, provide a realistic name, average nightly rate (e.g. $75/night), traveler rating (e.g. 4.8), a mock booking link (e.g. https://www.airbnb.com/rooms/12345), and a brief description.\n" +
+                    "Output EXACTLY a JSON array of objects matching this structure (do not add any extra text or markdown formatting outside the JSON):\n" +
+                    "[\n" +
+                    "  {\n" +
+                    "    \"name\": \"Vienna Cozy Studio\",\n" +
+                    "    \"price\": \"$85/night\",\n" +
+                    "    \"rating\": \"4.8\",\n" +
+                    "    \"link\": \"https://www.airbnb.com/rooms/1\",\n" +
+                    "    \"description\": \"Charming studio apartment near city center with free WiFi.\"\n" +
+                    "  }\n" +
+                    "]",
+                    destination
+                );
+                String llmOutput = chatModel.call(prompt);
+                if (llmOutput.contains("```")) {
+                    int start = llmOutput.indexOf("[");
+                    int end = llmOutput.lastIndexOf("]");
+                    if (start != -1 && end != -1 && end > start) {
+                        llmOutput = llmOutput.substring(start, end + 1);
+                    }
+                }
+                Pattern entryPattern = Pattern.compile("\\{\\s*\"name\"\\s*:\\s*\"([^\"]+)\"\\s*,\\s*\"price\"\\s*:\\s*\"([^\"]+)\"\\s*,\\s*\"rating\"\\s*:\\s*\"([^\"]+)\"\\s*,\\s*\"link\"\\s*:\\s*\"([^\"]+)\"\\s*,\\s*\"description\"\\s*:\\s*\"([^\"]+)\"\\s*\\}");
+                Matcher matcher = entryPattern.matcher(llmOutput.replaceAll("\\s*\\r?\\n\\s*", " "));
+                while (matcher.find()) {
+                    String name = matcher.group(1);
+                    String price = matcher.group(2);
+                    String rating = matcher.group(3);
+                    String link = matcher.group(4);
+                    String description = matcher.group(5);
+                    if (link == null || link.contains("example") || link.contains("placeholder") || !link.startsWith("http")) {
+                        link = "https://www.airbnb.com/s/" + java.net.URLEncoder.encode(destination, java.nio.charset.StandardCharsets.UTF_8.name()) + "/homes";
+                    }
+                    listings.add(new AirbnbListing(name, price, rating, link, description));
+                }
+            } catch (Exception ex) {
+                logger.warn("AirbnbService: LLM fallback accommodation estimation failed: {}", ex.getMessage());
+            }
+        }
+
+        // Hardcoded fallback listings if still empty
         if (listings.isEmpty()) {
             listings.add(new AirbnbListing(
                 "Naga Heritage Homestay",

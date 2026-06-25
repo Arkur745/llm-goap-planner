@@ -52,7 +52,7 @@ public class TravelPlannerAgent {
     );
 
     private static final java.util.Set<String> STOP_WORDS = java.util.Set.of(
-        "for", "with", "on", "next", "this", "in", "to", "tomorrow", "today", "winter", "summer", "spring", "autumn", "fall", "week", "month", "year", "days", "day", "style", "budget", "luxury", "standard", "family", "solo", "adventure", "business", "leisure"
+        "for", "with", "on", "next", "this", "in", "to", "from", "tomorrow", "today", "winter", "summer", "spring", "autumn", "fall", "week", "month", "year", "days", "day", "style", "budget", "luxury", "standard", "family", "solo", "adventure", "business", "leisure"
     );
 
     private static final java.util.Set<String> DISALLOWED_DESTINATIONS = java.util.Set.of(
@@ -519,86 +519,172 @@ public class TravelPlannerAgent {
     }
 
     @Action(description = "Calculate travel budget for destination")
-    public BudgetEstimate calculateBudget(Destination dest, TravelConstraints constraints) {
+    public BudgetEstimate calculateBudget(Destination dest, TravelConstraints constraints, AccommodationList accommodations, RouteSummary route) {
         logger.info("Destination: Received Destination object on blackboard: {}", dest.name());
-        logger.info("calculateBudget: Calculating budget for destination={}, constraints={}", dest.name(), constraints);
+        logger.info("calculateBudget: Calculating budget for destination={}, constraints={}, accommodations={}, route={}", dest.name(), constraints, accommodations, route);
         
         int days = constraints.duration().days();
-        BigDecimal hotel = DEFAULT_HOTEL_RATE;
+        BigDecimal hotel = null;
+
+        // Try extracting average Airbnb hotel rate from listings first
+        if (accommodations != null && accommodations.listings() != null && !accommodations.listings().isEmpty()) {
+            BigDecimal sum = BigDecimal.ZERO;
+            int count = 0;
+            for (com.cps.mcp.airbnb.service.AirbnbService.AirbnbListing listing : accommodations.listings()) {
+                if (listing.price != null) {
+                    // Extract digits from e.g. "$45/night" or "50,000 INR/night"
+                    String cleanPrice = listing.price.replaceAll("[^0-9.]", "");
+                    if (!cleanPrice.isEmpty()) {
+                        try {
+                            sum = sum.add(new BigDecimal(cleanPrice));
+                            count++;
+                        } catch (Exception e) {
+                            // ignore parsing error
+                        }
+                    }
+                }
+            }
+            if (count > 0) {
+                hotel = sum.divide(BigDecimal.valueOf(count), 2, java.math.RoundingMode.HALF_UP);
+                logger.info("calculateBudget: Calculated average hotel rate from Airbnb listings: {}", hotel);
+            }
+        }
+
         BigDecimal food = DEFAULT_FOOD_RATE;
         BigDecimal transport = DEFAULT_TRANSPORT_RATE;
         BigDecimal misc = DEFAULT_MISC_RATE;
 
         boolean extractedDynamically = false;
-        boolean isMock = searchProvider == null || 
-                         searchProvider.getName() == null || 
-                         "MockProvider".equalsIgnoreCase(searchProvider.getName()) ||
-                         searchProvider.getClass().getName().contains("Mockito") ||
-                         searchProvider.getClass().getName().contains("Proxy");
-        if (chatModel != null && !isMock) {
-            try {
-                String query = "average daily cost hotel food transport for tourist in " + dest.name();
-                SearchResponse searchData = searchProvider.search(query);
-                StringBuilder searchContent = new StringBuilder();
-                if (searchData != null && searchData.getResults() != null) {
-                    for (com.cps.mcp.search.model.SearchResult r : searchData.getResults()) {
-                        searchContent.append(r.getTitle()).append(": ").append(r.getContent()).append("\n");
+
+        // If we couldn't get a hotel rate from listings, fall back to LLM estimation
+        if (hotel == null) {
+            hotel = DEFAULT_HOTEL_RATE;
+
+            boolean isMock = searchProvider == null || 
+                             searchProvider.getName() == null || 
+                             "MockProvider".equalsIgnoreCase(searchProvider.getName()) ||
+                             searchProvider.getClass().getName().contains("Mockito") ||
+                             searchProvider.getClass().getName().contains("Proxy");
+            if (chatModel != null && !isMock) {
+                try {
+                    String query = "average daily cost hotel food transport for tourist in " + dest.name();
+                    SearchResponse searchData = searchProvider.search(query);
+                    StringBuilder searchContent = new StringBuilder();
+                    if (searchData != null && searchData.getResults() != null) {
+                        for (com.cps.mcp.search.model.SearchResult r : searchData.getResults()) {
+                            searchContent.append(r.getTitle()).append(": ").append(r.getContent()).append("\n");
+                        }
                     }
-                }
-                
-                String prompt = "Based on the following search results about travel expenses in " + dest.name() + ", extract the average daily cost (in USD) for a standard/mid-range traveler.\n" +
-                        "Search Results:\n" + searchContent.toString() + "\n" +
-                        "Output EXACTLY a JSON object matching this structure (do not add any extra text or markdown formatting outside the JSON):\n" +
-                        "{\n" +
-                        "  \"hotel\": 100.00,\n" +
-                        "  \"food\": 40.00,\n" +
-                        "  \"transport\": 30.00,\n" +
-                        "  \"misc\": 15.00\n" +
-                        "}\n" +
-                        "Note: Provide reasonable estimates based on search results. Convert local currency to USD.";
-                
-                String llmOutput = chatModel.call(prompt);
-                if (llmOutput.contains("```")) {
-                    int start = llmOutput.indexOf("{");
-                    int end = llmOutput.lastIndexOf("}");
-                    if (start != -1 && end != -1 && end > start) {
-                        llmOutput = llmOutput.substring(start, end + 1);
+                    
+                    String prompt = "Based on the following search results about travel expenses in " + dest.name() + ", extract the average daily cost (in USD) for a standard/mid-range traveler.\n" +
+                            "Search Results:\n" + searchContent.toString() + "\n" +
+                            "Output EXACTLY a JSON object matching this structure (do not add any extra text or markdown formatting outside the JSON):\n" +
+                            "{\n" +
+                            "  \"hotel\": 100.00,\n" +
+                            "  \"food\": 40.00,\n" +
+                            "  \"transport\": 30.00,\n" +
+                            "  \"misc\": 15.00\n" +
+                            "}\n" +
+                            "Note: Provide reasonable estimates based on search results. Convert local currency to USD.";
+                    
+                    String llmOutput = chatModel.call(prompt);
+                    if (llmOutput.contains("```")) {
+                        int start = llmOutput.indexOf("{");
+                        int end = llmOutput.lastIndexOf("}");
+                        if (start != -1 && end != -1 && end > start) {
+                            llmOutput = llmOutput.substring(start, end + 1);
+                        }
                     }
+                    
+                    java.util.regex.Pattern pHotel = java.util.regex.Pattern.compile("\"hotel\"\\s*:\\s*(\\d+(?:\\.\\d+)?)");
+                    java.util.regex.Matcher mHotel = pHotel.matcher(llmOutput);
+                    if (mHotel.find()) {
+                        hotel = new BigDecimal(mHotel.group(1));
+                        extractedDynamically = true;
+                    }
+                    
+                    java.util.regex.Pattern pFood = java.util.regex.Pattern.compile("\"food\"\\s*:\\s*(\\d+(?:\\.\\d+)?)");
+                    java.util.regex.Matcher mFood = pFood.matcher(llmOutput);
+                    if (mFood.find()) food = new BigDecimal(mFood.group(1));
+                    
+                    java.util.regex.Pattern pTrans = java.util.regex.Pattern.compile("\"transport\"\\s*:\\s*(\\d+(?:\\.\\d+)?)");
+                    java.util.regex.Matcher mTrans = pTrans.matcher(llmOutput);
+                    if (mTrans.find()) transport = new BigDecimal(mTrans.group(1));
+                    
+                    java.util.regex.Pattern pMisc = java.util.regex.Pattern.compile("\"misc\"\\s*:\\s*(\\d+(?:\\.\\d+)?)");
+                    java.util.regex.Matcher mMisc = pMisc.matcher(llmOutput);
+                    if (mMisc.find()) misc = new BigDecimal(mMisc.group(1));
+                    
+                    logger.info("Dynamic budget extraction succeeded: hotel={}, food={}, transport={}, misc={}", hotel, food, transport, misc);
+                } catch (Exception e) {
+                    logger.warn("Dynamic budget extraction failed: {}. Falling back to default/pre-defined rates.", e.getMessage());
                 }
-                
-                java.util.regex.Pattern pHotel = java.util.regex.Pattern.compile("\"hotel\"\\s*:\\s*(\\d+(?:\\.\\d+)?)");
-                java.util.regex.Matcher mHotel = pHotel.matcher(llmOutput);
-                if (mHotel.find()) {
-                    hotel = new BigDecimal(mHotel.group(1));
+            }
+        } else {
+            // We have hotel rate from Airbnb listings. We still try to extract food, transport, misc dynamically if LLM is available.
+            boolean isMock = searchProvider == null || 
+                             searchProvider.getName() == null || 
+                             "MockProvider".equalsIgnoreCase(searchProvider.getName()) ||
+                             searchProvider.getClass().getName().contains("Mockito") ||
+                             searchProvider.getClass().getName().contains("Proxy");
+            if (chatModel != null && !isMock) {
+                try {
+                    String query = "average daily cost food transport for tourist in " + dest.name();
+                    SearchResponse searchData = searchProvider.search(query);
+                    StringBuilder searchContent = new StringBuilder();
+                    if (searchData != null && searchData.getResults() != null) {
+                        for (com.cps.mcp.search.model.SearchResult r : searchData.getResults()) {
+                            searchContent.append(r.getTitle()).append(": ").append(r.getContent()).append("\n");
+                        }
+                    }
+                    
+                    String prompt = "Based on the following search results about travel expenses in " + dest.name() + ", extract the average daily cost (in USD) for a standard/mid-range traveler.\n" +
+                            "Search Results:\n" + searchContent.toString() + "\n" +
+                            "Output EXACTLY a JSON object matching this structure (do not add any extra text or markdown formatting outside the JSON):\n" +
+                            "{\n" +
+                            "  \"food\": 40.00,\n" +
+                            "  \"transport\": 30.00,\n" +
+                            "  \"misc\": 15.00\n" +
+                            "}\n" +
+                            "Note: Provide reasonable estimates based on search results. Convert local currency to USD.";
+                    
+                    String llmOutput = chatModel.call(prompt);
+                    if (llmOutput.contains("```")) {
+                        int start = llmOutput.indexOf("{");
+                        int end = llmOutput.lastIndexOf("}");
+                        if (start != -1 && end != -1 && end > start) {
+                            llmOutput = llmOutput.substring(start, end + 1);
+                        }
+                    }
+                    
+                    java.util.regex.Pattern pFood = java.util.regex.Pattern.compile("\"food\"\\s*:\\s*(\\d+(?:\\.\\d+)?)");
+                    java.util.regex.Matcher mFood = pFood.matcher(llmOutput);
+                    if (mFood.find()) food = new BigDecimal(mFood.group(1));
+                    
+                    java.util.regex.Pattern pTrans = java.util.regex.Pattern.compile("\"transport\"\\s*:\\s*(\\d+(?:\\.\\d+)?)");
+                    java.util.regex.Matcher mTrans = pTrans.matcher(llmOutput);
+                    if (mTrans.find()) transport = new BigDecimal(mTrans.group(1));
+                    
+                    java.util.regex.Pattern pMisc = java.util.regex.Pattern.compile("\"misc\"\\s*:\\s*(\\d+(?:\\.\\d+)?)");
+                    java.util.regex.Matcher mMisc = pMisc.matcher(llmOutput);
+                    if (mMisc.find()) misc = new BigDecimal(mMisc.group(1));
+                    
                     extractedDynamically = true;
+                    logger.info("Dynamic food/transport extraction succeeded: food={}, transport={}, misc={}", food, transport, misc);
+                } catch (Exception e) {
+                    logger.warn("Dynamic food/transport extraction failed: {}. Using default values.", e.getMessage());
                 }
-                
-                java.util.regex.Pattern pFood = java.util.regex.Pattern.compile("\"food\"\\s*:\\s*(\\d+(?:\\.\\d+)?)");
-                java.util.regex.Matcher mFood = pFood.matcher(llmOutput);
-                if (mFood.find()) food = new BigDecimal(mFood.group(1));
-                
-                java.util.regex.Pattern pTrans = java.util.regex.Pattern.compile("\"transport\"\\s*:\\s*(\\d+(?:\\.\\d+)?)");
-                java.util.regex.Matcher mTrans = pTrans.matcher(llmOutput);
-                if (mTrans.find()) transport = new BigDecimal(mTrans.group(1));
-                
-                java.util.regex.Pattern pMisc = java.util.regex.Pattern.compile("\"misc\"\\s*:\\s*(\\d+(?:\\.\\d+)?)");
-                java.util.regex.Matcher mMisc = pMisc.matcher(llmOutput);
-                if (mMisc.find()) misc = new BigDecimal(mMisc.group(1));
-                
-                logger.info("Dynamic budget extraction succeeded: hotel={}, food={}, transport={}, misc={}", hotel, food, transport, misc);
-            } catch (Exception e) {
-                logger.warn("Dynamic budget extraction failed: {}. Falling back to default/pre-defined rates.", e.getMessage());
             }
         }
 
         if (!extractedDynamically) {
             if ("Prague".equalsIgnoreCase(dest.name())) {
-                hotel = new BigDecimal("150.00");
+                if (hotel == DEFAULT_HOTEL_RATE) hotel = new BigDecimal("150.00");
                 food = new BigDecimal("50.00");
                 transport = new BigDecimal("40.00");
                 misc = new BigDecimal("20.00");
             } else if ("Tokyo".equalsIgnoreCase(dest.name())) {
-                hotel = new BigDecimal("120.00");
+                if (hotel == DEFAULT_HOTEL_RATE) hotel = new BigDecimal("120.00");
                 food = new BigDecimal("60.00");
                 transport = new BigDecimal("50.00");
                 misc = new BigDecimal("25.00");
