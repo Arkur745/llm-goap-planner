@@ -72,6 +72,12 @@ public class TravelPlannerAgent {
         this.weatherProvider = weatherProvider;
     }
 
+    @Autowired
+    private com.cps.mcp.maps.service.GoogleMapsService googleMapsService;
+
+    @Autowired
+    private com.cps.mcp.airbnb.service.AirbnbService airbnbService;
+
     // --- Strongly Typed Blackboard DTOs ---
 
     public static class Destination {
@@ -86,6 +92,22 @@ public class TravelPlannerAgent {
         public TravelPlanReport(String content) { this.content = content; }
         public String content() { return content; }
         @Override public String toString() { return content; }
+    }
+
+    public static class RouteSummary {
+        private final com.cps.mcp.maps.service.GoogleMapsService.RouteInfo routeInfo;
+        public RouteSummary(com.cps.mcp.maps.service.GoogleMapsService.RouteInfo routeInfo) { this.routeInfo = routeInfo; }
+        public com.cps.mcp.maps.service.GoogleMapsService.RouteInfo routeInfo() { return routeInfo; }
+        @Override public String toString() { return routeInfo != null ? routeInfo.toString() : "No Route Info"; }
+    }
+
+    public static class AccommodationList {
+        private final List<com.cps.mcp.airbnb.service.AirbnbService.AirbnbListing> listings;
+        public AccommodationList(List<com.cps.mcp.airbnb.service.AirbnbService.AirbnbListing> listings) { this.listings = listings; }
+        public List<com.cps.mcp.airbnb.service.AirbnbService.AirbnbListing> listings() { return listings; }
+        @Override public String toString() {
+            return listings.stream().map(Object::toString).collect(Collectors.joining("\n"));
+        }
     }
 
     // --- Reflection Helper ---
@@ -419,6 +441,30 @@ public class TravelPlannerAgent {
         }
     }
 
+    @Action(description = "Get route and travel directions details for destination")
+    public RouteSummary getRouteDetails(Destination dest, UserInput input) {
+        logger.info("getRouteDetails: Calculating directions for destination={}", dest.name());
+        String origin = "Gateway/Center";
+        String content = getUserInputContent(input);
+        if (content != null && content.toLowerCase().contains("from")) {
+            int fromIdx = content.toLowerCase().indexOf("from");
+            String suffix = content.substring(fromIdx + 4).trim();
+            String[] tokens = suffix.split(" ");
+            if (tokens.length > 0) {
+                origin = tokens[0].replaceAll("[^a-zA-Z]", "");
+            }
+        }
+        com.cps.mcp.maps.service.GoogleMapsService.RouteInfo info = googleMapsService.getDirections(origin, dest.name());
+        return new RouteSummary(info);
+    }
+
+    @Action(description = "Search Airbnb homestay options for destination")
+    public AccommodationList getAirbnbAccommodation(Destination dest) {
+        logger.info("getAirbnbAccommodation: Searching Airbnb stays in {}", dest.name());
+        List<com.cps.mcp.airbnb.service.AirbnbService.AirbnbListing> stays = airbnbService.searchAirbnb(dest.name());
+        return new AccommodationList(stays);
+    }
+
     @Action(description = "Extract travel constraints from user prompt")
     public TravelConstraints extractConstraints(UserInput input) {
         logger.info("extractConstraints: Extracting constraints from UserInput");
@@ -580,7 +626,7 @@ public class TravelPlannerAgent {
     // --- Goal-Achieving Action ---
     @Action(description = "Compose travel plan report")
     @AchievesGoal(description = "Plan Travel Itinerary")
-    public TravelPlanReport composeTravelPlan(SearchResponse searchData, BudgetEstimate budgetData, WeatherReport weatherData) {
+    public TravelPlanReport composeTravelPlan(SearchResponse searchData, BudgetEstimate budgetData, WeatherReport weatherData, RouteSummary routeData, AccommodationList accommodationData) {
         logger.info("composeTravelPlan: Composing final travel plan report");
         
         String destination = budgetData.getDestination();
@@ -612,24 +658,47 @@ public class TravelPlannerAgent {
                 .map(r -> String.format("- %s (%s):\n  %s", r.getTitle(), r.getUrl(), r.getContent()))
                 .collect(Collectors.joining("\n"));
 
+        String searchResultsForLlm = searchData.getResults().stream()
+                .limit(4)
+                .map(r -> {
+                    String content = r.getContent() != null ? r.getContent().trim() : "";
+                    if (content.length() > 400) {
+                        content = content.substring(0, 400) + "...";
+                    }
+                    return String.format("- %s (%s):\n  %s", r.getTitle(), r.getUrl() != null ? r.getUrl() : "#", content);
+                })
+                .collect(Collectors.joining("\n"));
+
         String budgetBreakdownFormatted = budgetData.getBreakdown().getItems().stream()
                 .map(item -> String.format("  * %s: %s", item.getName(), item.getAmount().toString()))
                 .collect(Collectors.joining("\n"));
 
-        String searchHighlightsText = searchResultsFormatted;
+        String routeInfoFormatted = routeData != null && routeData.routeInfo() != null ? routeData.routeInfo().toString() : "Not available";
+        String accommodationFormatted = accommodationData != null ? accommodationData.toString() : "Not available";
+
+        String searchHighlightsText = searchData.getResults().stream()
+                .map(r -> {
+                    String snippet = r.getContent() != null ? r.getContent().trim() : "";
+                    if (snippet.length() > 160) {
+                        snippet = snippet.substring(0, 160) + "...";
+                    }
+                    return String.format("- [%s](%s):\n  %s", r.getTitle(), r.getUrl() != null ? r.getUrl() : "#", snippet);
+                })
+                .collect(Collectors.joining("\n"));
+
         boolean isMock = searchProvider == null || 
                          searchProvider.getName() == null || 
                          "MockProvider".equalsIgnoreCase(searchProvider.getName()) ||
                          searchProvider.getClass().getName().contains("Mockito") ||
                          searchProvider.getClass().getName().contains("Proxy");
-        if (chatModel != null && !isMock && !searchResultsFormatted.isEmpty()) {
+        if (chatModel != null && !isMock && !searchResultsForLlm.isEmpty()) {
             try {
                 String prompt = String.format(
                     "You are a travel assistant. Synthesize the following raw search results for %s into a beautiful, presentable 'Search Highlights' section. " +
                     "Group them logically (e.g., Top Attractions, Local Transport, Accommodation Tips) and write them as a concise bulleted list in clean markdown. " +
                     "Make sure to include reference markdown links using the URLs from the search results where appropriate (e.g. [Link Title](url)). Do not add any introductory or concluding text.\n\n" +
                     "Search Results:\n%s",
-                    destination, searchResultsFormatted
+                    destination, searchResultsForLlm
                 );
                 String synthesized = chatModel.call(prompt);
                 if (synthesized != null && !synthesized.isBlank()) {
@@ -679,6 +748,18 @@ public class TravelPlannerAgent {
         composedOutput.append("- Severity: ").append(weatherData.getSeverity()).append("\n");
         composedOutput.append("- Provider: ").append(weatherData.getProvider()).append("\n\n");
 
+        composedOutput.append("[4.1] Route & Directions\n");
+        composedOutput.append("--------------------------------------------------\n");
+        composedOutput.append("- ").append(routeInfoFormatted).append("\n\n");
+
+        composedOutput.append("[4.2] Accommodation Options (Airbnb)\n");
+        composedOutput.append("--------------------------------------------------\n");
+        if (accommodationFormatted.isEmpty()) {
+            composedOutput.append("No accommodation recommendations available.\n\n");
+        } else {
+            composedOutput.append(accommodationFormatted).append("\n\n");
+        }
+
         String llmItinerary = "";
         if (chatModel != null && !isMock) {
             try {
@@ -687,9 +768,12 @@ public class TravelPlannerAgent {
                     "Use the following search results about the destination:\n%s\n\n" +
                     "The traveler's budget details are:\n- Duration: %d days\n- Total Cost Estimate: %s\n\n" +
                     "The weather details are:\n- Location: %s\n- Condition: %s\n- Temperature: %.1f°C\n\n" +
+                    "Route and distance details (include this routing in the daily plan):\n- %s\n\n" +
+                    "Airbnb Accommodation options (recommend these stays in the daily plan where appropriate):\n%s\n\n" +
                     "Generate a beautifully formatted, daily itinerary. Be specific and realistic based on the search results. Include names of attractions and recommendation tips. Do not include any introduction/greeting or generic remarks.",
-                    days, destination, searchResultsFormatted, days, budgetData.getTotalEstimate().toString(),
-                    weatherData.getLocation(), weatherData.getCondition(), weatherData.getTemperature()
+                    days, destination, searchResultsForLlm, days, budgetData.getTotalEstimate().toString(),
+                    weatherData.getLocation(), weatherData.getCondition(), weatherData.getTemperature(),
+                    routeInfoFormatted, accommodationFormatted
                 );
                 llmItinerary = chatModel.call(prompt);
             } catch (Exception e) {

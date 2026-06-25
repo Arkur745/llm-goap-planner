@@ -14,26 +14,31 @@ import com.cps.mcp.agent.TravelPlannerAgent;
 /**
  * Capability boundary validation tests.
  * Assures that travel plans produced by the Embabel runtime do not hallucinate
- * completion of transactional capabilities (booking flights, reserving hotels/venues,
+ * completion of transactional capabilities (booking flights, reserving
+ * hotels/venues,
  * making payments, or scheduling invitations) that the platform cannot perform.
  */
 @SpringBootTest(properties = {
-    "embabel.llm.provider=openai",
-    "embabel.models.default-llm=gpt-4.1-mini",
-    "embabel.search.provider=mock"
+        "embabel.llm.provider=openai",
+        "embabel.models.default-llm=gpt-4.1-mini",
+        "embabel.search.provider=mock"
 })
 public class CapabilityBoundaryTests {
 
     @org.springframework.boot.test.context.TestConfiguration
     static class TestConfig implements org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor {
         @Override
-        public void postProcessBeanDefinitionRegistry(org.springframework.beans.factory.support.BeanDefinitionRegistry registry) {
+        public void postProcessBeanDefinitionRegistry(
+                org.springframework.beans.factory.support.BeanDefinitionRegistry registry) {
             if (registry.containsBeanDefinition("llmService")) {
                 registry.removeBeanDefinition("llmService");
             }
         }
+
         @Override
-        public void postProcessBeanFactory(org.springframework.beans.factory.config.ConfigurableListableBeanFactory beanFactory) {}
+        public void postProcessBeanFactory(
+                org.springframework.beans.factory.config.ConfigurableListableBeanFactory beanFactory) {
+        }
     }
 
     @Autowired
@@ -50,18 +55,17 @@ public class CapabilityBoundaryTests {
             return new com.cps.mcp.weather.model.WeatherReport(
                     loc, 22.5, "Mostly Sunny", 55.0, 10.0,
                     System.currentTimeMillis(), "open-meteo",
-                    com.cps.mcp.weather.model.WeatherReport.WeatherSeverity.GOOD
-            );
+                    com.cps.mcp.weather.model.WeatherReport.WeatherSeverity.GOOD);
         });
     }
 
     @Test
     public void verifyNoTransactionHallucinations() throws Exception {
         String[] testGoals = {
-            "Plan a weekend in Rome",
-            "Plan a 5 day trip to Tokyo",
-            "Travel to Berlin next month",
-            "Plan a budget trip in Vienna"
+                "Plan a weekend in Rome",
+                "Plan a 5 day trip to Tokyo",
+                "Travel to Berlin next month",
+                "Plan a budget trip in Vienna"
         };
 
         for (String goal : testGoals) {
