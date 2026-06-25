@@ -4,7 +4,7 @@ import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { AppSkeleton } from "@shared/ui/components/skeleton";
 
-const BLOCKED_SVG_TAGS = new Set(["script", "foreignobject", "iframe", "object", "embed", "link"]);
+const BLOCKED_SVG_TAGS = new Set(["script", "iframe", "object", "embed", "link"]);
 
 // Inline SVG Icons for developer style toolbar
 const ResetIcon = () => (
@@ -71,11 +71,12 @@ export interface MermaidDiagramViewerProps {
   title?: string;
   description?: string;
   config?: MermaidConfig;
+  maxWidth?: string | number;
 }
 
 const defaultConfig: MermaidConfig = {
   startOnLoad: false,
-  securityLevel: "strict",
+  securityLevel: "loose",
   theme: "base",
   fontFamily: "Inter, Segoe UI, Arial, sans-serif",
 };
@@ -254,19 +255,13 @@ export function MermaidDiagramViewer({
   title = "Execution Workflow",
   description = "Generated execution plan based on your goal.",
   config,
+  maxWidth = "400px",
 }: MermaidDiagramViewerProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const viewerContainerRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const id = useId();
-
-  // Canvas Pan & Zoom states
-  const [pan, setPan] = useState({ x: 0, y: 0 });
-  const [scale, setScale] = useState(1);
-  const [isDragging, setIsDragging] = useState(false);
-  const dragStart = useRef({ x: 0, y: 0 });
 
   const resolvedConfig: MermaidConfig = useMemo(
     () => ({
@@ -280,11 +275,11 @@ export function MermaidDiagramViewer({
         primaryBorderColor: "#8B5CF6",
         lineColor: "#8B5CF6",
         textColor: "#F8FAFC",
-        fontFamily: "Inter, Segoe UI, sans-serif",
-        fontSize: "20px",
+        fontFamily: "Inter, sans-serif",
+        fontSize: "10px",
         mainBkg: "#091321",
         nodeBorder: "#8B5CF6",
-        nodePadding: "36px",
+        nodePadding: "12px",
         clusterBkg: "rgba(139, 92, 246, 0.03)",
         clusterBorder: "rgba(139, 92, 246, 0.15)",
         edgeLabelBackground: "#030712",
@@ -300,14 +295,15 @@ export function MermaidDiagramViewer({
         ganttTodayLineColor: "#EF4444",
         ...(config?.themeVariables ?? {}),
       },
-      flowchart: {
-        nodeSpacing: 150, // spacious spacing
-        rankSpacing: 160, // spacious spacing
-        curve: "basis",   // smooth curves
-        useMaxWidth: true,
-        htmlLabels: false,
-        padding: 40,
-      },
+        flowchart: {
+          nodeSpacing: 20, // slightly more spacing
+          rankSpacing: 20,
+          curve: "basis",
+          useMaxWidth: true,
+          htmlLabels: false,
+          padding: 8,
+        },
+        securityLevel: "loose",
       gantt: {
         titlePadding: 24,
         barHeight: 32, // Increased task bar height
@@ -323,101 +319,6 @@ export function MermaidDiagramViewer({
     }),
     [config],
   );
-
-  const resetView = () => {
-    setScale(1);
-    setPan({ x: 0, y: 0 });
-  };
-
-  const fitToScreen = () => {
-    if (!containerRef.current) return;
-    const svgEl = containerRef.current.querySelector("svg");
-    if (!svgEl) return;
-
-    const containerWidth = containerRef.current.clientWidth || 800;
-    const containerHeight = containerRef.current.clientHeight || 500;
-
-    const svgWidth = svgEl.viewBox.baseVal.width || svgEl.getBoundingClientRect().width || 800;
-    const svgHeight = svgEl.viewBox.baseVal.height || svgEl.getBoundingClientRect().height || 500;
-
-    const scaleX = (containerWidth * 0.93) / svgWidth;
-    const scaleY = (containerHeight * 0.93) / svgHeight;
-    const nextScale = Math.min(scaleX, scaleY, 1.2);
-
-    setScale(nextScale);
-    setPan({ x: 0, y: 0 });
-  };
-
-  // Drag pan handlers
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (e.button !== 0) return; // Left click only
-    setIsDragging(true);
-    dragStart.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    setPan({
-      x: e.clientX - dragStart.current.x,
-      y: e.clientY - dragStart.current.y,
-    });
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  // Scroll wheel zoom handler
-  const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    const zoomFactor = 0.08;
-    const direction = e.deltaY < 0 ? 1 : -1;
-    const nextScale = Math.min(Math.max(scale + direction * zoomFactor * scale, 0.15), 4);
-    setScale(nextScale);
-  };
-
-  const toggleFullscreen = () => {
-    if (!viewerContainerRef.current) return;
-    if (!document.fullscreenElement) {
-      viewerContainerRef.current.requestFullscreen().catch((err) => {
-        console.error(`Error attempting to enable fullscreen: ${err.message}`);
-      });
-      setIsFullscreen(true);
-    } else {
-      document.exitFullscreen();
-      setIsFullscreen(false);
-    }
-  };
-
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(document.fullscreenElement === viewerContainerRef.current);
-    };
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
-  }, []);
-
-  const fitToScreenRef = useRef(fitToScreen);
-  useEffect(() => {
-    fitToScreenRef.current = fitToScreen;
-  });
-
-  useEffect(() => {
-    const handleResize = () => {
-      fitToScreenRef.current();
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (!containerRef.current || loading) return;
-    const observer = new ResizeObserver(() => {
-      fitToScreenRef.current();
-    });
-    observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, [loading]);
 
   useEffect(() => {
     let isActive = true;
@@ -527,8 +428,8 @@ export function MermaidDiagramViewer({
         // 2. Customize flowchart nodes (only rects for rounded corners)
         const rects = svgElement.querySelectorAll(".node rect");
         rects.forEach(rect => {
-          rect.setAttribute("rx", "24");
-          rect.setAttribute("ry", "24");
+          rect.setAttribute("rx", "12");
+          rect.setAttribute("ry", "12");
         });
 
         // 3. Flowchart edge connection colors using gradient (no buggy/hidden draw animations)
@@ -550,25 +451,6 @@ export function MermaidDiagramViewer({
         // Mount into DOM
         containerRef.current.replaceChildren(importedSvg);
         setLoading(false);
-
-        // 11. If SVG generation succeeds, verify that the SVG is actually mounted into the DOM
-        const mountedSvg = containerRef.current.querySelector("svg");
-        if (!mountedSvg) {
-          throw new Error("SVG generation succeeded but failed to mount into the DOM.");
-        }
-
-        // Auto center and scale fitting right after rendering
-        const containerWidth = containerRef.current.clientWidth || 800;
-        const containerHeight = containerRef.current.clientHeight || 500;
-        const svgWidth = mountedSvg.viewBox.baseVal.width || 800;
-        const svgHeight = mountedSvg.viewBox.baseVal.height || 500;
-        
-        const scaleX = (containerWidth * 0.93) / svgWidth;
-        const scaleY = (containerHeight * 0.93) / svgHeight;
-        const nextScale = Math.min(scaleX, scaleY, 1.2);
-        
-        setScale(nextScale);
-        setPan({ x: 0, y: 0 });
       } catch (error) {
         if (!isActive) {
           return;
@@ -593,8 +475,27 @@ export function MermaidDiagramViewer({
 
   // Serializes diagram SVG, embedding styling details for clean file export downloads
   const getStyledSVGSource = (svgElement: SVGElement): string => {
-    const clonedSvg = svgElement.cloneNode(true) as SVGElement;
+    const clonedSvg = svgElement.cloneNode(true) as SVGSVGElement;
     
+    // Ensure the cloned SVG has the correct namespace
+    clonedSvg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    clonedSvg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+
+    // Set explicit width/height from viewBox for better export compatibility
+    if (svgElement instanceof SVGSVGElement && svgElement.viewBox?.baseVal) {
+      const { width, height } = svgElement.viewBox.baseVal;
+      if (width > 0 && height > 0) {
+        clonedSvg.setAttribute("width", width.toString());
+        clonedSvg.setAttribute("height", height.toString());
+      }
+    } else {
+      const bbox = (svgElement as any).getBBox?.() || svgElement.getBoundingClientRect();
+      if (bbox.width > 0 && bbox.height > 0) {
+        clonedSvg.setAttribute("width", bbox.width.toString());
+        clonedSvg.setAttribute("height", bbox.height.toString());
+      }
+    }
+
     // Inject gradient definition for downloads if missing
     let defs = clonedSvg.querySelector("defs");
     if (!defs) {
@@ -622,7 +523,7 @@ export function MermaidDiagramViewer({
       defs.appendChild(gradient);
     }
 
-    const styleEl = document.createElement("style");
+    const styleEl = document.createElementNS("http://www.w3.org/2000/svg", "style");
     styleEl.textContent = `
       svg {
         background: #030712 !important;
@@ -631,15 +532,18 @@ export function MermaidDiagramViewer({
         fill: #091321 !important;
         stroke: #8B5CF6 !important;
         stroke-width: 2px !important;
-        rx: 18px !important;
-        ry: 18px !important;
+        rx: 8px !important;
+        ry: 8px !important;
         filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.45));
       }
-      .node .label {
-        font-family: 'Inter', sans-serif !important;
+      .node .label, .nodeLabel, .label span, .node foreignObject div, .node text, .node tspan {
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
         font-weight: 600 !important;
         fill: #F8FAFC !important;
-        font-size: 18px !important;
+        color: #F8FAFC !important;
+        font-size: 10px !important;
+        text-anchor: middle !important;
+        dominant-baseline: central !important;
       }
       .edgePath .path {
         stroke: url(#purple-gradient) !important;
@@ -723,16 +627,7 @@ export function MermaidDiagramViewer({
     clonedSvg.appendChild(styleEl);
     
     const serializer = new XMLSerializer();
-    let source = serializer.serializeToString(clonedSvg);
-    
-    if (!source.match(/^<svg[^>]+xmlns="http:\/\/www\.w3\.org\/2000\/svg"/)) {
-      source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
-    }
-    if (!source.match(/^<svg[^>]+xmlns:xlink="http:\/\/www\.w3\.org\/1999\/xlink"/)) {
-      source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
-    }
-    
-    return source;
+    return serializer.serializeToString(clonedSvg);
   };
 
   const downloadSVG = () => {
@@ -759,44 +654,62 @@ export function MermaidDiagramViewer({
     const svgElement = containerRef.current.querySelector("svg");
     if (!svgElement) return;
 
-    const source = getStyledSVGSource(svgElement);
-    const svgBlob = new Blob([source], { type: "image/svg+xml;charset=utf-8" });
-    const svgUrl = URL.createObjectURL(svgBlob);
-    
-    const image = new Image();
-    image.onload = () => {
-      const canvas = document.createElement("canvas");
-      const bbox = svgElement.getBoundingClientRect();
-      const width = svgElement.viewBox.baseVal.width || bbox.width || 800;
-      const height = svgElement.viewBox.baseVal.height || bbox.height || 600;
+    try {
+      const source = getStyledSVGSource(svgElement);
+      const image = new Image();
       
-      const scaleVal = 2; // High-resolution export factor
-      canvas.width = width * scaleVal;
-      canvas.height = height * scaleVal;
+      // Use base64 encoding for the SVG source to ensure all styles are captured correctly
+      const svgBase64 = btoa(unescape(encodeURIComponent(source)));
+      const svgUrl = `data:image/svg+xml;base64,${svgBase64}`;
       
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.scale(scaleVal, scaleVal);
-        ctx.fillStyle = "#030712"; 
-        ctx.fillRect(0, 0, width, height);
-        ctx.drawImage(image, 0, 0, width, height);
-        
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const url = URL.createObjectURL(blob);
+      image.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          
+          let width = 800;
+          let height = 600;
+          
+          if (svgElement instanceof SVGSVGElement && svgElement.viewBox && svgElement.viewBox.baseVal) {
+            width = svgElement.viewBox.baseVal.width || 800;
+            height = svgElement.viewBox.baseVal.height || 600;
+          } else {
+            const bbox = (svgElement as any).getBBox?.() || svgElement.getBoundingClientRect();
+            width = bbox.width || 800;
+            height = bbox.height || 600;
+          }
+          
+          const scaleVal = 2; 
+          canvas.width = width * scaleVal;
+          canvas.height = height * scaleVal;
+          
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.scale(scaleVal, scaleVal);
+            ctx.fillStyle = "#030712"; 
+            ctx.fillRect(0, 0, width, height);
+            ctx.drawImage(image, 0, 0, width, height);
+            
+            const pngUrl = canvas.toDataURL("image/png");
             const link = document.createElement("a");
-            link.href = url;
+            link.href = pngUrl;
             link.download = `${title.toLowerCase().replace(/\s+/g, "-")}.png`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            URL.revokeObjectURL(url);
           }
-        }, "image/png");
-      }
-      URL.revokeObjectURL(svgUrl);
-    };
-    image.src = svgUrl;
+        } catch (e) {
+          console.error("Error during PNG generation:", e);
+        }
+      };
+      
+      image.onerror = (err) => {
+        console.error("Error loading SVG for PNG conversion:", err);
+      };
+      
+      image.src = svgUrl;
+    } catch (error) {
+      console.error("Error initiating PNG download:", error);
+    }
   };
 
   // Render premium empty state
@@ -871,20 +784,18 @@ export function MermaidDiagramViewer({
         display: "flex",
         flexDirection: "column",
         width: "100%",
-        maxWidth: "1200px",
+        maxWidth: maxWidth,
         mx: "auto",
-        borderRadius: isFullscreen ? "0" : "24px",
-        border: isFullscreen ? "none" : "1px solid rgba(168, 85, 247, 0.12)",
+        borderRadius: "16px",
+        border: "1px solid rgba(168, 85, 247, 0.12)",
         backgroundColor: "#030712",
         backdropFilter: "blur(20px)",
-        boxShadow: isFullscreen 
-          ? "none" 
-          : "0 25px 60px rgba(0, 0, 0, 0.45), 0 0 50px rgba(168, 85, 247, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)",
-        p: { xs: 2.5, sm: 4 },
+        boxShadow: "0 10px 30px rgba(0, 0, 0, 0.4), 0 0 30px rgba(168, 85, 247, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)",
+        p: { xs: 1.5, sm: 2 },
         transition: "all var(--transition-normal)",
         overflow: "hidden",
         position: "relative",
-        minHeight: "450px",
+        minHeight: "180px",
       }}
     >
       {/* Header Toolbar */}
@@ -926,90 +837,6 @@ export function MermaidDiagramViewer({
           }}
         >
           <IconButton
-            onClick={resetView}
-            title="Reset View"
-            sx={{
-              color: "#94A3B8",
-              p: 0.85,
-              borderRadius: "6px",
-              transition: "all 150ms ease",
-              "&:hover": {
-                color: "#F8FAFC",
-                backgroundColor: "rgba(255, 255, 255, 0.05)",
-                transform: "translateY(-1px)",
-              },
-              "&:active": {
-                transform: "translateY(0.5px)",
-              },
-            }}
-          >
-            <ResetIcon />
-          </IconButton>
-
-          <IconButton
-            onClick={fitToScreen}
-            title="Fit to Screen"
-            sx={{
-              color: "#94A3B8",
-              p: 0.85,
-              borderRadius: "6px",
-              transition: "all 150ms ease",
-              "&:hover": {
-                color: "#F8FAFC",
-                backgroundColor: "rgba(255, 255, 255, 0.05)",
-                transform: "translateY(-1px)",
-              },
-              "&:active": {
-                transform: "translateY(0.5px)",
-              },
-            }}
-          >
-            <FitIcon />
-          </IconButton>
-
-          <IconButton
-            onClick={() => setScale(prev => Math.max(prev - 0.15, 0.15))}
-            title="Zoom Out"
-            sx={{
-              color: "#94A3B8",
-              p: 0.85,
-              borderRadius: "6px",
-              transition: "all 150ms ease",
-              "&:hover": {
-                color: "#F8FAFC",
-                backgroundColor: "rgba(255, 255, 255, 0.05)",
-                transform: "translateY(-1px)",
-              },
-              "&:active": {
-                transform: "translateY(0.5px)",
-              },
-            }}
-          >
-            <ZoomOutIcon />
-          </IconButton>
-
-          <IconButton
-            onClick={() => setScale(prev => Math.min(prev + 0.15, 4))}
-            title="Zoom In"
-            sx={{
-              color: "#94A3B8",
-              p: 0.85,
-              borderRadius: "6px",
-              transition: "all 150ms ease",
-              "&:hover": {
-                color: "#F8FAFC",
-                backgroundColor: "rgba(255, 255, 255, 0.05)",
-                transform: "translateY(-1px)",
-              },
-              "&:active": {
-                transform: "translateY(0.5px)",
-              },
-            }}
-          >
-            <ZoomInIcon />
-          </IconButton>
-
-          <IconButton
             onClick={downloadSVG}
             title="Download SVG"
             sx={{
@@ -1049,27 +876,6 @@ export function MermaidDiagramViewer({
             }}
           >
             <PngIcon />
-          </IconButton>
-
-          <IconButton
-            onClick={toggleFullscreen}
-            title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-            sx={{
-              color: "#94A3B8",
-              p: 0.85,
-              borderRadius: "6px",
-              transition: "all 150ms ease",
-              "&:hover": {
-                color: "#F8FAFC",
-                backgroundColor: "rgba(255, 255, 255, 0.05)",
-                transform: "translateY(-1px)",
-              },
-              "&:active": {
-                transform: "translateY(0.5px)",
-              },
-            }}
-          >
-            {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </IconButton>
         </Stack>
       </Stack>
@@ -1138,24 +944,19 @@ export function MermaidDiagramViewer({
           </Stack>
         ) : null}
 
-        {/* Drag and Wheel Event Listener wrapper */}
+        {/* Diagram wrapper */}
         <Box
-          onWheel={handleWheel}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
           sx={{
             flexGrow: 1,
             display: loading ? "none" : "flex",
             justifyContent: "center",
-            alignItems: "center",
-            overflow: "hidden", // Disable native scroll bars, let mouse drag pan do the scrolling!
-            cursor: isDragging ? "grabbing" : "grab",
-            minHeight: "360px",
+            alignItems: "flex-start",
+            overflow: "auto", 
+            minHeight: "280px",
             position: "relative",
             width: "100%",
             height: "100%",
+            p: 1,
           }}
         >
           <Box
@@ -1165,24 +966,20 @@ export function MermaidDiagramViewer({
             role="img"
             aria-busy={loading}
             sx={{
-              transform: `translate(${pan.x}px, ${pan.y}px) scale(${scale})`,
-              transformOrigin: "center center",
-              transition: isDragging ? "none" : "transform 0.15s cubic-bezier(0.16, 1, 0.3, 1)",
               display: "flex",
               justifyContent: "center",
-              alignItems: "center",
+              alignItems: "flex-start",
               width: "100%",
-              height: "100%",
+              height: "auto",
               animation: "diagramFadeIn 750ms cubic-bezier(0.16, 1, 0.3, 1) forwards",
               "@keyframes diagramFadeIn": {
-                from: { opacity: 0, transform: `translate(${pan.x}px, ${pan.y}px) scale(${scale * 0.98})` },
-                to: { opacity: 1, transform: `translate(${pan.x}px, ${pan.y}px) scale(${scale})` },
+                from: { opacity: 0 },
+                to: { opacity: 1 },
               },
               "& svg": {
                 width: "100%",
-                height: "100%",
+                height: "auto",
                 maxWidth: "100%",
-                maxHeight: "100%",
                 display: "block",
                 mx: "auto",
                 background: "transparent !important",
@@ -1196,8 +993,8 @@ export function MermaidDiagramViewer({
                   fill: "#091321 !important",
                   stroke: "#8B5CF6 !important", // Purple border
                   strokeWidth: "2px !important",
-                  rx: "18px !important", // Rounded corners (18px)
-                  ry: "18px !important",
+                  rx: "12px !important", // Rounded corners
+                  ry: "12px !important",
                   filter: "drop-shadow(0 8px 24px rgba(0, 0, 0, 0.45)) !important",
                   transition: "all 200ms ease-in-out !important",
                 },
@@ -1213,7 +1010,7 @@ export function MermaidDiagramViewer({
                   transition: "transform 200ms ease-in-out !important",
                 },
                 "& .node:hover": {
-                  transform: "translateY(-3px) scale(1.02) !important",
+                  filter: "brightness(1.2) !important",
                   cursor: "pointer",
                 },
                 // Staggered node entrance delays
@@ -1249,12 +1046,15 @@ export function MermaidDiagramViewer({
                   fill: "#8B5CF6 !important",
                   stroke: "none !important",
                 },
-                // Typography Hierarchy
-                "& .label": {
+        // Typography Hierarchy
+                "& .label, & .nodeLabel, & .label text, & .label span, & .node label, & .node foreignObject div, & .node text, & .node tspan": {
                   fontFamily: "Inter, sans-serif !important",
                   fontWeight: "600 !important",
                   fill: "#F8FAFC !important",
-                  fontSize: "18px !important",
+                  color: "#F8FAFC !important",
+                  fontSize: "9px !important",
+                  textAnchor: "middle !important",
+                  dominantBaseline: "central !important",
                 },
                 "& .node .label .sub-label": {
                   fontSize: "15px !important",
@@ -1267,11 +1067,12 @@ export function MermaidDiagramViewer({
                   ry: "6px !important",
                   stroke: "rgba(255, 255, 255, 0.08) !important",
                 },
-                "& .edgeLabel span, & .edgeLabel text": {
+                "& .edgeLabel span, & .edgeLabel text, & .edgeLabel div": {
                   fontFamily: "Inter, sans-serif !important",
                   fontSize: "12px !important",
                   fontWeight: "500 !important",
                   fill: "#94A3B8 !important",
+                  color: "#94A3B8 !important",
                 },
                 // Gantt Chart Custom Styles
                 "& rect.secNode, & .secNode": {

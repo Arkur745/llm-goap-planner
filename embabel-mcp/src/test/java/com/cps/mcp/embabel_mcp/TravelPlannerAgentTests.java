@@ -107,6 +107,13 @@ public class TravelPlannerAgentTests {
         // We check for the presence of the total breakdown section instead of the exact number if it's too volatile
         assertTrue(output.contains("Total Breakdown"), "Output should contain budget breakdown");
 
+        // Verify Mermaid Diagram generation
+        String mermaid = com.cps.mcp.util.EmbabelGraphBuilder.generateMermaidDiagram(TravelPlannerAgent.class);
+        assertNotNull(mermaid, "Mermaid diagram should not be null");
+        assertTrue(mermaid.contains("flowchart TD"), "Should be a flowchart");
+        assertTrue(mermaid.contains("[\""), "Should contain labels in quotes");
+        logger.info("Generated Mermaid:\n{}", mermaid);
+
         logger.info("Test completed successfully for: {}", goal);
     }
 

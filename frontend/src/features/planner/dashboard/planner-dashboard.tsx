@@ -150,8 +150,24 @@ export function PlannerDashboard({ result }: PlannerDashboardProps) {
   // 3. Generate Mermaid flowchart TD from normalizedTasks (Task 4 & 7)
   const generatedMermaidDiagram = useMemo(() => {
     const safeGoal = result.goal.replace(/["[\](){}]/g, "");
+    
+    // Manual line wrapping for SVG labels (since htmlLabels: false is used)
+    const words = `Goal: ${safeGoal}`.split(" ");
+    const goalLines = [];
+    let currentLine = "";
+    words.forEach(word => {
+      if ((currentLine + word).length > 25) {
+        goalLines.push(currentLine.trim());
+        currentLine = word + " ";
+      } else {
+        currentLine += word + " ";
+      }
+    });
+    goalLines.push(currentLine.trim());
+    const formattedGoal = goalLines.join("<br>");
+
     let mermaid = "flowchart TD\n";
-    mermaid += `    START((Goal: ${safeGoal}))\n`;
+    mermaid += `    START(("${formattedGoal}"))\n`;
 
     // Declaring nodes
     normalizedTasks.forEach(task => {
