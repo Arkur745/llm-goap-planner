@@ -7,6 +7,7 @@ import { sanitizeText } from "@shared/lib/sanitize";
 import { StatusBadge } from "@shared/ui/components/status-badge";
 import { AgentBadge } from "@shared/ui/components/agent-badge";
 import { GlassCard } from "@shared/ui/components/glass-card";
+import { PlanSummary } from "./plan-summary";
 
 // MUI icons for summary cards
 import TaskIcon from "@mui/icons-material/Assignment";
@@ -392,6 +393,9 @@ export function PlannerDashboard({ result }: PlannerDashboardProps) {
           {result.goal}
         </Typography>
       </Box>
+
+      {/* Plan Summary Section */}
+      <PlanSummary summary={result.summary} />
 
       {/* Metrics and Composition Section */}
       <Box sx={{ ...fadeInUp, animationDelay: "0.15s" }}>

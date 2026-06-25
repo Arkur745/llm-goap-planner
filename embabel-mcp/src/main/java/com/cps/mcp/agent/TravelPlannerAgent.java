@@ -987,7 +987,9 @@ public class TravelPlannerAgent {
                     "Route and distance details (include this routing in the daily plan):\n- %s\n\n" +
                     "Airbnb Accommodation options (recommend these stays in the daily plan where appropriate):\n%s\n\n" +
                     "Generate a beautifully formatted daily itinerary. " +
-                    "For each day include: the calendar date (if known), the expected weather, and a specific activity schedule with attraction names and practical tips. " +
+                    "For each day include: the title (e.g., 'Day 1: Exploring [Destination]'), the expected weather, and a specific activity schedule with attraction names and practical tips. " +
+                    "Crucially, for each day, provide a 'Daily Budget' breakdown including estimated costs for activities, food, and transport for that specific day. " +
+                    "Format each day clearly using 'Day X:' headers. " +
                     "Do not include any introduction/greeting or generic remarks.",
                     days, destination,
                     dateContext,
